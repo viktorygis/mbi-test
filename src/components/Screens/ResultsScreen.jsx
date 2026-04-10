@@ -14,7 +14,10 @@ const ResultsScreen = ({
 
 	// Функция скачивания PDF
 	const handleDownloadPDF = () => {
-		downloadMbiPDF(mbiResults, userData, timeDisplay);
+		downloadMbiPDF(mbiResults, userData, timeDisplay).catch((err) => {
+			console.error('Ошибка создания PDF:', err);
+			alert('Не удалось создать PDF. Попробуйте ещё раз.');
+		});
 	};
 
 	// Функция для повторного прохождения теста

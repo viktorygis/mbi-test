@@ -382,7 +382,8 @@ export async function downloadMbiPDF(mbiResults, userData, timeDisplay) {
     import('pdfmake/build/pdfmake'),
     import('pdfmake/build/vfs_fonts'),
   ]);
-  pdfMake.vfs = pdfFonts.pdfMake?.vfs ?? pdfFonts;
+  // pdfmake 0.3.x использует addVirtualFileSystem() вместо прямого присвоения .vfs
+  pdfMake.addVirtualFileSystem(pdfFonts.pdfMake?.vfs ?? pdfFonts);
 
   const docDefinition = {
     content: [
