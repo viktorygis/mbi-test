@@ -87,22 +87,22 @@ const ExtrasSection = ({ onRetakeTest, onShare }) => (
 						<a className="extras__materials-link" href="https://ai4g.ru/patterns.html" target="_blank" rel="noopener noreferrer">
 
 							<img src="/img/test-mbi/materials/materials01.jpg" alt="" />
-							<h3>Описание паттернов</h3>
-							<p>Повторяющиеся схемы мышления, поведения или общения, которые проявляются в разных жизненных ситуациях.</p>
+							<h3>О профессиональном выгорании</h3>
+							<p>Признаки, причины и последствия синдрома выгорания. Как распознать выгорание на ранних стадиях.</p>
 						</a>
 					</li>
 					<li className="extras__materials-item">
 						<a className="extras__materials-link" href="https://ai4g.ru/vozmozhnosti.html" target="_blank" rel="noopener noreferrer">
 							<img src="/img/test-mbi/materials/materials02.jpg" alt="" />
-							<h3>Описание возможностей</h3>
-							<p>Возможности, которые открываются перед вами в различных сферах жизни.</p>
+							<h3>Профилактика выгорания</h3>
+							<p>Практические рекомендации и техники для восстановления ресурсов и предотвращения выгорания.</p>
 						</a>
 					</li>
 					<li className="extras__materials-item">
 						<a className="extras__materials-link" href="https://ai4g.ru/technics.html" target="_blank" rel="noopener noreferrer">
 							<img src="/img/test-mbi/materials/materials03.jpg" alt="" />
-							<h3>Описание техник развития</h3>
-							<p>Методы и подходы, которые помогут вам развивать свои навыки и способности.</p>
+							<h3>Техники самовосстановления</h3>
+							<p>Методы и подходы, которые помогут восстановить эмоциональные ресурсы и повысить устойчивость к стрессу.</p>
 						</a>
 					</li>
 
@@ -111,7 +111,7 @@ const ExtrasSection = ({ onRetakeTest, onShare }) => (
 							<img src="/img/test-mbi/materials/materials04.jpg" alt="" />
 
 							<h3>Канал проекта в Telegram</h3>
-							<p>Полезные статьи, советы и обновления о тесте паттернов и личностном развитии.</p>
+							<p>Полезные статьи, советы и материалы о психологическом благополучии и профессиональном развитии.</p>
 						</a>
 					</li>
 
@@ -163,13 +163,13 @@ const SocialShare = () => (
 		<div className="share__block">
 			<SocialButton
 				title="telegram"
-				href="https://t.me/share/url?url=https://ai4g.ru/test-mbi&text=Пройдите%20тест%20паттернов!%20Вы%20узнаете,%20как%20реагировать,%20какие%20чувства%20и%20мысли%20у%20вас%20возникают,%20и%20как%20это%20влияет%20на%20ваши%20результаты.%20А%20ещё%20вы%20откроете%20для%20себя%20новые%20возможности!"
+				href="https://t.me/share/url?url=https://ai4g.ru/test-mbi&text=Пройдите%20тест%20MBI%20на%20определение%20уровня%20профессионального%20выгорания!%20Узнайте%20свои%20показатели%20по%20шкалам%20истощения,%20деперсонализации%20и%20редукции%20личных%20достижений."
 				icon="telegram.svg"
 				alt="Telegram"
 			/>
 			<SocialButton
 				title="whatsapp"
-				href="https://api.whatsapp.com/send?text=Пройдите%20тест%20паттернов.%20Вы%20узнаете,%20как%20реагировать,%20какие%20чувства%20и%20мысли%20у%20вас%20возникают,%20и%20как%20это%20влияет%20на%20ваши%20результаты.%20А%20ещё%20вы%20откроете%20для%20себя%20новые%20возможности!%20Ссылка:%20https://ai4g.ru/test-mbi"
+				href="https://api.whatsapp.com/send?text=Пройдите%20тест%20MBI%20на%20определение%20уровня%20профессионального%20выгорания.%20Ссылка:%20https://ai4g.ru/test-mbi"
 				icon="whatsapp.svg"
 				alt="WhatsApp"
 			/>
