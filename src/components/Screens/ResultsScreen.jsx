@@ -3,6 +3,7 @@ import ResultsHeader from './../Sections/ResultsSections/ResultsHeader';
 import MbiScalesSection from './../Sections/ResultsSections/MbiScalesSection';
 import LiteratureSection from './../Sections/ResultsSections/LiteratureSection';
 import ExtrasSection from './../Sections/ResultsSections/ExtrasSection';
+import { downloadMbiPDF } from '../../utils/pdf/mbiPdfGenerator';
 
 const ResultsScreen = ({
 	mbiResults,
@@ -10,6 +11,11 @@ const ResultsScreen = ({
 	timeDisplay,
 }) => {
 	const [showSuccess, setShowSuccess] = useState(false);
+
+	// Функция скачивания PDF
+	const handleDownloadPDF = () => {
+		downloadMbiPDF(mbiResults, userData, timeDisplay);
+	};
 
 	// Функция для повторного прохождения теста
 	const handleRetakeTest = () => {
@@ -45,6 +51,11 @@ const ResultsScreen = ({
 			<div className="result-main">
 				<h2 className="result-main__subtitle">Результаты вашего тестирования</h2>
 				<MbiScalesSection mbiResults={mbiResults} />
+				<div className="result-main__download">
+					<button className="result-main__download-btn patterns-button" onClick={handleDownloadPDF}>
+						⬇ Скачать результаты PDF
+					</button>
+				</div>
 			</div>
 
 			<ExtrasSection onRetakeTest={handleRetakeTest} onShare={handleShare} />
