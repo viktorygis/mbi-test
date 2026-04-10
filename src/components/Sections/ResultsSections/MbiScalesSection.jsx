@@ -56,7 +56,7 @@ const BurnoutIndexBlock = ({ burnoutIndex, maxScore, burnoutLevel, description }
       <div className="mbi-burnout-index__score-line">
         <span className="mbi-burnout-index__score">{burnoutIndex}</span>
         <span className="mbi-burnout-index__max"> / {maxScore}</span>
-        <span className={getLevelClass(burnoutLevel) + ' mbi-burnout-index__level'}>
+        <span className={`${getLevelClass(burnoutLevel)} mbi-burnout-index__level`}>
           {burnoutLevel}
         </span>
       </div>
