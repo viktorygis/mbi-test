@@ -1,0 +1,49 @@
+// Импорт базовых стилей
+//### npm start
+@use 'base/reset';
+@use 'base/fonts';
+@use 'base/buttons';
+@use 'base/global';
+@use 'base/variables' as *;
+@use 'components/sections/intro-sections/offer-test' as *;
+@use 'components/sections/intro-sections/patterns-description' as *;
+@use 'components/sections/intro-sections/instruction-test' as *;
+@use 'components/sections/intro-sections/share' as *;
+@use 'components/sections/intro-sections/trek' as *;
+@use 'components/screens/question-block' as *;
+@use 'components/screens/result-block' as *;
+@use 'components/screens/form-start' as *;
+@use 'components/sections/result-sections/result-header' as *;
+@use 'components/sections/result-sections/result-interpretation' as *;
+@use 'components/sections/result-sections/result-literature' as *;
+@use 'components/sections/result-sections/result-extras' as *;
+@use 'components/sections/result-sections/result-histogram' as *;
+@use 'components/sections/result-sections/result-category' as *;
+@use 'components/sections/test-completed' as *;
+
+@use 'sass:color';
+
+
+
+// Анимации
+._anim-items {
+	opacity: 0;
+	transform: translateY(30px);
+	transition: opacity 0.6s, transform 0.6s;
+
+	&._anim-no-hide {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+
+@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+
+	100% {
+		transform: rotate(360deg);
+	}
+}

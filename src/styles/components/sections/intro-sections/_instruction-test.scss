@@ -1,0 +1,94 @@
+// src/styles/components/sections/intro-sections/_instruction-test.scss
+
+@use '../../../base/variables' as *;
+@use '../../../base/mixins' as *;
+
+.instruction-test {
+	padding: 30px 0;
+	color: $color-text-dark;
+
+	@include respond-to($breakpoint-sm) {
+		padding: 25px 0px;
+	}
+
+	&__title {
+		line-height: 1.2;
+		font-size: 34px;
+		font-weight: 900;
+		margin: 0px 0px 20px 0px;
+
+		@include respond-to($breakpoint-sm) {
+			font-size: 26px;
+		}
+	}
+
+	&__content {
+		display: grid;
+		grid-template-columns: repeat(1, 1fr);
+		gap: 15px;
+		margin: 0px 0px 20px 0px;
+
+		@include respond-to($breakpoint-sm) {
+			gap: 10px;
+		}
+	}
+
+	&__item {
+		display: grid;
+		grid-template-columns: 30px auto;
+		font-weight: 600;
+		line-height: 1.2;
+		font-size: 20px;
+		gap: 10px;
+
+		@include respond-to($breakpoint-md) {
+			font-size: 24px;
+			grid-template-columns: 20px auto;
+		}
+
+		@include respond-to($breakpoint-sm) {
+			gap: 10px;
+			font-size: 20px;
+		}
+	}
+
+	&__number-item {
+		color: $color-accent;
+	}
+
+	&__label {
+		text-align: left;
+		margin: 0px 0px 10px 0px;
+
+		@include respond-to($breakpoint-sm) {
+			margin: 0px 0px 5px 0px;
+		}
+
+		br {
+			@include respond-to($breakpoint-xs) {
+				display: none;
+			}
+		}
+	}
+
+	&__text-item {
+		font-weight: 500;
+		font-size: 18px;
+		line-height: 1.4;
+
+		@include respond-to($breakpoint-sm) {
+			font-weight: 400;
+		}
+	}
+
+	&__text {
+		font-weight: 500;
+		font-size: 20px;
+		line-height: 1.4;
+
+		@include respond-to($breakpoint-sm) {
+			font-size: 18px;
+			line-height: 1.3;
+		}
+	}
+}

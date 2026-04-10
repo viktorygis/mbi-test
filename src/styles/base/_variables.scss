@@ -1,0 +1,75 @@
+// src/styles/base/_variables.scss
+
+@use 'sass:map';
+
+$colors: (
+	primary: #007bff,
+	primary-hover: #2563eb,
+	accent: #ff018a,
+	accent-hover: #dd0277,
+	accent-light: #ffa5d5,
+	error: #dc2626,
+	bg-light: #f8f9fa,
+	text-dark: #150931,
+	bg-white: #fff,
+	bg-gray: #f4f4f5,
+	bg-gray-light: #fafafa,
+	counter: #a6a6a6,
+	border-radio: #71717a,
+	border: #e4e4e7,
+	hist-bar-bg: #e1e1e1,
+	hist-mind: #0386ff,
+	hist-mind-light: #c6e4ff,
+	hist-man: #06eadc,
+	hist-man-light: #d3fffc,
+	hist-hands: #fa00ff,
+	hist-hands-light: #fecbff,
+	hist-clock: #ff9900,
+	hist-clock-light: #ffedd2,
+	hist-legend: #555,
+	hist-maximum: #03d666,
+	status: #e4e4e457,
+	tooltip: #575757,
+);
+
+$color-primary: map.get($colors, 'primary');
+$color-primary-hover: map.get($colors, 'primary-hover');
+$color-accent: map.get($colors, 'accent');
+$color-accent-hover: map.get($colors, 'accent-hover');
+$color-accent-light: map.get($colors, 'accent-light');
+$color-bg-light: map.get($colors, 'bg-light');
+$color-counter: map.get($colors, 'counter');
+$color-bg-gray: map.get($colors, 'bg-gray');
+$color-bg-gray-light: map.get($colors, 'bg-gray-light');
+$color-text-dark: map.get($colors, 'text-dark');
+$color-bg-white: map.get($colors, 'bg-white');
+$color-error: map.get($colors, 'error');
+$color-border-radio: map.get($colors, 'border-radio');
+$color-border: map.get($colors, 'border');
+$color-hist-bar-bg: map.get($colors, 'hist-bar-bg');
+$color-hist-mind: map.get($colors, 'hist-mind');
+$color-hist-mind-light: map.get($colors, 'hist-mind-light');
+$color-hist-man: map.get($colors, 'hist-man');
+$color-hist-man-light: map.get($colors, 'hist-man-light');
+$color-hist-hands: map.get($colors, 'hist-hands');
+$color-hist-hands-light: map.get($colors, 'hist-hands-light');
+$color-hist-clock: map.get($colors, 'hist-clock');
+$color-hist-clock-light: map.get($colors, 'hist-clock-light');
+$color-hist-legend: map.get($colors, 'hist-legend');
+$color-hist-maximum: map.get($colors, 'hist-maximum');
+$color-status: map.get($colors, 'status');
+$color-tooltip: map.get($colors, 'tooltip');
+
+$container-max-width: 1200px;
+$breakpoint-xl: 980px;
+$breakpoint-md: 768px;
+$breakpoint-xs: 600px;
+$breakpoint-sm: 460px;
+
+$radius-block: 16px !default;
+$shadow-block: 0px 9px 42px rgba(59, 76, 106, 0.08),
+	0px 2.71324px 12.6618px rgba(59, 76, 106, 0.0521271),
+	0px 1.12694px 5.25905px rgba(59, 76, 106, 0.04),
+	0px 0.407592px 1.9021px rgba(59, 76, 106, 0.0278729);
+
+$radius-small: 4px !default;

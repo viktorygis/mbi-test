@@ -1,0 +1,147 @@
+// src/styles/components/sections/intro-sections/_offer-test.scss
+
+@use '../../../base/variables' as *;
+@use '../../../base/mixins' as *;
+
+.offer-test {
+	color: #000;
+	padding: 30px 0px;
+
+	@include respond-to($breakpoint-sm) {
+		padding: 25px 0px;
+	}
+
+	&__container {
+		max-width: 1200px;
+		margin: 0 auto;
+
+		@include respond-to($breakpoint-sm) {
+			padding: 0 15px;
+		}
+	}
+
+	&__body {
+		display: grid;
+		grid-template-columns: auto 25%;
+		gap: 60px;
+
+		@include respond-to($breakpoint-md) {
+			display: flex;
+			flex-direction: column;
+			gap: 20px;
+			position: relative;
+		}
+	}
+
+	&__content {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+	}
+
+	&__overhead {
+		align-self: start;
+		background: #fff;
+		border: 1px solid $color-accent;
+		font-size: 11px;
+		line-height: 150%;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: rgb(0, 0, 0);
+		text-align: center;
+		padding: 10px 18px;
+		border-radius: 37px;
+	}
+
+	&__bottom {
+		display: flex;
+		gap: 20px;
+		align-items: center;
+
+		@include respond-to($breakpoint-sm) {
+			gap: 10px;
+			flex-direction: column-reverse;
+			align-items: stretch;
+		}
+	}
+
+	&__clarification {
+		line-height: 150%;
+		max-width: 200px;
+		font-weight: 600;
+
+		@include respond-to($breakpoint-md) {
+			font-size: 16px;
+			text-align: center;
+			max-width: none;
+		}
+
+		@include respond-to($breakpoint-sm) {
+			text-align: left;
+		}
+	}
+
+	&__title {
+		max-width: 780px;
+		line-height: 120%;
+		font-size: 40px;
+		font-weight: 900;
+
+		@include respond-to(980px) {
+			max-width: 495px;
+			font-size: 36px;
+		}
+
+		@include respond-to($breakpoint-sm) {
+			max-width: none;
+			font-size: 28px;
+		}
+	}
+
+	&__subtitle {
+		font-size: 30px;
+		font-weight: 600;
+		line-height: 143%;
+		color: #27272a;
+		letter-spacing: -0.2px;
+		max-width: 780px;
+
+		@include respond-to(980px) {
+			max-width: 495px;
+			font-size: 28px;
+		}
+
+		@include respond-to($breakpoint-sm) {
+			font-size: 24px;
+			line-height: 130%;
+		}
+
+		span {
+			font-weight: 800;
+		}
+	}
+
+	&__text {
+		font-size: 19px;
+		line-height: 140%;
+		font-weight: 400;
+		text-align: justify;
+
+		@include respond-to($breakpoint-sm) {
+			font-size: 18px;
+		}
+	}
+
+	&__image {
+		justify-self: end;
+		align-self: center;
+
+		@include respond-to($breakpoint-md) {
+			max-width: 136px;
+			opacity: 0.4;
+			position: absolute;
+			top: 120px;
+			right: 0;
+		}
+	}
+}

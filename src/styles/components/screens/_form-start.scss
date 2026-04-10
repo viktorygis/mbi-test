@@ -1,0 +1,148 @@
+//src\styles\components\screens\_form-start.scss
+
+@use '../../base/variables' as *;
+@use '../../base/mixins' as *;
+
+/* .form-start========================== */
+.form-start {
+	padding: 50px 0;
+	color: $color-text-dark;
+
+	@include respond-to($breakpoint-sm) {
+		padding: 25px 0;
+	}
+
+	&__container {
+		max-width: 800px;
+	}
+
+	&__title {
+		line-height: 120%;
+		font-size: 34px;
+		font-weight: 900;
+		margin: 0 0 20px 0;
+
+		@include respond-to($breakpoint-sm) {
+			font-size: 28px;
+		}
+	}
+
+	&__subtitle {
+		line-height: 120%;
+		font-size: 24px;
+		font-weight: 600;
+		margin: 0 0 20px 0;
+
+		@include respond-to($breakpoint-sm) {
+			font-size: 22px;
+		}
+	}
+
+	&__body {
+		display: flex;
+		flex-direction: column;
+	}
+
+	&__form {
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
+		margin-bottom: 40px;
+	}
+
+	&__input {
+		padding: 30px 18px 10px 10px;
+		max-width: 800px;
+		width: 100%;
+		border-bottom: 1px solid $color-accent;
+		line-height: 140%;
+		font-family: "PT Sans", sans-serif;
+		font-weight: 700;
+		font-size: 20px;
+		color: $color-text-dark;
+
+		&::placeholder {
+			color: #999;
+			font-size: 18px;
+			opacity: 1;
+			font-weight: 500;
+		}
+
+		&:focus {
+			outline: none;
+		}
+	}
+
+	&__block-check {
+		margin: 20px 0;
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
+		font-family: "PT Sans", sans-serif;
+		font-weight: 400;
+		font-size: 18px;
+		line-height: 150%;
+	}
+
+	&__check {
+		display: grid;
+		position: relative;
+		gap: 10px;
+		grid-template-columns: 20px auto;
+
+		input[type="checkbox"] {
+			display: inline-block;
+			width: 24px;
+			height: 24px;
+			appearance: none;
+			background: url('/img/test-mbi/check-disabled.svg') no-repeat center;
+
+			background-size: contain;
+			cursor: pointer;
+			//border: none;
+			outline: none;
+			padding: 10px;
+			margin-top: 2px;
+		}
+
+		input[type="checkbox"]:checked {
+			background: url("/img/test-mbi/check.svg") no-repeat center;
+			background-size: contain;
+		}
+
+		span {
+			display: inline-block;
+		}
+
+		a {
+			color: $color-primary;
+			text-decoration: none;
+
+			&:hover {
+				text-decoration: underline;
+			}
+		}
+	}
+
+	&__button {
+		align-self: self-start;
+	}
+
+	&__error {
+		color: $color-error;
+		font-size: 14px;
+		line-height: 100%;
+	}
+}
+
+#error-message-fullname,
+#error-message-phone {
+	position: relative;
+	top: -70px;
+}
+
+.error-check {
+	position: absolute;
+	top: -15px;
+	left: 4px;
+}

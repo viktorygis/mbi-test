@@ -1,0 +1,189 @@
+// src/styles/components/sections/_question-block.scss
+@use '../../base/variables' as *;
+@use '../../base/mixins' as *;
+
+.question-test {
+	padding: 50px 0;
+
+
+	@include respond-to($breakpoint-sm) {
+		padding: 25px 0;
+	}
+
+	&__container {
+		max-width: 800px;
+		margin: 0 auto;
+	}
+
+	&__info {
+		display: flex;
+		justify-content: space-between;
+		margin-bottom: 30px;
+		color: $color-text-dark;
+
+		@include respond-to($breakpoint-xs) {
+			flex-direction: column;
+			gap: 10px;
+		}
+	}
+
+	&__item {
+		font-weight: 500;
+		font-size: 18px;
+		line-height: 140%;
+
+		span {
+			font-weight: 400;
+		}
+	}
+
+	&__counter {
+		text-align: right;
+		font-size: 18px;
+		margin: 0 0 20px 0;
+		color: $color-counter;
+
+		@media (max-width: $breakpoint-xs) {
+			margin: 0 0 15px 0;
+			text-align: center;
+		}
+	}
+
+	&__question {
+		margin-bottom: 30px;
+		font-weight: 500;
+		font-size: 20px;
+		line-height: 150%;
+		text-align: center;
+
+		@media (max-width: $breakpoint-md) {
+			font-size: 20px;
+			margin-bottom: 20px;
+			line-height: 130%;
+		}
+
+		@media (max-width: $breakpoint-sm) {
+			font-size: 18px;
+		}
+	}
+
+	&__question span {
+		font-weight: 600;
+	}
+
+	&__option {
+		display: flex;
+		align-items: center;
+		padding: 20px 16px;
+		font-size: 22px;
+		font-weight: 500;
+		line-height: 120%;
+		cursor: pointer;
+		user-select: none;
+		color: $color-text-dark;
+		border-radius: 37px;
+		height: 80px;
+		border: 1px solid $color-primary;
+		transition: all 0.9s ease 0s;
+
+		@media (max-width: $breakpoint-xs) {
+			font-size: 20px;
+			height: 65px;
+		}
+
+		&:not(:last-child) {
+			margin: 0px 0px 15px 0px;
+		}
+
+		&:hover {
+			background: $color-bg-gray;
+			box-shadow: none;
+		}
+
+		/* Акцент для выбранного варианта */
+		&:has(input[type="radio"]:checked) {
+			background: $color-primary;
+			transition: all 0.3s ease 0s;
+			color: #fff;
+		}
+
+		&:hover,
+		&:focus {
+			background: $color-bg-gray;
+			outline: none;
+			box-shadow: none;
+		}
+	}
+
+	&__radio-label {
+		position: relative;
+		cursor: pointer;
+		padding-left: 30px;
+
+		&::before {
+			content: "";
+			position: absolute;
+			left: 0;
+			top: 50%;
+			transform: translateY(-50%);
+			width: 14px;
+			height: 14px;
+			border-radius: 50%;
+			border: 1px solid $color-border-radio;
+			background: $color-bg-light;
+			transition: background 0.2s ease, border-color 0.2s ease;
+		}
+	}
+
+	&__navigation {
+		display: flex;
+		justify-content: space-between;
+		margin: 20px 0px 0 0px;
+
+		@media (max-width: $breakpoint-sm) {
+			flex-direction: column-reverse;
+			align-items: flex-start;
+			gap: 10px;
+		}
+	}
+}
+
+input[type="radio"] {
+	display: none;
+}
+
+input[type="radio"]:focus {
+	outline: none;
+}
+
+input[type="radio"]:checked+.question-test__radio-label::before {
+	border: 1px solid $color-primary;
+	background: $color-bg-light;
+	outline: none;
+}
+
+.question__loader-test {
+	display: none;
+	text-align: center;
+	padding: 20px;
+
+	& span {
+		display: inline-block;
+		width: 40px;
+		height: 40px;
+		border: 4px solid #ccc;
+		border-top-color: #007bff;
+		border-radius: 50%;
+		animation: spin 1s ease infinite;
+	}
+}
+
+@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+
+	100% {
+		transform: rotate(360deg);
+	}
+}

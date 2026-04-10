@@ -1,0 +1,72 @@
+@use 'sass:map';
+@use 'sass:color';
+@use 'variables' as *;
+@use 'mixins' as *;
+
+// Базовые стили кнопки
+.patterns-button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: relative;
+	z-index: 10;
+	transition: all 0.3s ease;
+	font-weight: 500;
+	padding: 10px 20px;
+	border: none;
+	cursor: pointer;
+	font-family: "Montserrat", sans-serif;
+	min-width: 200px;
+	border-radius: 37px;
+	font-size: 18px;
+	line-height: 1.4;
+	height: 60px;
+	text-align: center;
+	background-color: $color-accent;
+	color: $color-bg-white;
+
+	&:hover {
+		background-color: $color-accent-hover;
+	}
+
+	&:active {
+		transform: translateY(1px);
+	}
+
+
+	// PRIMARY
+	&-primary {
+		background-color: $color-primary;
+
+		&:hover {
+			background-color: $color-primary-hover;
+		}
+	}
+
+	// PREV (назад)
+	&-prev {
+		border: 1px solid $color-accent;
+		background-color: $color-bg-white;
+		color: $color-accent;
+
+		&:hover {
+			border: 1px solid $color-accent-hover;
+			background-color: $color-accent-hover;
+			color: $color-bg-white;
+		}
+	}
+
+	// NEXT (далее)
+	&-next {
+		border: 1px solid $color-accent;
+		background-color: $color-accent;
+		color: $color-bg-white;
+
+		&:hover {
+			border: 1px solid $color-accent-hover;
+			background-color: $color-accent-hover;
+			color: $color-bg-white;
+		}
+	}
+
+}

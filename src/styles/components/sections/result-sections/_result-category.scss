@@ -1,0 +1,435 @@
+//src/styles/components/sections/intro-sections/_result-category.scss
+@use '../../../base/variables' as *;
+@use '../../../base/mixins' as *;
+
+//.result-category
+.result-category {
+	padding: 30px 0;
+
+	@include respond-to($breakpoint-sm) {
+		padding: 30px 0;
+	}
+
+	//.result-category__content-------------------------------
+	&__content {
+		font-size: 18px;
+		line-height: 140%;
+
+		span {
+			font-weight: 500;
+		}
+	}
+
+	//.result-category__subtitle-------------------------------
+	&__subtitle {
+		text-align: center;
+		line-height: 120%;
+		font-size: 24px;
+		font-weight: 700;
+		margin: 0 0 15px 0;
+		color: $color-text-dark;
+	}
+
+	//.result-category__label-------------------------------
+	&__label {
+		position: relative;
+		line-height: 140%;
+		text-transform: uppercase;
+		font-family: "PT Sans";
+		font-size: 18px;
+		margin-bottom: 20px;
+		font-weight: 600;
+		text-align: center;
+
+		@include respond-to($breakpoint-xs) {
+			font-weight: 600;
+			//padding-left: 37px;
+		}
+
+		@media (max-width: 380px) {
+			margin-bottom: 15px;
+			font-size: 18px;
+		}
+
+		&::before {
+			position: absolute;
+			content: "";
+			top: -2px;
+			right: -2px;
+			height: 40px;
+			width: 40px;
+
+			@include respond-to($breakpoint-xs) {
+				left: 0;
+				right: auto;
+				height: 30px;
+				width: 30px;
+			}
+		}
+	}
+
+	//.result-category__block-------------------------------
+	&__block {
+		margin-bottom: 30px;
+		border-radius: $radius-block;
+		color: $color-text-dark;
+		padding: 30px;
+		box-shadow: $shadow-block;
+
+		@include respond-to($breakpoint-md) {
+			padding: 15px;
+		}
+
+		&:last-child {
+			margin-bottom: 0px;
+		}
+	}
+
+	//.result-category__subcategory-------------------------------
+	&__subcategory {
+		&:not(:last-child) {
+			margin-bottom: 20px;
+		}
+	}
+
+	//.result-category__subcategory-title-------------------------------
+	&__subcategory-title {
+		text-transform: uppercase;
+		font-family: "PT Sans";
+		font-size: 14px;
+		margin-bottom: 5px;
+		font-weight: 600;
+	}
+
+	//.result-category__subcategory-wrapper-------------------------------
+	&__subcategory-wrapper {
+		display: grid;
+		grid-template-columns: 40% 1fr;
+		gap: 50px;
+		border-radius: $radius-block;
+		padding: 15px;
+		border: 1px solid $color-border;
+
+		@include respond-to($breakpoint-md) {
+			grid-template-columns: 1fr;
+		}
+	}
+}
+
+//.analytics - Аналитика шкалы (гистограмма)
+.analytics {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+
+	//.analytics__block-------------------------------
+	&__block {
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+	}
+
+	//.analytics__scale-status-------------------------------
+	&__scale-status {
+		font-size: 11px;
+		font-weight: 600;
+		line-height: 130%;
+		color: $color-counter;
+		display: inline-block;
+		padding: 5px 10px;
+		border-radius: $radius-block;
+		text-transform: uppercase;
+		align-self: flex-start;
+		background: $color-status;
+	}
+
+	//.analytics__scale-container-------------------------------
+	&__scale-container {
+		position: relative;
+		height: 40px;
+	}
+
+	//.analytics__scale-line-------------------------------
+	&__scale-line {
+		top: 29px;
+		left: 0;
+		right: 0;
+		height: 4px;
+		background-color: $color-hist-bar-bg;
+		border-radius: $radius-block;
+		position: absolute;
+	}
+
+	//.analytics__scale-labels-------------------------------
+	&__scale-labels {
+		position: absolute;
+		bottom: -20px;
+		width: 100%;
+		display: flex;
+		justify-content: space-between;
+		color: $color-hist-legend;
+		gap: 10px;
+		font-size: 10px;
+	}
+
+	//.analytics__scale-labels-item-------------------------------
+	&__scale-labels-item {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	//.analytics__indicator-------------------------------
+	&__indicator {
+		opacity: 0;
+		position: absolute;
+		top: -10px;
+		width: 20px;
+		height: 10px;
+		border-radius: $radius-block;
+		z-index: 2;
+	}
+}
+
+//proportion
+.proportion {
+
+	//.proportion__block-------------------------------
+	&__block {
+		display: grid;
+		gap: 10px;
+	}
+
+	//.proportion__item-------------------------------
+	&__item {
+		display: flex;
+		flex-direction: column;
+		gap: 5px;
+	}
+
+	//.proportion__label-------------------------------
+	&__label {
+		display: flex;
+		justify-content: space-between;
+	}
+
+	//.proportion__title-wrapper-------------------------------
+	&__title-wrapper {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		position: relative;
+	}
+
+	//.proportion__title-------------------------------
+	&__title {
+		font-weight: 500;
+		line-height: 1.4;
+		font-size: 14px;
+		color: $color-text-dark;
+	}
+
+	//.proportion__percent-------------------------------
+	&__percent {
+		font-weight: 500;
+		line-height: 1.4;
+		font-size: 14px;
+	}
+
+	//.proportion__info-icon-------------------------------
+	&__info-icon {
+
+		span {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			width: 18px;
+			height: 18px;
+			border-radius: 50%;
+			background-color: rgb(210, 210, 210);
+			color: $color-bg-white;
+			font-size: 14px;
+			font-weight: 500;
+			cursor: pointer;
+			font-style: italic;
+			line-height: 1;
+			font-family: -webkit-body;
+		}
+	}
+
+	//.proportion__bar-container-------------------------------
+	&__bar-container {
+		position: relative;
+		border-radius: $radius-block;
+		height: 5px;
+		overflow: hidden;
+		background-color: $color-bg-gray;
+	}
+
+	//.proportion__bar-block-------------------------------
+	&__bar-block {
+		position: absolute;
+		top: 0;
+		left: 0;
+		height: 100%;
+		border-radius: $radius-block;
+		transition: width 0.3s ease;
+	}
+
+	//.proportion__tooltip-------------------------------
+	&__tooltip {
+		display: none;
+		position: absolute;
+		left: 0;
+		bottom: 30px;
+		background-color: $color-tooltip;
+		color: $color-bg-white;
+		padding: 12px 15px;
+		border-radius: $radius-block;
+		box-shadow: 0 4px 10px rgb(0 0 0 / 20%);
+		z-index: 2000;
+		width: 300px;
+		font-size: 14px;
+		line-height: 140%;
+
+		//.proportion__tooltip .visible-------------------------------
+		&.visible {
+			display: block;
+		}
+
+		@include respond-to($breakpoint-md) {
+			padding: 10px 10px;
+			width: 280px;
+		}
+	}
+}
+
+// -------------------------------------------------
+// Цветовые стили для категорий
+
+.category-block__clock {
+
+	.category-label,
+	.result-category__label,
+	.result-category__subcategory-title,
+	.subcategory-title,
+	.indicator,
+	.analytics__indicator,
+	.bar-block,
+	.proportion__bar-block {
+		color: $color-hist-clock;
+	}
+
+	.indicator,
+	.analytics__indicator,
+	.bar-block,
+	.proportion__bar-block {
+		background-color: $color-hist-clock;
+	}
+
+	.bar-container,
+	.proportion__bar-container {
+		background-color: $color-hist-clock-light;
+	}
+
+	.category-label::before,
+	.result-category__label::before {
+		background: url('/img/test-mbi/clock.svg') 0 0 / 100% 100% no-repeat;
+	}
+}
+
+.category-block__man {
+
+	.category-label,
+	.result-category__label,
+	.result-category__subcategory-title,
+	.subcategory-title,
+	.indicator,
+	.analytics__indicator,
+	.bar-block,
+	.proportion__bar-block {
+		color: $color-hist-man;
+	}
+
+	.indicator,
+	.analytics__indicator,
+	.bar-block,
+	.proportion__bar-block {
+		background-color: $color-hist-man;
+	}
+
+	.bar-container,
+	.proportion__bar-container {
+		background-color: $color-hist-man-light;
+	}
+
+	.category-label::before,
+	.result-category__label::before {
+		background: url('/img/test-mbi/man.svg') 0 0 / 100% 100% no-repeat;
+
+	}
+}
+
+.category-block__hands {
+
+	.category-label,
+	.result-category__label,
+	.result-category__subcategory-title,
+	.subcategory-title,
+	.indicator,
+	.analytics__indicator,
+	.bar-block,
+	.proportion__bar-block {
+		color: $color-hist-hands;
+	}
+
+	.indicator,
+	.analytics__indicator,
+	.bar-block,
+	.proportion__bar-block {
+		background-color: $color-hist-hands;
+	}
+
+	.bar-container,
+	.proportion__bar-container {
+		background-color: $color-hist-hands-light;
+	}
+
+	.category-label::before,
+	.result-category__label::before {
+		background: url('/img/test-mbi/hands.svg') 0 0 / 100% 100% no-repeat;
+
+	}
+}
+
+.category-block__mind {
+
+	.category-label,
+	.result-category__label,
+	.result-category__subcategory-title,
+	.subcategory-title,
+	.indicator,
+	.analytics__indicator,
+	.bar-block,
+	.proportion__bar-block {
+		color: $color-hist-mind;
+	}
+
+	.indicator,
+	.analytics__indicator,
+	.bar-block,
+	.proportion__bar-block {
+		background-color: $color-hist-mind;
+	}
+
+	.bar-container,
+	.proportion__bar-container {
+		background-color: $color-hist-mind-light;
+	}
+
+	.category-label::before,
+	.result-category__label::before {
+		background: url('/img/test-mbi/mind.svg') 0 0 / 100% 100% no-repeat;
+
+	}
+}
