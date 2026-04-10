@@ -1,0 +1,135 @@
+//src/styles/components/sections/intro-sections/_result-literature.scss
+
+@use '../../../base/variables' as *;
+@use '../../../base/mixins' as *;
+
+
+//.literature
+.literature {
+
+	padding: 30px 0;
+
+	//.literature__container-------------------------------
+	&__container {
+		//max-width: 1170px;
+		padding: 0 15px;
+		margin: 0 auto;
+	}
+
+	//.literature__body-------------------------------
+	&__body {
+
+		border-radius: $radius-block;
+		color: $color-text-dark;
+		padding: 30px;
+		box-shadow: $shadow-block;
+		background-color: $color-bg-white;
+
+		@include respond-to($breakpoint-md) {
+			padding: 15px;
+		}
+	}
+
+	//.literature__title-------------------------------
+	&__title {
+		text-align: center;
+		line-height: 120%;
+		font-size: 24px;
+		font-weight: 700;
+		margin: 0 0 15px 0;
+		color: $color-text-dark;
+	}
+
+	//.literature__text-------------------------------
+	&__text {
+		font-weight: 500;
+		font-size: 19px;
+		line-height: 140%;
+		margin: 0 0 20px 0;
+		text-align: center;
+
+		@include respond-to($breakpoint-sm) {
+			font-size: 17px;
+
+		}
+	}
+
+	//literature__list-container-------------------------------
+	&__list-container {
+		margin-top: 30px;
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		column-gap: 90px;
+		gap: 20px;
+
+
+		@include respond-to($breakpoint-md) {
+			grid-template-columns: 1fr;
+			gap: 10px;
+		}
+
+	}
+
+	// literature__list-------------------------------
+	&__list {
+		display: flex;
+		flex-direction: column;
+		padding-left: 0;
+		list-style: none;
+		counter-reset: list-counter;
+		row-gap: 15px;
+
+		// literature__list--second
+		// начинается с номера 7
+		//	literature__list--second-------------------------------
+		&--second {
+			counter-reset: list-counter 6;
+		}
+
+		@include respond-to($breakpoint-md) {
+			row-gap: 10px;
+		}
+	}
+
+	// literature__column-------------------------------
+	&__column {
+		display: flex;
+		flex-direction: column;
+		gap: 15px;
+
+		@include respond-to($breakpoint-md) {
+			gap: 10px;
+		}
+	}
+
+	// literature__item-------------------------------
+	&__item {
+		display: grid;
+		grid-template-columns: 20px auto;
+		font-weight: 400;
+		line-height: 140%;
+		font-size: 16px;
+		gap: 5px;
+		counter-increment: list-counter;
+
+		&::before {
+			content: counter(list-counter) ".";
+			color: $color-accent;
+			font-weight: 600;
+			line-height: 140%;
+
+			@include respond-to($breakpoint-md) {
+				font-weight: 500;
+			}
+		}
+
+		& span {
+			font-weight: 500;
+			color: #27272a;
+		}
+
+		@include respond-to($breakpoint-md) {
+			font-size: 14px;
+		}
+	}
+}

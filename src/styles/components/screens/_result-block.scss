@@ -1,0 +1,46 @@
+@use '../../base/variables' as *;
+@use '../../base/mixins' as *;
+
+.result {
+	min-height: 300px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+//.result-main
+.result-main {
+	padding: 30px 0;
+
+	@include respond-to($breakpoint-sm) {
+		padding: 30px 0;
+	}
+
+	//.result-main__subtitle-------------------------------
+	&__subtitle {
+		line-height: 120%;
+		font-size: 34px;
+		font-weight: 900;
+		margin: 0px auto 40px;
+		text-align: center;
+		color: #000;
+
+		@include respond-to($breakpoint-sm) {
+			font-size: 26px;
+			margin: 0px 0px 20px 0px;
+		}
+	}
+
+	//.result-main__download-------------------------------
+	&__download {
+		display: flex;
+		justify-content: center;
+		margin-top: 32px;
+	}
+
+	//.result-main__download-btn-------------------------------
+	&__download-btn {
+		font-size: 16px;
+		padding: 14px 32px;
+	}
+}

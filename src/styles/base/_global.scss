@@ -1,0 +1,16 @@
+// src/styles/base/_global.scss
+@use 'sass:map';
+@use 'sass:color';
+@use 'variables' as *;
+@use 'mixins' as *;
+// Глобальные классы
+[class*="__container"] {
+	max-width: 1200px;
+	box-sizing: content-box;
+	margin: 0 auto;
+	padding: 0 1.75rem;
+
+	@media (max-width: 61.99875em) {
+		padding: 0 15px;
+	}
+}
