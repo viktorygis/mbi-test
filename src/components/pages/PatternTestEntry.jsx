@@ -1,4 +1,4 @@
-//PatternTestEntry - Главная страница теста: интро, форма, вопросы, переход к результату
+//PatternTestEntry - Главная страница теста MBI: интро, форма, вопросы, переход к результату
 
 import React, { useState } from "react";
 import IntroScreen from "../Screens/IntroScreen";
@@ -10,12 +10,11 @@ import QuestionsScreen from "../Screens/QuestionsScreen";
 
 //	Основной компонент страницы теста
 const PatternTestEntry = () => {
-  //	Состояния компонента (шаг, данные пользователя, ответы, паттерны, id результата, ошибка, отображаемое время)
+  //	Состояния компонента (шаг, данные пользователя, индексы ответов, id результата, ошибка, отображаемое время)
   const [step, setStep] = useState("intro");
   const [userData, setUserData] = useState(null);
-  // Оставляем только сеттеры
-  const [, setAnswers] = useState([]);
-  const [, setPatterns] = useState([]);
+  // Сохраняем индексы ответов (0..5) для каждого из 22 вопросов
+  const [, setAnswerIndices] = useState([]);
   const [resultId, setResultId] = useState(null);
   const [error, setError] = useState("");
   //	Отображаемое время вверху экрана вопросов
@@ -54,23 +53,22 @@ const PatternTestEntry = () => {
   //	Если questions - показываем вопросы теста
   if (step === "questions") {
     return (
-      /* QuestionsScreen - экран с вопросами теста */
+      /* QuestionsScreen - экран с вопросами теста MBI */
       <QuestionsScreen
         //Показывать кнопку для заполнения теста
         showTestFillButton={true}
-        //URL для загрузки вопросов
+        //Данные пользователя
         userData={userData}
         //Дата и время отображаемые вверху
         timeDisplay={timeDisplay}
-        //Функция обратного вызова при завершении теста для передачи ответов и паттернов
-        onComplete={({ answers, patterns }) => {
-          //	Сохраняем ответы и паттерны в состояние
-          setAnswers(answers);
-          setPatterns(patterns);
+        //Функция обратного вызова при завершении теста: получаем answerIndices
+        onComplete={({ answerIndices }) => {
+          //	Сохраняем индексы ответов в состояние
+          setAnswerIndices(answerIndices);
           //	Переходим к следующему шагу
           setStep("loading");
           //	Отправляем результаты на сервер
-          sendResults({ userData, answers, patterns, date: timeDisplay });
+          sendResults({ userData, answerIndices, date: timeDisplay });
         }}
         //Функция обратного вызова при нажатии кнопки "Назад"
         onBack={() => setStep("form")}
@@ -103,7 +101,7 @@ const PatternTestEntry = () => {
         <div className="test-completed__container">
           <div className="test-completed__body">
             <h2 className="test-completed__title">Тест завершен! </h2>
-            <h3 className="test-completed__subtitle">Спасибо за участие в исследовании паттернов!</h3>
+            <h3 className="test-completed__subtitle">Спасибо за участие в тестировании MBI!</h3>
             <p className="test-completed__text">Ваши результаты тестирования доступны по ссылке:</p>
             <a className="patterns-button "
               href={`/results/${resultId}`}
@@ -119,7 +117,7 @@ const PatternTestEntry = () => {
 
   // ------- UTILS -------
   //	Функция отправки результатов на сервер и обработка ответа
-  function sendResults({ userData, answers, patterns, date }) {
+  function sendResults({ userData, answerIndices, date }) {
     setError("");
     setResultId(null);
 
@@ -132,7 +130,7 @@ const PatternTestEntry = () => {
       const fakeId = "test-" + Math.floor(Math.random() * 100000);
       localStorage.setItem(
         `test-result-${fakeId}`,
-        JSON.stringify({ user: userData, answers, patterns, date })
+        JSON.stringify({ user: userData, answerIndices, date })
       );
       setResultId(fakeId);
       setStep("resultLink");
@@ -143,7 +141,7 @@ const PatternTestEntry = () => {
     fetch("/api/test-mbi/submit", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ user: userData, answers, patterns, date })
+      body: JSON.stringify({ user: userData, answerIndices, date })
     })
       .then(async (res) => {
         if (!res.ok) throw new Error("Ошибка сервера");
@@ -152,7 +150,7 @@ const PatternTestEntry = () => {
 
         localStorage.setItem(
           `test-result-${data.id}`,
-          JSON.stringify({ user: userData, answers, patterns, date })
+          JSON.stringify({ user: userData, answerIndices, date })
         );
 
         setResultId(data.id);

@@ -1,44 +1,37 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import ResultsScreen from "../Screens/ResultsScreen";
-import {
-  createResultsData,
-  getPatternMessage,
-  getOpportunities,
-  getBehaviorModel,
-  getStrengths
-} from "../../utils/resultsHelpers";
+import { createMbiResults } from "../../utils/mbiHelpers";
 
 export default function PatternTestResultPage() {
   const { id } = useParams();
   const [resultData, setResultData] = useState(null);
-  const [categories, setCategories] = useState([]);
-  const [categoriesLoading, setCategoriesLoading] = useState(true);
+  const [mbiData, setMbiData] = useState(null);
+  const [mbiDataLoading, setMbiDataLoading] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
-  // Эффект 1: Загружаем категории паттернов (один раз при монтировании)
+  // Эффект 1: Загружаем конфигурацию MBI (один раз при монтировании)
   useEffect(() => {
     let isMounted = true;
 
-    const loadCategories = async () => {
+    const loadMbiData = async () => {
       try {
-        const res = await fetch("/data/patterns.json");
+        const res = await fetch("/data/questions.json");
         const data = await res.json();
         if (isMounted) {
-          setCategories(Array.isArray(data.categories) ? data.categories : []);
-          setCategoriesLoading(false);
+          setMbiData(data);
+          setMbiDataLoading(false);
         }
       } catch (err) {
-        console.error("Ошибка загрузки категорий:", err);
+        console.error("Ошибка загрузки конфигурации MBI:", err);
         if (isMounted) {
-          setCategories([]);
-          setCategoriesLoading(false);
+          setMbiDataLoading(false);
         }
       }
     };
 
-    loadCategories();
+    loadMbiData();
 
     return () => {
       isMounted = false;
@@ -47,7 +40,6 @@ export default function PatternTestResultPage() {
 
   // Эффект 2: Загрузка данных по id
   useEffect(() => {
-    // Если id нет, очищаем состояние
     if (!id) {
       setResultData(null);
       setError(false);
@@ -104,12 +96,7 @@ export default function PatternTestResultPage() {
 
   // Заглушка если данных нет
   const fallbackResultData = useMemo(() => {
-    if (error && categories.length > 0 && !resultData) {
-      const totalAnswers =
-        categories.reduce(
-          (acc, cat) => acc + (Array.isArray(cat.items) ? cat.items.length : 0),
-          0
-        ) || 60;
+    if (error && mbiData && !resultData) {
       return {
         user: {
           fullName: "Иван Иванов",
@@ -117,89 +104,35 @@ export default function PatternTestResultPage() {
           telegram: "@ivanov",
           email: "ivan@example.com",
         },
-        answers: Array(totalAnswers).fill("Изобилие времени"),
-        patterns: Array(totalAnswers).fill("Изобилие времени"),
-        testDate: new Date().toLocaleDateString("ru-RU"),
+        // "Никогда" (индекс 0) для всех 22 вопросов
+        answerIndices: Array(22).fill(0),
+        date: new Date().toLocaleDateString("ru-RU"),
       };
     }
     return null;
-  }, [error, categories, resultData]);
+  }, [error, mbiData, resultData]);
 
-  // Данные для отображения (основные или fallback)
   const displayedResultData = resultData ?? fallbackResultData;
 
-  // Формируем строки паттернов для результатов
-  const patternResultsStrings = useMemo(() => {
-    if (!displayedResultData) return [];
-
-    if (Array.isArray(displayedResultData?.patterns)) {
-      return displayedResultData.patterns.map(
-        a => (typeof a === "string" ? a : (a?.pattern || ""))
-      );
-    }
-    if (Array.isArray(displayedResultData?.answers)) {
-      return displayedResultData.answers.map(
-        a => (typeof a === "string" ? a : (a?.pattern || ""))
-      );
-    }
-    return [];
-  }, [displayedResultData]);
-
-  // Основные вычисления результата
-  const resultsData = useMemo(() => {
-    if (!displayedResultData || !categories.length) return null;
-
+  // Вычисляем результаты MBI
+  const mbiResults = useMemo(() => {
+    if (!displayedResultData || !mbiData) return null;
     try {
-      const rd = createResultsData({
-        userData: displayedResultData.user,
-        categories,
-        patternResults: patternResultsStrings,
-      });
-      return {
-        ...rd,
-        fullName: displayedResultData?.user?.fullName || "",
-        timeDisplay:
-          displayedResultData?.testDate ||
-          displayedResultData?.date ||
-          new Date().toLocaleDateString("ru-RU"),
-      };
+      const indices = Array.isArray(displayedResultData.answerIndices)
+        ? displayedResultData.answerIndices
+        : Array(22).fill(0);
+      return createMbiResults(indices, mbiData);
     } catch (err) {
-      console.error("Ошибка создания resultsData:", err);
+      console.error("Ошибка вычисления MBI результатов:", err);
       return null;
     }
-  }, [displayedResultData, categories, patternResultsStrings]);
+  }, [displayedResultData, mbiData]);
 
-  // Извлекаем показатели из resultsData
-  const topPatterns = useMemo(
-    () => (resultsData?.topPatterns ? resultsData.topPatterns : []),
-    [resultsData]
-  );
-  const topCategory = useMemo(
-    () => (resultsData?.topCategory ? resultsData.topCategory : null),
-    [resultsData]
-  );
-  const patternMessage = useMemo(
-    () => (topCategory ? getPatternMessage({ topCategory }) : ""),
-    [topCategory]
-  );
-  const opportunities = useMemo(
-    () => (topCategory ? getOpportunities({ topCategory }) : ""),
-    [topCategory]
-  );
-  const behaviorModel = useMemo(
-    () => (topPatterns.length > 0 ? getBehaviorModel({ topPatterns }) : ""),
-    [topPatterns]
-  );
-  const strengths = useMemo(
-    () => (topPatterns.length > 0 ? getStrengths({ topPatterns }) : ""),
-    [topPatterns]
-  );
-
-  if (categoriesLoading || !categories.length) {
-    return <div>Загрузка категорий...</div>;
+  if (mbiDataLoading) {
+    return <div>Загрузка конфигурации теста...</div>;
   }
 
-  if (loading || !resultsData) {
+  if (loading || !mbiResults) {
     return <div>Загрузка результатов...</div>;
   }
 
@@ -209,17 +142,13 @@ export default function PatternTestResultPage() {
 
   return (
     <ResultsScreen
-      resultsData={resultsData}
-      answers={displayedResultData.answers || []}
-      patterns={patternResultsStrings}
-      categories={categories}
-      patternResults={resultsData.patternResults || []}
-      topPatterns={topPatterns}
-      topCategory={topCategory}
-      patternMessage={patternMessage}
-      opportunities={opportunities}
-      behaviorModel={behaviorModel}
-      strengths={strengths}
+      mbiResults={mbiResults}
+      userData={displayedResultData.user}
+      timeDisplay={
+        displayedResultData.testDate ||
+        displayedResultData.date ||
+        new Date().toLocaleDateString("ru-RU")
+      }
     />
   );
 }

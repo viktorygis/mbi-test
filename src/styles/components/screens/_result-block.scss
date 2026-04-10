@@ -30,4 +30,17 @@
 			margin: 0px 0px 20px 0px;
 		}
 	}
+
+	//.result-main__download-------------------------------
+	&__download {
+		display: flex;
+		justify-content: center;
+		margin-top: 32px;
+	}
+
+	//.result-main__download-btn-------------------------------
+	&__download-btn {
+		font-size: 16px;
+		padding: 14px 32px;
+	}
 }
