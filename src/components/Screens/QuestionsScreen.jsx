@@ -202,10 +202,7 @@ const QuestionsScreen = ({
           <div className="question-test__progress" aria-label="Прогресс теста">
             <div className="question-test__progress-top">
               <div className="question-test__progress-text">
-                Вопрос {currentQuestionIndex + 1} из {total}
-              </div>
-              <div className="question-test__progress-percent">
-                {progressPercent}%
+                Вопрос {currentQuestionIndex + 1} из {total} ({progressPercent}%)
               </div>
             </div>
 

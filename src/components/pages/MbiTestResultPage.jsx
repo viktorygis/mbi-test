@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import ResultsScreen from "../Screens/ResultsScreen";
 import { createMbiResults } from "../../utils/mbiHelpers";
 
-export default function PatternTestResultPage() {
+export default function MbiTestResultPage() {
   const { id } = useParams();
   const [resultData, setResultData] = useState(null);
   const [mbiData, setMbiData] = useState(null);
@@ -149,6 +149,13 @@ export default function PatternTestResultPage() {
         displayedResultData.date ||
         new Date().toLocaleDateString("ru-RU")
       }
+      answerIndices={
+        Array.isArray(displayedResultData.answerIndices)
+          ? displayedResultData.answerIndices
+          : Array(22).fill(0)
+      }
+      questions={mbiData?.questions ?? []}
+      answerOptions={mbiData?.answerOptions ?? []}
     />
   );
 }

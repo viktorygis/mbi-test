@@ -2,10 +2,10 @@
 
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-//	PatternTestEntry - главная страница теста с интро, формой и вопросами
-import PatternTestEntry from "./components/pages/PatternTestEntry";
-//	PatternTestResultPage - страница просмотра результата по уникальному id
-import PatternTestResultPage from "./components/pages/PatternTestResultPage";
+//	MbiTestEntry - главная страница теста с интро, формой и вопросами
+import MbiTestEntry from "./components/pages/MbiTestEntry";
+//	MbiTestResultPage - страница просмотра результата по уникальному id
+import MbiTestResultPage from "./components/pages/MbiTestResultPage";
 
 
 
@@ -13,10 +13,10 @@ function App() {
   return (
     <Routes>
       {/* Главная страница теста: интро, форма, вопросы, переход к результату */}
-      <Route path="/" element={<PatternTestEntry />} />
+      <Route path="/" element={<MbiTestEntry />} />
 
       {/* Страница просмотра результата по уникальному id */}
-      <Route path="/results/:id" element={<PatternTestResultPage />} />
+      <Route path="/results/:id" element={<MbiTestResultPage />} />
 
       {/* Любой другой путь ведет на старт теста */}
       <Route path="*" element={<Navigate to="/" />} />

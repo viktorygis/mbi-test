@@ -1,4 +1,4 @@
-//PatternTestEntry - Главная страница теста MBI: интро, форма, вопросы, переход к результату
+//MbiTestEntry - Главная страница теста MBI: интро, форма, вопросы, переход к результату
 
 import React, { useState } from "react";
 import IntroScreen from "../Screens/IntroScreen";
@@ -9,12 +9,10 @@ import QuestionsScreen from "../Screens/QuestionsScreen";
 
 
 //	Основной компонент страницы теста
-const PatternTestEntry = () => {
-  //	Состояния компонента (шаг, данные пользователя, индексы ответов, id результата, ошибка, отображаемое время)
+const MbiTestEntry = () => {
+  //	Состояния компонента (шаг, данные пользователя, id результата, ошибка, отображаемое время)
   const [step, setStep] = useState("intro");
   const [userData, setUserData] = useState(null);
-  // Сохраняем индексы ответов (0..5) для каждого из 22 вопросов
-  const [, setAnswerIndices] = useState([]);
   const [resultId, setResultId] = useState(null);
   const [error, setError] = useState("");
   //	Отображаемое время вверху экрана вопросов
@@ -63,8 +61,6 @@ const PatternTestEntry = () => {
         timeDisplay={timeDisplay}
         //Функция обратного вызова при завершении теста: получаем answerIndices
         onComplete={({ answerIndices }) => {
-          //	Сохраняем индексы ответов в состояние
-          setAnswerIndices(answerIndices);
           //	Переходим к следующему шагу
           setStep("loading");
           //	Отправляем результаты на сервер
@@ -122,8 +118,9 @@ const PatternTestEntry = () => {
     setResultId(null);
 
     // true, если на prod (github-pages), где сервера нет!
+    const hostname = window.location.hostname;
     const isGitHubPages =
-      window.location.hostname.includes("github.io");
+      hostname === "github.io" || hostname.endsWith(".github.io");
 
     if (isGitHubPages) {
       // Фейковый ID, данные в localStorage
@@ -167,4 +164,4 @@ const PatternTestEntry = () => {
   return null;
 };
 
-export default PatternTestEntry;
+export default MbiTestEntry;

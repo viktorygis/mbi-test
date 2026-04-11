@@ -146,8 +146,8 @@ mbi-test/
     │
     ├── components/
     │   ├── pages/
-    │   │   ├── PatternTestEntry.jsx        # Главная страница: интро → форма → вопросы → результат
-    │   │   └── PatternTestResultPage.jsx   # Страница результата по id
+    │   │   ├── MbiTestEntry.jsx            # Главная страница: интро → форма → вопросы → результат
+    │   │   └── MbiTestResultPage.jsx       # Страница результата по id
     │   │
     │   ├── Screens/
     │   │   ├── IntroScreen.jsx             # Вводный экран (сборка из секций)
@@ -158,7 +158,7 @@ mbi-test/
     │   └── Sections/
     │       ├── IntroSections/
     │       │   ├── OfferIntroSection.jsx           # Шапка / hero с описанием теста
-    │       │   ├── PatternsIntroSection.jsx        # Описание трёх шкал MBI
+    │       │   ├── MbiIntroSection.jsx             # Описание трёх шкал MBI
     │       │   ├── InstructionIntroSection.jsx     # Инструкция по прохождению
     │       │   ├── ContactsIntroSection.jsx        # Контакты
     │       │   └── StartTestIntroSection.jsx       # Кнопка «Пройти тест»
@@ -171,7 +171,9 @@ mbi-test/
     │
     ├── utils/
     │   ├── mbiHelpers.js           # Функции расчёта MBI (главный модуль логики)
-    │   └── ...                     # Прочие утилиты (legacy от предыдущей версии)
+    │   └── pdf/
+    │       ├── mbiPdfGenerator.js  # Генерация PDF отчёта
+    │       └── logo.js             # Логотип для PDF
     │
     └── styles/
         ├── main.scss               # Точка входа SCSS
@@ -184,7 +186,7 @@ mbi-test/
 ## Поток данных
 
 ```
-Пользователь → FormScreen → QuestionsScreen → PatternTestEntry
+Пользователь → FormScreen → QuestionsScreen → MbiTestEntry
                                                     │
                                             sendResults({ user, answerIndices, date })
                                                     │
@@ -192,13 +194,26 @@ mbi-test/
                                                     │
                                               /results/:id
                                                     │
-                                      PatternTestResultPage
+                                      MbiTestResultPage
                                       fetch questions.json + localStorage
                                                     │
                                           createMbiResults(answerIndices, mbiData)
                                                     │
                                             ResultsScreen → MbiScalesSection
 ```
+
+---
+
+## Отладочная таблица ответов
+
+На странице результатов можно включить временную таблицу отладки, которая показывает:
+- номер вопроса, текст вопроса
+- выбранный вариант ответа (метка) и его индекс (0..5)
+- шкалу MBI, к которой относится вопрос
+
+**Как включить:**
+- Добавить `?debug=1` к URL страницы результатов: `/results/<id>?debug=1`
+- Или: `localStorage.setItem('debug', '1')` в консоли браузера
 
 ---
 
