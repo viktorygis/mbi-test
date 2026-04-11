@@ -3,44 +3,72 @@
 
 import React from 'react';
 
-/**
- * Возвращает CSS-класс для уровня выгорания
- */
-function getLevelClass(label) {
-  switch (label) {
-    case 'Крайне низкое': return 'mbi-level mbi-level--very-low';
-    case 'Низкое': return 'mbi-level mbi-level--low';
-    case 'Среднее': return 'mbi-level mbi-level--medium';
-    case 'Высокое': return 'mbi-level mbi-level--high';
-    case 'Крайне высокое': return 'mbi-level mbi-level--very-high';
-    default: return 'mbi-level';
-  }
+// Цвета уровней выраженности (как в PDF)
+const LEVEL_COLORS = {
+  veryLow: '#22c55e',
+  low: '#86efac',
+  mid: '#facc15',
+  high: '#f97316',
+  veryHigh: '#ef4444',
+};
+
+// Цвета “линейки/бара” по показателю (фиксированные, как в PDF)
+const SCALE_BAR_COLORS = {
+  exhaustion: '#ff9900',
+  depersonalization: '#06eadc',
+  reduction: '#fa00ff',
+  burnoutIndex: '#0386ff',
+};
+
+// Нормализация уровня: поддерживает "низкое/низкий", "среднее/средний", ...
+function normalizeLevelKey(levelLabel) {
+  const s = String(levelLabel || '')
+    .trim()
+    .toLowerCase()
+    .replaceAll('ё', 'е');
+
+  if (s.startsWith('крайне низк')) return 'veryLow';
+  if (s.startsWith('низк')) return 'low';
+  if (s.startsWith('средн')) return 'mid';
+  if (s.startsWith('высок')) return 'high';
+  if (s.startsWith('крайне высок')) return 'veryHigh';
+
+  return null;
+}
+
+function levelColor(levelLabel) {
+  const key = normalizeLevelKey(levelLabel);
+  return (key && LEVEL_COLORS[key]) || '#555555';
 }
 
 /**
  * Одна строка шкалы MBI с прогресс-баром
  */
-const ScaleRow = ({ title, score, maxScore, level, description, invertedNote }) => {
+const ScaleRow = ({ title, score, maxScore, level, description, barColor }) => {
   const percent = maxScore > 0 ? Math.round((score / maxScore) * 100) : 0;
+
   return (
     <div className="mbi-scale">
       <div className="mbi-scale__header">
         <h3 className="mbi-scale__title">{title}</h3>
-        <span className={getLevelClass(level)}>{level}</span>
+        <span className="mbi-level" style={{ color: levelColor(level) }}>
+          {level}
+        </span>
       </div>
+
       <div className="mbi-scale__score-line">
         <span className="mbi-scale__score">{score}</span>
         <span className="mbi-scale__max"> / {maxScore}</span>
       </div>
+
       <div className="mbi-scale__bar-container">
-        <div className="mbi-scale__bar" style={{ width: `${percent}%` }} />
+        <div
+          className="mbi-scale__bar"
+          style={{ width: `${percent}%`, backgroundColor: barColor }}
+        />
       </div>
-      {description && (
-        <p className="mbi-scale__description">{description}</p>
-      )}
-      {invertedNote && (
-        <p className="mbi-scale__note mbi-scale__note--inverted">{invertedNote}</p>
-      )}
+
+      {description && <p className="mbi-scale__description">{description}</p>}
     </div>
   );
 };
@@ -48,55 +76,35 @@ const ScaleRow = ({ title, score, maxScore, level, description, invertedNote }) 
 /**
  * Блок с общим индексом выгорания
  */
-const BurnoutIndexBlock = ({ burnoutIndex, maxScore, burnoutLevel, description }) => {
+const BurnoutIndexBlock = ({ burnoutIndex, maxScore, burnoutLevel, description, barColor }) => {
   const percent = maxScore > 0 ? Math.round((burnoutIndex / maxScore) * 100) : 0;
+
   return (
     <div className="mbi-burnout-index">
       <h3 className="mbi-burnout-index__title">Общий индекс психического выгорания</h3>
+
       <div className="mbi-burnout-index__score-line">
-        <span className="mbi-burnout-index__score">{burnoutIndex}</span>
-        <span className="mbi-burnout-index__max"> / {maxScore}</span>
-        <span className={`${getLevelClass(burnoutLevel)} mbi-burnout-index__level`}>
+        <div>
+          <span className="mbi-burnout-index__score">{burnoutIndex}</span>
+          <span className="mbi-burnout-index__max"> / {maxScore}</span>
+        </div>
+
+        <span className="mbi-level mbi-burnout-index__level" style={{ color: levelColor(burnoutLevel) }}>
           {burnoutLevel}
         </span>
       </div>
+
       <div className="mbi-burnout-index__bar-container">
-        <div className="mbi-burnout-index__bar" style={{ width: `${percent}%` }} />
+        <div
+          className="mbi-burnout-index__bar"
+          style={{ width: `${percent}%`, backgroundColor: barColor }}
+        />
       </div>
-      {description && (
-        <p className="mbi-burnout-index__description">{description}</p>
-      )}
+
+      {description && <p className="mbi-burnout-index__description">{description}</p>}
     </div>
   );
 };
-
-/**
- * Таблица норм для шкалы
- */
-const NormsTable = ({ norms, currentScore, title }) => (
-  <div className="mbi-norms">
-    <h4 className="mbi-norms__title">Нормы: {title}</h4>
-    <table className="mbi-norms__table">
-      <thead>
-        <tr>
-          <th>Уровень</th>
-          <th>Диапазон баллов</th>
-        </tr>
-      </thead>
-      <tbody>
-        {norms.map((norm) => {
-          const isActive = currentScore >= norm.min && currentScore <= norm.max;
-          return (
-            <tr key={norm.label} className={isActive ? 'mbi-norms__row--active' : ''}>
-              <td>{norm.label}</td>
-              <td>{norm.min}–{norm.max}</td>
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
-  </div>
-);
 
 /**
  * Основной компонент секции MBI результатов
@@ -109,7 +117,6 @@ const MbiScalesSection = ({ mbiResults }) => {
   return (
     <div className="mbi-scales-section">
       <div className="mbi-scales-section__container">
-
         {/* Три шкалы */}
         <div className="mbi-scales-section__scales">
           <ScaleRow
@@ -118,21 +125,25 @@ const MbiScalesSection = ({ mbiResults }) => {
             maxScore={scales.exhaustion.maxScore}
             level={levels.exhaustion}
             description={scales.exhaustion.description}
+            barColor={SCALE_BAR_COLORS.exhaustion}
           />
+
           <ScaleRow
             title={scales.depersonalization.title}
             score={scores.depersonalization}
             maxScore={scales.depersonalization.maxScore}
             level={levels.depersonalization}
             description={scales.depersonalization.description}
+            barColor={SCALE_BAR_COLORS.depersonalization}
           />
+
           <ScaleRow
             title={scales.reduction.title}
             score={scores.reduction}
             maxScore={scales.reduction.maxScore}
             level={levels.reduction}
             description={scales.reduction.description}
-            invertedNote="По данной шкале интерпретация обратная: чем ниже балл — тем выше выгорание."
+            barColor={SCALE_BAR_COLORS.reduction}
           />
         </div>
 
@@ -142,32 +153,8 @@ const MbiScalesSection = ({ mbiResults }) => {
           maxScore={burnoutConfig.maxScore}
           burnoutLevel={burnoutLevel}
           description={burnoutConfig.description}
+          barColor={SCALE_BAR_COLORS.burnoutIndex}
         />
-
-        {/* Таблицы норм */}
-        <div className="mbi-scales-section__norms">
-          <NormsTable
-            title={scales.exhaustion.title}
-            norms={scales.exhaustion.norms}
-            currentScore={scores.exhaustion}
-          />
-          <NormsTable
-            title={scales.depersonalization.title}
-            norms={scales.depersonalization.norms}
-            currentScore={scores.depersonalization}
-          />
-          <NormsTable
-            title={`${scales.reduction.title} (обратная шкала)`}
-            norms={scales.reduction.norms}
-            currentScore={scores.reduction}
-          />
-          <NormsTable
-            title="Общий индекс психического выгорания"
-            norms={burnoutConfig.norms}
-            currentScore={burnoutIndex}
-          />
-        </div>
-
       </div>
     </div>
   );

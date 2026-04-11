@@ -4,413 +4,440 @@
 // .extras
 .extras {
 
-	//.extras__container-------------------------------
-	&__container {
-		padding: 0 15px;
-		margin: 0 auto;
-		max-width: $container-max-width;
-	}
-
-	//.extras__section-------------------------------
-	&__section {
-		border-radius: $radius-block;
-		color: $color-text-dark;
-		padding: 30px;
-		box-shadow: $shadow-block;
-		background-color: $color-bg-white;
-		margin-bottom: 30px;
-
-		@include respond-to($breakpoint-md) {
-			padding: 15px;
-			margin-bottom: 15px;
-		}
-	}
-
-	//.extras__body-------------------------------
-	&__body {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 15px;
-	}
-
-	// .extras__title-------------------------------
-	&__title {
-		text-align: center;
-		line-height: 120%;
-		font-size: 24px;
-		font-weight: 700;
-		margin: 0 0 15px 0;
-		color: $color-text-dark;
-
-		@include respond-to($breakpoint-md) {
-			font-size: 20px;
-
-		}
-	}
-
-	// .extras__subtitle-------------------------------
-	&__subtitle {
-		font-size: 20px;
-		font-weight: 600;
-		margin: 0 0 10px 0;
-		color: $color-accent;
-		text-align: center;
-
-		@include respond-to($breakpoint-sm) {
-			font-size: 18px;
-		}
-	}
-
-	//.extras__text
-	&__text {
-		max-width: 800px;
-		text-align: center;
-		font-size: 18px;
-		line-height: 1.4;
-	}
-
-	// .extras__block-------------------------------
-	&__block {
-		font-size: 16px;
-		line-height: 140%;
-		display: flex;
-		flex-direction: column;
-		gap: 5px;
-		text-align: justify;
-
-		@include respond-to($breakpoint-md) {
-			font-size: 14px;
-		}
-
-		& ul {
-			padding-left: 0;
-			list-style: none;
-
-			& li {
-				margin-bottom: 7px;
-				line-height: 140%;
-				font-weight: 400;
-				color: #444;
-				position: relative;
-				padding-left: 15px;
-
-
-
-				//	.extras__block a-------------------------------
-				& a {
-					color: $color-accent;
-					text-decoration: underline;
-					font-weight: 500;
-
-					&:hover {
-						color: $color-accent-hover;
-					}
-				}
-			}
-
-			& li::before {
-				content: "";
-				position: absolute;
-				left: 0;
-				top: 8px;
-				width: 6px;
-				height: 6px;
-				border-radius: 50%;
-				background-color: $color-accent;
-			}
-		}
-
-		& b {
-			font-weight: 500;
-			color: #27272a;
-		}
-
-		& a {
-			color: $color-accent;
-			text-decoration: underline;
-			font-weight: 500;
-
-			&:hover {
-				color: $color-accent-hover;
-			}
-		}
-	}
-
-	.extras__block-contacts:not(:last-child) {
-		margin-bottom: 20px;
-
-		@include respond-to($breakpoint-md) {
-			margin-bottom: 10px;
-		}
-	}
-
-	// .extras__button-------------------------------
-	&__button {
-		align-self: center;
-		margin: 20px 0;
-	}
-
-	// .extras__qr-------------------------------
-	&__qr {
-		margin: 20px 0;
-
-		& ul {
-			list-style: none;
-			padding-left: 0;
-			margin: 0;
-
-			& li {
-				margin-bottom: 8px;
-				font-weight: 500;
-
-				& a {
-					color: $color-accent;
-					text-decoration: underline;
-
-					&:hover {
-						color: $color-accent-hover;
-					}
-				}
-			}
-		}
-	}
-
-
-
-	// .extras__author-------------------------------
-	&__author {
-		margin-top: 25px;
-		font-size: 16px;
-		line-height: 145%;
-		margin-bottom: 0;
-
-		@include respond-to($breakpoint-md) {
-			font-size: 14px;
-		}
-
-		& b {
-			font-weight: 500;
-			color: #27272a;
-		}
-	}
-
-	// .extras__share-------------------------------
-	&__share {
-		margin: 20px 0;
-		text-align: left;
-
-		& p {
-			margin-bottom: 10px;
-			font-size: 16px;
-			font-weight: 400;
-
-			@include respond-to($breakpoint-md) {
-				font-size: 14px;
-			}
-		}
-	}
-
-	// --- NEW: Card styles for blocks ---
-	&__block-grid {
-		display: grid;
-		grid-template-columns: repeat(4, 1fr);
-		gap: 20px;
-		margin-bottom: 30px;
-
-		@include respond-to($breakpoint-md) {
-			grid-template-columns: 1fr;
-			gap: 12px;
-		}
-	}
-
-	&__card {
-		background: $color-bg-white;
-		border-radius: $radius-block;
-		box-shadow: $shadow-block;
-		padding: 24px 20px;
-		display: flex;
-		flex-direction: column;
-		justify-content: flex-start;
-		align-items: flex-start;
-		gap: 12px;
-		transition: box-shadow 0.2s;
-		min-height: 100px;
-		position: relative;
-
-		&:hover {
-			box-shadow: 0 2px 16px 0 rgba(0, 0, 0, 0.10);
-		}
-
-		& h4 {
-			font-size: 18px;
-			font-weight: 700;
-			margin-bottom: 8px;
-			color: $color-accent;
-			display: flex;
-			align-items: center;
-			gap: 6px;
-		}
-
-		& p,
-		& ul {
-			font-size: 15px;
-			line-height: 140%;
-			margin-bottom: 0;
-		}
-
-		& ul {
-			padding-left: 16px;
-			list-style: disc;
-		}
-
-		& .extras__button {
-			margin: 12px 0 0 0;
-			align-self: flex-start;
-		}
-	}
-
-	//.extras__contacts-body-------------------------------
-	&__contacts-body {
-		display: grid;
-		grid-template-columns: repeat(3, 1fr);
-		gap: 20px;
-
-		@include respond-to($breakpoint-xl) {
-			grid-template-columns: 1fr;
-		}
-	}
-
-	//.extras__contacts-block
-	&__contacts-block {
-		border: 1px solid #e4e4e7;
-		border-radius: 16px;
-		padding: 15px;
-		align-items: center;
-		gap: 12px;
-		transition: box-shadow 0.2s;
-		min-height: 100px;
-		position: relative;
-		font-size: 16px;
-		line-height: 140%;
-		display: flex;
-		flex-direction: column;
-		gap: 10px;
-		text-align: center;
-
-		@include respond-to($breakpoint-md) {
-			font-size: 14px;
-		}
-
-		& ul {
-			padding-left: 0;
-			list-style: none;
-
-			& li {
-				margin-bottom: 7px;
-				line-height: 140%;
-				font-weight: 400;
-				color: #444;
-
-				//	.extras__block a-------------------------------
-				& a {
-					color: $color-accent;
-					text-decoration: underline;
-					font-weight: 500;
-
-					&:hover {
-						color: $color-accent-hover;
-					}
-				}
-			}
-		}
-
-		& b {
-			font-weight: 500;
-			color: #27272a;
-		}
-
-		& a {
-			color: $color-accent;
-			text-decoration: underline;
-			font-weight: 500;
-
-			&:hover {
-				color: $color-accent-hover;
-			}
-		}
-
-		&:hover {
-			box-shadow: 0 2px 16px 0 rgba(0, 0, 0, 0.10);
-		}
-	}
-
-	//.extras__materials-list
-	&__materials-list {
-		display: grid;
-		grid-template-columns: repeat(4, 1fr);
-		gap: 15px;
-
-		@include respond-to($breakpoint-xl) {
-			grid-template-columns: repeat(2, 1fr);
-
-		}
-
-		@include respond-to($breakpoint-md) {
-			grid-template-columns: repeat(1, 1fr);
-		}
-
-		//.extras__materials h3
-		& h3 {
-			color: $color-accent;
-			font-weight: 500;
-		}
-
-		& p {
-			font-size: 14px;
-			text-align: center;
-		}
-
-		& img {
-			max-width: 80px;
-			height: auto;
-			border-radius: 16px;
-		}
-
-
-	}
-
-	//.extras__materials-item-------------------------------
-	&__materials-item {
-		font-size: 16px;
-		line-height: 140%;
-
-		@include respond-to($breakpoint-md) {
-			font-size: 14px;
-		}
-
-
-
-
-
-	}
-
-	//.extras__materials-link
-	&__materials-link {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 10px;
-		padding: 15px;
-		border-radius: 16px;
-		border: 1px solid #e4e4e7;
-		transition: all 0.3s ease 0s;
-		height: 100%;
-
-		&:hover {
-			box-shadow: 0 2px 16px 0 rgba(0, 0, 0, 0.10);
-		}
-	}
+  //.extras__container-------------------------------
+  &__container {
+    padding: 0 15px;
+    margin: 0 auto;
+    max-width: $container-max-width;
+  }
+
+  //.extras__section-------------------------------
+  &__section {
+    border-radius: $radius-block;
+    color: $color-text-dark;
+    padding: 30px;
+    box-shadow: $shadow-block;
+    background-color: $color-bg-white;
+    margin-bottom: 30px;
+
+    @include respond-to($breakpoint-md) {
+      padding: 15px;
+      margin-bottom: 15px;
+    }
+  }
+
+  //.extras__body-------------------------------
+  &__body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
+
+  // .extras__title-------------------------------
+  &__title {
+    text-align: center;
+    line-height: 120%;
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0 0 15px 0;
+    color: $color-text-dark;
+
+    @include respond-to($breakpoint-md) {
+      font-size: 20px;
+
+    }
+  }
+
+  // .extras__subtitle-------------------------------
+  &__subtitle {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0 0 10px 0;
+    color: $color-accent;
+    text-align: center;
+
+    @include respond-to($breakpoint-sm) {
+      font-size: 18px;
+    }
+  }
+
+  //.extras__text
+  &__text {
+    max-width: 800px;
+    text-align: center;
+    font-size: 18px;
+    line-height: 1.4;
+  }
+
+  // .extras__block-------------------------------
+  &__block {
+    font-size: 16px;
+    line-height: 140%;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    text-align: justify;
+
+    @include respond-to($breakpoint-md) {
+      font-size: 14px;
+    }
+
+    & ul {
+      padding-left: 0;
+      list-style: none;
+
+      & li {
+        margin-bottom: 7px;
+        line-height: 140%;
+        font-weight: 400;
+        color: #444;
+        position: relative;
+        padding-left: 15px;
+
+
+
+        //	.extras__block a-------------------------------
+        & a {
+          color: $color-accent;
+          text-decoration: underline;
+          font-weight: 500;
+
+          &:hover {
+            color: $color-accent-hover;
+          }
+        }
+      }
+
+      & li::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 8px;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background-color: $color-accent;
+      }
+    }
+
+    & b {
+      font-weight: 500;
+      color: #27272a;
+    }
+
+    & a {
+      color: $color-accent;
+      text-decoration: underline;
+      font-weight: 500;
+
+      &:hover {
+        color: $color-accent-hover;
+      }
+    }
+  }
+
+  .extras__block-contacts:not(:last-child) {
+    margin-bottom: 20px;
+
+    @include respond-to($breakpoint-md) {
+      margin-bottom: 10px;
+    }
+  }
+
+  // .extras__button-------------------------------
+  &__button {
+    align-self: center;
+    margin: 20px 0;
+  }
+
+  // .extras__qr-------------------------------
+  &__qr {
+    margin: 20px 0;
+
+    & ul {
+      list-style: none;
+      padding-left: 0;
+      margin: 0;
+
+      & li {
+        margin-bottom: 8px;
+        font-weight: 500;
+
+        & a {
+          color: $color-accent;
+          text-decoration: underline;
+
+          &:hover {
+            color: $color-accent-hover;
+          }
+        }
+      }
+    }
+  }
+
+
+
+  // .extras__author-------------------------------
+  &__author {
+    margin-top: 25px;
+    font-size: 16px;
+    line-height: 145%;
+    margin-bottom: 0;
+
+    @include respond-to($breakpoint-md) {
+      font-size: 14px;
+    }
+
+    & b {
+      font-weight: 500;
+      color: #27272a;
+    }
+  }
+
+  // .extras__share-------------------------------
+  &__share {
+    margin: 20px 0;
+    text-align: left;
+
+    & p {
+      margin-bottom: 10px;
+      font-size: 16px;
+      font-weight: 400;
+
+      @include respond-to($breakpoint-md) {
+        font-size: 14px;
+      }
+    }
+  }
+
+  // --- NEW: Card styles for blocks ---
+  &__block-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 30px;
+
+    @include respond-to($breakpoint-md) {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+  }
+
+  &__card {
+    background: $color-bg-white;
+    border-radius: $radius-block;
+    box-shadow: $shadow-block;
+    padding: 24px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 12px;
+    transition: box-shadow 0.2s;
+    min-height: 100px;
+    position: relative;
+
+    &:hover {
+      box-shadow: 0 2px 16px 0 rgba(0, 0, 0, 0.10);
+    }
+
+    & h4 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: $color-accent;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    & p,
+    & ul {
+      font-size: 15px;
+      line-height: 140%;
+      margin-bottom: 0;
+    }
+
+    & ul {
+      padding-left: 16px;
+      list-style: disc;
+    }
+
+    & .extras__button {
+      margin: 12px 0 0 0;
+      align-self: flex-start;
+    }
+  }
+
+  &__contacts-body {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+
+    @include respond-to($breakpoint-xl) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__contacts-block {
+    background: #ffffff;
+    border: 1px solid #e4e4e7;
+    border-radius: 18px;
+    padding: 18px 16px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 100px;
+
+    // лёгкий “card” эффект
+    box-shadow: 0 1px 10px rgba(0, 0, 0, 0.04);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255, 0, 138, 0.35);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.10);
+    }
+
+    @include respond-to($breakpoint-md) {
+      padding: 14px 12px;
+      text-align: left;
+    }
+
+    // заголовок карточки
+    .extras__contacts-title {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 700;
+      color: $color-accent;
+      line-height: 1.2;
+    }
+
+    // имя (если есть)
+    .extras__contacts-name {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 600;
+      color: #27272a;
+    }
+
+    // список контактов
+    .extras__contacts-list {
+      list-style: none;
+      padding: 0;
+      margin: 6px 0 0 0;
+
+      li {
+        margin: 0;
+        padding: 8px 0;
+        border-bottom: 1px dashed #e4e4e7;
+        font-size: 14px;
+        color: #3f3f46;
+        line-height: 1.35;
+
+        &:last-child {
+          border-bottom: 0;
+        }
+
+        a {
+          color: $color-accent;
+          text-decoration: none;
+          font-weight: 600;
+          border-bottom: 1px solid rgba(255, 0, 138, 0.35);
+
+          &:hover {
+            color: $color-accent-hover;
+            border-bottom-color: $color-accent-hover;
+          }
+        }
+      }
+    }
+
+    // если у тебя остались старые ul внутри блока — тоже приведём к виду
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 6px 0 0 0;
+
+      li {
+        margin: 0;
+        padding: 8px 0;
+        border-bottom: 1px dashed #e4e4e7;
+        font-size: 14px;
+        color: #3f3f46;
+
+        &:last-child {
+          border-bottom: 0;
+        }
+      }
+    }
+  }
+
+
+  //.extras__materials-list
+  &__materials-list {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+
+    @include respond-to($breakpoint-xl) {
+      grid-template-columns: repeat(2, 1fr);
+
+    }
+
+    @include respond-to($breakpoint-md) {
+      grid-template-columns: repeat(1, 1fr);
+    }
+
+    //.extras__materials h3
+    & h3 {
+      color: $color-accent;
+      font-weight: 500;
+    }
+
+    & p {
+      font-size: 14px;
+      text-align: center;
+    }
+
+    & img {
+      max-width: 80px;
+      height: auto;
+      border-radius: 16px;
+    }
+
+
+  }
+
+  //.extras__materials-item-------------------------------
+  &__materials-item {
+    font-size: 16px;
+    line-height: 140%;
+
+    @include respond-to($breakpoint-md) {
+      font-size: 14px;
+    }
+  }
+
+  //.extras__materials-link
+  &__materials-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 15px;
+    border-radius: 16px;
+    border: 1px solid #e4e4e7;
+    transition: all 0.3s ease 0s;
+    height: 100%;
+    text-align: center;
+
+    &:hover {
+      box-shadow: 0 2px 16px 0 rgba(0, 0, 0, 0.10);
+    }
+  }
 
 
 }

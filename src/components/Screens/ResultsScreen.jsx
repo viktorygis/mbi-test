@@ -10,7 +10,7 @@ import ResultsAnswersDebugTable from '../Debug/ResultsAnswersDebugTable';
 
 // Один флаг — и вся отладка отключена.
 // Если хочешь убрать полностью — просто удали импорт и блок ниже.
-const ENABLE_RESULTS_DEBUG = true;
+const ENABLE_RESULTS_DEBUG = false;
 
 const ResultsScreen = ({
   mbiResults,
