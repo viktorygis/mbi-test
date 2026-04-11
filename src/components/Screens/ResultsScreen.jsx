@@ -5,67 +5,87 @@ import LiteratureSection from './../Sections/ResultsSections/LiteratureSection';
 import ExtrasSection from './../Sections/ResultsSections/ExtrasSection';
 import { downloadMbiPDF } from '../../utils/pdf/mbiPdfGenerator';
 
+// DEBUG-КОМПОНЕНТ (можно легко удалить / закомментировать)
+import ResultsAnswersDebugTable from '../Debug/ResultsAnswersDebugTable';
+
+// Один флаг — и вся отладка отключена.
+// Если хочешь убрать полностью — просто удали импорт и блок ниже.
+const ENABLE_RESULTS_DEBUG = true;
+
 const ResultsScreen = ({
-	mbiResults,
-	userData,
-	timeDisplay,
+  mbiResults,
+  userData,
+  timeDisplay,
+  answerIndices = [],
+  questions = [],
+  answerOptions = [],
 }) => {
-	const [showSuccess, setShowSuccess] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
-	// Функция скачивания PDF
-	const handleDownloadPDF = () => {
-		downloadMbiPDF(mbiResults, userData, timeDisplay).catch((err) => {
-			console.error('Ошибка создания PDF:', err);
-			alert('Не удалось создать PDF. Попробуйте ещё раз.');
-		});
-	};
+  const handleDownloadPDF = () => {
+    downloadMbiPDF(mbiResults, userData, timeDisplay).catch((err) => {
+      console.error('Ошибка создания PDF:', err);
+      alert('Не удалось создать PDF. Попробуйте ещё раз.');
+    });
+  };
 
-	// Функция для повторного прохождения теста
-	const handleRetakeTest = () => {
-		window.open('https://ai4g.ru/test-mbi', '_blank');
-	};
+  const handleRetakeTest = () => {
+    window.open('https://ai4g.ru/test-mbi', '_blank');
+  };
 
-	// Функция для шаринга результата
-	const handleShare = () => {
-		const shareUrl = 'https://ai4g.ru/test-mbi';
-		if (navigator.share) {
-			navigator.share({
-				title: 'Мой результат теста MBI на выгорание',
-				url: shareUrl,
-			}).then(() => setShowSuccess(true));
-		} else {
-			navigator.clipboard.writeText(shareUrl);
-			setShowSuccess(true);
-			setTimeout(() => setShowSuccess(false), 2000);
-		}
-	};
+  const handleShare = () => {
+    const shareUrl = 'https://ai4g.ru/test-mbi';
+    if (navigator.share) {
+      navigator
+        .share({
+          title: 'Мой результат теста MBI на выгорание',
+          url: shareUrl,
+        })
+        .then(() => setShowSuccess(true));
+    } else {
+      navigator.clipboard.writeText(shareUrl);
+      setShowSuccess(true);
+      setTimeout(() => setShowSuccess(false), 2000);
+    }
+  };
 
-	const fullName = userData?.fullName || '';
+  const fullName = userData?.fullName || '';
 
-	return (
-		<div className="result">
-			<ResultsHeader
-				fullName={fullName}
-				timeDisplay={timeDisplay}
-				showSuccess={showSuccess}
-				setShowSuccess={setShowSuccess}
-			/>
+  return (
+    <div className="result">
+      <ResultsHeader
+        fullName={fullName}
+        timeDisplay={timeDisplay}
+        showSuccess={showSuccess}
+        setShowSuccess={setShowSuccess}
+      />
 
-			<div className="result-main">
-				<h2 className="result-main__subtitle">Результаты вашего тестирования</h2>
-				<MbiScalesSection mbiResults={mbiResults} />
-				<div className="result-main__download">
-					<button className="result-main__download-btn patterns-button" onClick={handleDownloadPDF}>
-						⬇ Скачать результаты PDF
-					</button>
-				</div>
-			</div>
+      <div className="result-main">
+        <h2 className="result-main__subtitle">Результаты вашего тестирования</h2>
+        <MbiScalesSection mbiResults={mbiResults} />
 
-			<ExtrasSection onRetakeTest={handleRetakeTest} onShare={handleShare} />
+        <div className="result-main__download">
+          <button className="result-main__download-btn patterns-button" onClick={handleDownloadPDF}>
+            ⬇ Скачать результаты PDF
+          </button>
+        </div>
+      </div>
 
-			<LiteratureSection />
-		</div>
-	);
+      {/* ОТЛАДКА — ОТДЕЛЬНО */}
+      {ENABLE_RESULTS_DEBUG && (
+        <ResultsAnswersDebugTable
+          enabled={true}
+          questions={questions}
+          answerIndices={answerIndices}
+          answerOptions={answerOptions}
+          mbiResults={mbiResults}
+        />
+      )}
+
+      <ExtrasSection onRetakeTest={handleRetakeTest} onShare={handleShare} />
+      <LiteratureSection />
+    </div>
+  );
 };
 
 export default ResultsScreen;

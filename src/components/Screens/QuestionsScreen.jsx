@@ -134,7 +134,8 @@ const QuestionsScreen = ({
 
   const handleFillTestAnswers = () => {
     if (!mbiData) return;
-    const autoIndices = mbiData.questions.map(() => 0);
+    const autoIndices = mbiData.questions.map((_, i) => i % 6);
+
     if (onComplete) onComplete({ answerIndices: autoIndices, fullName, timeDisplay });
   };
 
