@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useEffect, useState } from 'react';
+import React, { useMemo, useCallback, useState } from 'react';
 
 const LS_KEY = 'mbi_show_debug_table'; // "true" | "false"
 
@@ -23,17 +23,13 @@ export default function ResultsAnswersDebugTable({
 }) {
   // Показ/скрытие таблицы — кнопкой + localStorage true/false
   const [showDebugTable, setShowDebugTable] = useState(() => {
-    return localStorage.getItem(LS_KEY) === 'true';
-  });
-
-  // опционально: поддержка ?debug=1
-  useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('debug') === '1') {
       localStorage.setItem(LS_KEY, 'true');
-      setShowDebugTable(true);
+      return true;
     }
-  }, []);
+    return localStorage.getItem(LS_KEY) === 'true';
+  });
 
   const toggleDebugTable = useCallback(() => {
     setShowDebugTable((prev) => {

@@ -9,7 +9,6 @@ const InterpretationSection = ({
 	patternMessage,
 	topPatterns,
 	responseType,
-	opportunities,
 	behaviorModel,
 	strengths,
 }) => {
