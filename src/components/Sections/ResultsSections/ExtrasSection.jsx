@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ExtrasSection = ({ onRetakeTest, onShare }) => (
+const ExtrasSection = ({ onRetakeTest }) => (
 	<div className="extras">
 		<div className="extras__container">
 
@@ -19,7 +19,7 @@ const ExtrasSection = ({ onRetakeTest, onShare }) => (
 
 			{/* Контакты -------------------------*/}
 			<section className="extras__section extras__contacts">
-				<h2 className="extras__title">☎️ Контакты</h2>
+				<h2 className="extras__title">☎️ Контакты</h2>
 				<div className="extras__contacts-body">
 					{/*  Контакты автора проекта */}
 					<div className="extras__contacts-block">

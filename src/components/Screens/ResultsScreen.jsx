@@ -33,22 +33,6 @@ const ResultsScreen = ({
     window.open('https://ai4g.ru/test-mbi', '_blank');
   };
 
-  const handleShare = () => {
-    const shareUrl = 'https://ai4g.ru/test-mbi';
-    if (navigator.share) {
-      navigator
-        .share({
-          title: 'Мой результат теста MBI на выгорание',
-          url: shareUrl,
-        })
-        .then(() => setShowSuccess(true));
-    } else {
-      navigator.clipboard.writeText(shareUrl);
-      setShowSuccess(true);
-      setTimeout(() => setShowSuccess(false), 2000);
-    }
-  };
-
   const fullName = userData?.fullName || '';
 
   return (
@@ -82,7 +66,7 @@ const ResultsScreen = ({
         />
       )}
 
-      <ExtrasSection onRetakeTest={handleRetakeTest} onShare={handleShare} />
+      <ExtrasSection onRetakeTest={handleRetakeTest} />
       <LiteratureSection />
     </div>
   );
