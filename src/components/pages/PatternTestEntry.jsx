@@ -101,7 +101,7 @@ const PatternTestEntry = () => {
         <div className="test-completed__container">
           <div className="test-completed__body">
             <h2 className="test-completed__title">Тест завершен! </h2>
-            <h3 className="test-completed__subtitle">Спасибо за участие в тестировании MBI!</h3>
+            <h3 className="test-completed__subtitle">Спасибо за участие в тестировании.</h3>
             <p className="test-completed__text">Ваши результаты тестирования доступны по ссылке:</p>
             <a className="patterns-button "
               href={`/results/${resultId}`}
