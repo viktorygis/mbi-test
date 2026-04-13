@@ -67,7 +67,8 @@ export default function MbiResultPage() {
         }
 
         // Загружаем с сервера
-        const response = await fetch(`/api/results/${id}`);
+        const response = await fetch(`/api/test-mbi/results/${id}`);
+
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}`);
         }
