@@ -73,3 +73,6 @@ $shadow-block: 0px 9px 42px rgba(59, 76, 106, 0.08),
 	0px 0.407592px 1.9021px rgba(59, 76, 106, 0.0278729);
 
 $radius-small: 4px !default;
+
+// Base path for public images (must match Vite's `base` config)
+$img-base-path: "/mbi-test-build/";

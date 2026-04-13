@@ -95,7 +95,7 @@
 			width: 24px;
 			height: 24px;
 			appearance: none;
-			background: url('/img/test-mbi/check-disabled.svg') no-repeat center;
+			background: url('#{$img-base-path}img/test-mbi/check-disabled.svg') no-repeat center;
 
 			background-size: contain;
 			cursor: pointer;
@@ -106,7 +106,7 @@
 		}
 
 		input[type="checkbox"]:checked {
-			background: url("/img/test-mbi/check.svg") no-repeat center;
+			background: url('#{$img-base-path}img/test-mbi/check.svg') no-repeat center;
 			background-size: contain;
 		}
 
