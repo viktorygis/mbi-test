@@ -1,6 +1,7 @@
 // MbiEntryPage - Главная страница теста MBI: интро, форма, вопросы, переход к результату
 
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import IntroScreen from "../Screens/IntroScreen";
 //	FormScreen - экран с формой для ввода данных пользователя
 import FormScreen from "../Screens/FormScreen";
@@ -99,11 +100,11 @@ const MbiEntryPage = () => {
             <h2 className="test-completed__title">Тест завершен! </h2>
             <h3 className="test-completed__subtitle">Спасибо за участие в тестировании.</h3>
             <p className="test-completed__text">Ваши результаты тестирования доступны по ссылке:</p>
-            <a className="patterns-button "
-              href={`/mbi-result/${resultId}`}
+            <Link className="patterns-button"
+              to={`/mbi-result/${resultId}`}
             >
               Посмотреть результат
-            </a>
+            </Link>
             <br />
           </div>
         </div>
