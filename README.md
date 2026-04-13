@@ -123,6 +123,18 @@ node server.js
 
 ---
 
+## Страницы GitHub Pages
+страница репозитория:
+https://viktorygis.github.io/mbi-test-build/
+
+
+`npm run build` — Собрать продакшн-бандл в папку `dist/`
+
+файл vite.config.js — Убедиться, что строка `base` соответствует имени репозитория (например, `"/mbi-test-build/"`)
+
+_variables.scss - Убедиться, что переменная `$img-base-path` соответствует `base` из Vite (например, `"/mbi-test-build/"`)
+
+
 ## Структура проекта
 
 ```
