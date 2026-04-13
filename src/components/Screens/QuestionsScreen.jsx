@@ -1,7 +1,10 @@
+// QuestionsScreen.jsx - компонент для отображения вопросов теста и сбора ответов
+
 import React, { useEffect, useMemo, useCallback, useState } from 'react';
 
 const QuestionsScreen = ({
-  questionsUrl = '/data/questions.json',
+  //questionsUrl = '/data/questions.json',
+  questionsUrl = import.meta.env.BASE_URL + 'data/questions.json',
   onComplete,
   userData,
   timeDisplay = '',

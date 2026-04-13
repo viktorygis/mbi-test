@@ -17,7 +17,7 @@ export default function MbiResultPage() {
 
     const loadMbiData = async () => {
       try {
-        const res = await fetch("/data/questions.json");
+        const res = await fetch(import.meta.env.BASE_URL + "data/questions.json");
         const data = await res.json();
         if (isMounted) {
           setMbiData(data);
