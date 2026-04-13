@@ -271,7 +271,7 @@ const QuestionsScreen = ({
             <button
               className="question-test__button"
               type="button"
-              style={{ margin: '20px auto', display: 'block' }}
+              style={{ margin: '20px auto', display: 'none' }}
               onClick={handleFillTestAnswers}
             >
               Заполнить тестовые ответы

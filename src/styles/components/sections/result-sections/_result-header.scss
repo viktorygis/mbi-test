@@ -6,7 +6,7 @@
 
 //.result-header
 .result-header {
-  padding: 30px 0;
+  padding: 60px 0;
 
   @include respond-to($breakpoint-sm) {
     padding: 30px 0;
@@ -57,11 +57,9 @@
     font-weight: 400;
     text-align: justify;
     max-width: 800px;
-    margin-bottom: 40px;
 
     @media (max-width: $breakpoint-sm) {
       font-size: 16px;
-      margin-bottom: 24px;
 
     }
   }

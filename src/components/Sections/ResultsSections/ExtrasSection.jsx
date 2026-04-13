@@ -86,15 +86,16 @@ const ExtrasSection = ({ onRetakeTest }) => (
             <a className="extras__materials-link" href="https://ai4g.ru/patterns.html" target="_blank" rel="noopener noreferrer">
 
               <img src="/img/test-mbi/materials/materials01.jpg" alt="" />
-              <h3>О профессиональном выгорании</h3>
-              <p>Признаки, причины и последствия синдрома выгорания. Как распознать выгорание на ранних стадиях.</p>
+              <h3>О паттернах</h3>
+              <p>Какие существуют паттерны. Как они проявляются и что с ними делать.</p>
             </a>
           </li>
           <li className="extras__materials-item">
             <a className="extras__materials-link" href="https://ai4g.ru/vozmozhnosti.html" target="_blank" rel="noopener noreferrer">
               <img src="/img/test-mbi/materials/materials02.jpg" alt="" />
-              <h3>Профилактика выгорания</h3>
-              <p>Практические рекомендации и техники для восстановления ресурсов и предотвращения выгорания.</p>
+              <h3>Возможности</h3>
+              <p>Как использовать свои сильные стороны и ресурсы для повышения устойчивости к стрессу и улучшения качества жизни.</p>
+
             </a>
           </li>
           <li className="extras__materials-item">
