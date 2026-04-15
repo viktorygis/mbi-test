@@ -1,50 +1,105 @@
-import React from 'react';
+import React from "react";
+
+const Badge = ({ children }) => <span className="patterns-description__badge">{children}</span>;
+
+const Chip = ({ children, variant = "default" }) => (
+  <span className={`patterns-description__chip patterns-description__chip--${variant}`}>{children}</span>
+);
+
+const PatternItem = ({
+  icon,
+  title,
+  questions,
+  maxScore,
+  description,
+  chips = [],
+  variant = "default",
+}) => (
+  <article className={`patterns-description__card patterns-description__card--${variant}`}>
+    <header className="patterns-description__card-header">
+      <img className="patterns-description__icon" src={`img/test-mbi/${icon}`} alt={title} />
+
+      <div className="patterns-description__headings">
+        <div className="patterns-description__title-row">
+          <h3 className="patterns-description__card-title">{title}</h3>
+          {maxScore != null && <Badge>{maxScore} баллов</Badge>}
+        </div>
+
+        <div className="patterns-description__meta-line">
+          {questions != null && <span className="patterns-description__meta">{questions} утверждений</span>}
+
+          {chips?.length > 0 && (
+            <div className="patterns-description__chips">
+              {chips.map((c, idx) => (
+                <Chip key={idx} variant={c.variant || "default"}>
+                  {c.label}
+                </Chip>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </header>
+
+    <div className="patterns-description__card-body">
+      <p className="patterns-description__card-text">{description}</p>
+    </div>
+  </article>
+);
 
 const PatternsIntroSection = () => {
   return (
-    <div className="patterns-description">
+    <section className="patterns-description" aria-labelledby="patterns-title">
       <div className="patterns-description__container">
-        <h2 className="patterns-description__title">Тест оценивает три компонента выгорания:</h2>
-        <div className="patterns-description__content">
-          <PatternItem
-            icon="mind.svg"
-            title="Психоэмоциональное истощение"
-            text="Процесс исчерпания эмоциональных, физических и энергетических ресурсов. Проявляется в хроническом утомлении, равнодушии, раздражительности. (9 утверждений, макс. 54 балла)"
-          />
+        <h2 className="patterns-description__title" id="patterns-title">
+          О тесте
+        </h2>
 
-          <PatternItem
-            icon="man.svg"
-            title="Деперсонализация"
-            text="Специфическая форма социальной дезадаптации: уменьшение контактов, повышение раздражительности, негативизм по отношению к коллегам и подопечным. (5 утверждений, макс. 30 баллов)"
-          />
-
-          <PatternItem
-            icon="hands.svg"
-            title="Редукция личных достижений"
-            text="Снижение чувства компетентности, недовольство собой, уменьшение ценности своей деятельности. По этой шкале интерпретация обратная: чем ниже балл — тем выше выгорание. (8 утверждений, макс. 48 баллов)"
-          />
-        </div>
-
-        <div className="patterns-description__text">
-          <p>Опросник содержит 22 утверждения. Для каждого выберите, как часто вы испытываете описанное состояние.</p>
+        <div className="patterns-description__lead">
           <p>
-            Общий индекс психического выгорания рассчитывается как сумма всех трёх компонентов
-            (для шкалы «Редукция» используется обратное значение). Максимум: 132 балла.
+            Опросник оценивает три компонента профессионального выгорания. Он содержит 22 утверждения — для каждого выберите,
+            как часто вы испытываете описанное состояние.
           </p>
         </div>
+
+        <div className="patterns-description__grid">
+          <PatternItem
+            icon="emotional-exhaustion.svg"
+            title="Психоэмоциональное истощение"
+            questions={9}
+            maxScore={54}
+            description="Исчерпание эмоциональных, физических и энергетических ресурсов. Проявляется в хроническом утомлении, равнодушии и раздражительности."
+          />
+
+          <PatternItem
+            icon="depersonalization.svg"
+            title="Деперсонализация"
+            questions={5}
+            maxScore={30}
+            description="Снижение вовлечённости в общение: меньше контактов, больше раздражительности, негативное отношение к коллегам и окружающим."
+          />
+
+          <PatternItem
+            icon="reduced-achievement.svg"
+            title="Редукция личных достижений"
+            questions={8}
+            maxScore={48}
+            chips={[{ label: "обратная шкала", variant: "warning" }]}
+            description="Снижение чувства компетентности и удовлетворённости своей работой. По этой шкале интерпретация обратная: чем ниже балл — тем выше выгорание."
+          />
+
+          <PatternItem
+            icon="burnout-index.svg"
+            title="Итоговый индекс выгорания"
+            maxScore={132}
+            chips={[{ label: "сумма 3 шкал", variant: "info" }]}
+            description="Рассчитывается по всем трём шкалам с учётом обратного значения по шкале «Редукция»."
+            variant="total"
+          />
+        </div>
       </div>
-    </div>
+    </section>
   );
 };
-
-const PatternItem = ({ icon, title, text }) => (
-  <div className="patterns-description__item">
-    <div className="patterns-description__block">
-      <img src={`img/test-mbi/${icon}`} alt={title} />
-      <div className="patterns-description__item-title">{title}</div>
-    </div>
-    <div className="patterns-description__item-text">{text}</div>
-  </div>
-);
 
 export default PatternsIntroSection;
