@@ -1,10 +1,11 @@
+// Компонент экрана результатов теста MBI.
 import React, { useState } from 'react';
 import ResultsHeader from './../Sections/ResultsSections/ResultsHeader';
 import MbiScalesSection from './../Sections/ResultsSections/MbiScalesSection';
 import LiteratureSection from './../Sections/ResultsSections/LiteratureSection';
 import ExtrasSection from './../Sections/ResultsSections/ExtrasSection';
 import { downloadMbiPDF } from '../../utils/pdf/mbiPdfGenerator';
-
+import MbiInterpretationSection from './../Sections/ResultsSections/MbiInterpretationSection';
 // DEBUG-КОМПОНЕНТ (можно легко удалить / закомментировать)
 import ResultsAnswersDebugTable from '../Debug/ResultsAnswersDebugTable';
 
@@ -52,7 +53,7 @@ const ResultsScreen = ({
           <button className="result-main__download-btn patterns-button" onClick={handleDownloadPDF}>
             ⬇ Скачать результаты PDF
           </button>
-        </div>
+        </div> <MbiInterpretationSection />
       </div>
 
       {/* ОТЛАДКА — ОТДЕЛЬНО */}

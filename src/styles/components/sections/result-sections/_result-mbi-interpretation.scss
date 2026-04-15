@@ -1,0 +1,118 @@
+@use '../../../base/variables' as *;
+@use '../../../base/mixins' as *;
+
+.mbi-interpretation {
+  padding: 40px 0;
+  background: $color-bg-gray-light;
+
+  &__container {
+    max-width: $container-max-width;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  &__title {
+    font-size: 22px;
+    font-weight: 800;
+    line-height: 1.25;
+    margin: 0 0 18px 0;
+    color: $color-text-dark;
+
+    @include respond-to($breakpoint-sm) {
+      font-size: 20px;
+    }
+  }
+
+  &__card {
+    background: $color-bg-white;
+    border-radius: $radius-block;
+    padding: 20px;
+    box-shadow: $shadow-block;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+
+    &:not(:last-child) {
+      margin-bottom: 16px;
+    }
+  }
+
+  &__card-title {
+    font-size: 16px;
+    font-weight: 800;
+    line-height: 1.35;
+    margin: 0 0 12px 0;
+    color: $color-text-dark;
+  }
+
+  &__block {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 10px 14px;
+    margin: 10px 0;
+
+    @include respond-to($breakpoint-md) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__label {
+    font-size: 13px;
+    line-height: 150%;
+    font-weight: 700;
+    color: $color-text-dark;
+    opacity: 0.9;
+  }
+
+  &__text {
+    font-size: 14px;
+    line-height: 155%;
+    color: $color-text-dark;
+    opacity: 0.92;
+  }
+
+  &__list {
+    margin: 0;
+    padding-left: 18px;
+    display: grid;
+    gap: 6px;
+    font-size: 14px;
+    line-height: 155%;
+    color: $color-text-dark;
+    opacity: 0.92;
+
+    li {
+      margin: 0;
+    }
+  }
+
+  &__warn {
+    margin-top: 8px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: rgba(249, 115, 22, 0.12);
+    border: 1px solid rgba(249, 115, 22, 0.25);
+    color: #9a3412;
+    font-size: 13px;
+    line-height: 150%;
+    font-weight: 600;
+  }
+
+  &__summary {
+    margin-top: 20px;
+    background: $color-bg-white;
+    border-radius: $radius-block;
+    padding: 20px;
+    box-shadow: $shadow-block;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+  }
+
+  &__summary-title {
+    font-size: 15px;
+    font-weight: 800;
+    margin: 0 0 10px 0;
+    color: $color-text-dark;
+
+    &:not(:first-child) {
+      margin-top: 14px;
+    }
+  }
+}
