@@ -295,6 +295,64 @@ function resultsBlock(mbiResults) {
 
   return content;
 }
+function recommendationsBlock(mbiResults) {
+  const { levels } = mbiResults;
+
+  const n = (levelLabel) =>
+    String(levelLabel || "")
+      .trim()
+      .toLowerCase()
+      .replaceAll("ё", "е");
+
+  const isHigh = (lvl) => n(lvl).startsWith("высок") || n(lvl).startsWith("крайне высок");
+  const isLow = (lvl) => n(lvl).startsWith("низк") || n(lvl).startsWith("крайне низк");
+
+  const items = [];
+
+  // Истощение
+  if (isHigh(levels.exhaustion)) {
+    items.push([{ text: "Эмоциональное истощение: ", bold: true }, "высокий уровень. В приоритете — восстановление: сон, паузы, снижение темпа и количества задач, пересмотр режима и границ."]);
+  } else if (isLow(levels.exhaustion)) {
+    items.push([{ text: "Эмоциональное истощение: ", bold: true }, "низкий уровень. Эмоциональный ресурс в целом сохранён — поддерживайте режим отдыха и профилактику переутомления."]);
+  }
+
+  // Деперсонализация
+  if (isHigh(levels.depersonalization)) {
+    items.push([
+      { text: "Деперсонализация: ", bold: true },
+      "высокий уровень. Вероятно, включилась защитная дистанция — помогает снижение эмоционально затратных контактов и добавление восстановления после общения.",
+    ]);
+  } else if (isLow(levels.depersonalization)) {
+    items.push([{ text: "Деперсонализация: ", bold: true }, "низкий уровень. Вовлечённость и эмпатия сохранены — это важный защитный фактор."]);
+  }
+
+  // Редукция (уровень выгорания уже отражён в label)
+  if (isHigh(levels.reduction)) {
+    items.push([
+      { text: "Редукция профессиональных достижений: ", bold: true },
+      "высокий уровень. Есть признаки снижения самоэффективности — полезны маленькие измеримые цели, регулярная фиксация результатов и обратная связь.",
+    ]);
+  } else if (isLow(levels.reduction)) {
+    items.push([{ text: "Редукция профессиональных достижений: ", bold: true }, "низкий уровень. Ощущение профессиональной эффективности и значимости результатов сохранено."]);
+  }
+
+  // Если нечего сказать — нейтральная фраза
+  if (items.length === 0) {
+    items.push("Уровни по шкалам находятся в средней зоне. Если есть субъективное ощущение перегрузки — ориентируйтесь на самочувствие и добавляйте восстановление.");
+  }
+
+  return [
+    { text: "Индивидуальная интерпретация", fontSize: 18, bold: true, alignment: "center", margin: [0, 0, 0, 4] },
+    centerLine(300),
+    { text: "Коротко о том, что означает ваш результат и на что обратить внимание:", fontSize: 11, color: GRAY, margin: [0, 6, 0, 8] },
+    {
+      ul: items.map((x) => (Array.isArray(x) ? { text: x } : x)),
+      fontSize: 11,
+      margin: [0, 0, 0, 10],
+    },
+    { text: "", margin: [0, 0, 0, 6] },
+  ];
+}
 function interpretationBlock() {
   return [
     { text: "Пояснения к шкалам", fontSize: 18, bold: true, alignment: "center", margin: [0, 0, 0, 4] },
@@ -510,7 +568,7 @@ export async function downloadMbiPDF(mbiResults, userData, timeDisplay) {
   pdfMake.addVirtualFileSystem(pdfFonts.pdfMake?.vfs ?? pdfFonts);
 
   const docDefinition = {
-    content: [...headerBlock(userData, timeDisplay), ...resultsBlock(mbiResults), ...interpretationBlock(), ...contactsBlock()],
+    content: [...headerBlock(userData, timeDisplay), ...resultsBlock(mbiResults),   ...recommendationsBlock(mbiResults),...interpretationBlock(), ...contactsBlock()],
     styles: docStyles,
     footer: (currentPage, pageCount) => ({
       text: `Страница ${currentPage} из ${pageCount}   |   ai4g.ru`,

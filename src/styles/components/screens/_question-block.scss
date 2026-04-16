@@ -61,19 +61,21 @@
     transition: width 0.2s ease;
   }
 
-//.question-test__question
+  //.question-test__question
   &__question {
     background: $color-bg-white;
     border-radius: 18px;
     padding: 18px;
     margin-bottom: 30px;
     border: 1px solid #ff018a;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-    @media (min-width: $breakpoint-sm) {
-      height: 100px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    @media (max-width: $breakpoint-sm) {
+      height: 140px;
+
     }
   }
 

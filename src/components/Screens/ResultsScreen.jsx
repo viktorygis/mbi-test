@@ -8,6 +8,7 @@ import { downloadMbiPDF } from '../../utils/pdf/mbiPdfGenerator';
 import MbiInterpretationSection from './../Sections/ResultsSections/MbiInterpretationSection';
 // DEBUG-КОМПОНЕНТ (можно легко удалить / закомментировать)
 import ResultsAnswersDebugTable from '../Debug/ResultsAnswersDebugTable';
+import MbiRecommendationsSection from './../Sections/ResultsSections/MbiRecommendationsSection';
 
 // Один флаг — и вся отладка отключена.
 // Если хочешь убрать полностью — просто удали импорт и блок ниже.
@@ -48,6 +49,7 @@ const ResultsScreen = ({
       <div className="result-main">
         <h2 className="result-main__subtitle">Результаты вашего тестирования</h2>
         <MbiScalesSection mbiResults={mbiResults} />
+        <MbiRecommendationsSection mbiResults={mbiResults} />
 
         <div className="result-main__download">
           <button className="result-main__download-btn patterns-button" onClick={handleDownloadPDF}>

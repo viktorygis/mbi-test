@@ -1,0 +1,116 @@
+@use '../../../base/variables' as *;
+@use '../../../base/mixins' as *;
+
+//.mbi-recommendations
+.mbi-recommendations {
+  padding: 30px 0;
+  background: $color-bg-white;
+
+  //mbi-recommendations__container
+  &__container {
+    max-width: $container-max-width;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  //mbi-recommendations__title
+  &__title {
+    font-size: 18px;
+    font-weight: 800;
+    margin: 0 0 20px 0;
+    text-align: center;
+    color: $color-text-dark;
+  }
+
+  //mbi-recommendations__neutral
+  &__neutral {
+    background: $color-bg-white;
+    border-radius: $radius-block;
+    box-shadow: $shadow-block;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    padding: 14px 16px;
+    font-size: 14px;
+    line-height: 155%;
+    opacity: 0.92;
+  }
+
+  //mbi-recommendations__grid
+  &__grid {
+    display: grid;
+    gap: 24px;
+    grid-template-columns: 1fr;
+
+    @media (min-width: 1024px) {
+      grid-template-columns: repeat(3, 1fr);
+      align-items: start;
+    }
+  }
+
+  //mbi-recommendations__card
+  &__card {
+    background: $color-bg-white;
+    border-radius: $radius-block;
+    box-shadow: $shadow-block;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    padding: 16px;
+    height: 100%;
+  }
+
+  &__card--good {
+    border-color: rgba(34, 197, 94, 1);
+  }
+
+  &__card--warning {
+    border-color: rgba(249, 115, 22, 1);
+  }
+
+  &__card--danger {
+    border-color: rgba(239, 68, 68, 1);
+  }
+
+  &__header {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  &__icon-wrap {
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    background: rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    flex: 0 0 42px;
+  }
+
+  &__icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  &__card-title {
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.25;
+  }
+
+  &__text {
+    font-size: 13px;
+    line-height: 155%;
+    opacity: 0.92;
+    margin-bottom: 10px;
+  }
+
+  &__list {
+    margin: 0;
+    padding-left: 18px;
+    display: grid;
+    gap: 6px;
+    font-size: 13px;
+    line-height: 155%;
+    opacity: 0.92;
+  }
+}
