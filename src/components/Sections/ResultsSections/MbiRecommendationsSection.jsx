@@ -37,89 +37,35 @@ function isLowOrVeryLow(level) {
 function buildRecommendations(mbiResults) {
   if (!mbiResults) return [];
 
-  const { levels } = mbiResults;
+  const { levels, scales } = mbiResults;
 
-  const cards = [];
+  const recommendationsConfig = [
+    { key: "exhaustion", level: levels?.exhaustion },
+    { key: "depersonalization", level: levels?.depersonalization },
+    { key: "reduction", level: levels?.reduction },
+  ];
 
-  // Эмоциональное истощение
-  if (isHighOrVeryHigh(levels.exhaustion)) {
-    cards.push({
-      key: "exhaustion",
-      tone: "danger",
-      title: "Высокое эмоциональное истощение",
-      icon: ICONS.exhaustion,
-      text:
-        "Похоже, ресурс сейчас сильно перегружен. В приоритете — восстановление: сон, паузы, снижение темпа и количества задач, пересмотр режима и границ.",
-      actions: [
-        "Запланируй отдых и восстановление на ближайшие 7–14 дней",
-        "Сократи нагрузку: делегирование, перенос дедлайнов, отказ от лишнего",
-        "Если состояние держится и мешает жить — стоит обсудить это со специалистом",
-      ],
-    });
-  } else if (isLowOrVeryLow(levels.exhaustion)) {
-    cards.push({
-      key: "exhaustion",
-      tone: "good",
-      title: "Низкое эмоциональное истощение",
-      icon: ICONS.exhaustion,
-      text: "Эмоциональный ресурс в целом сохранён. Важно поддерживать текущий режим и профилактику переутомления.",
-      actions: ["Сохраняй регулярный отдых и сон", "Оставляй в графике время без задач", "Отслеживай ранние признаки усталости"],
-    });
-  }
+  return recommendationsConfig.reduce((cards, config) => {
+    const scaleInterpretations = scales?.[config.key]?.interpretations;
+    if (!scaleInterpretations) return cards;
 
-  // Деперсонализация
-  if (isHighOrVeryHigh(levels.depersonalization)) {
-    cards.push({
-      key: "depersonalization",
-      tone: "warning",
-      title: "Высокая деперсонализация",
-      icon: ICONS.depersonalization,
-      text:
-        "Похоже, включилась защитная дистанция в отношении людей и общения. Это часто происходит при перегрузке и хроническом стрессе.",
-      actions: [
-        "Снизь эмоционально затратные контакты, если возможно (перераспределение задач)",
-        "Добавь восстановления после общения: короткие паузы, смена деятельности",
-        "Проверь связь с истощением: если оно высокое — начни с отдыха и разгрузки",
-      ],
-    });
-  } else if (isLowOrVeryLow(levels.depersonalization)) {
-    cards.push({
-      key: "depersonalization",
-      tone: "good",
-      title: "Низкая деперсонализация",
-      icon: ICONS.depersonalization,
-      text: "Контакт с людьми и вовлечённость в общение сохранены. Это хороший защитный фактор.",
-      actions: ["Поддерживай баланс работы и восстановления", "Сохраняй здоровые границы в общении", "Не копи перегрузку — разгружайся заранее"],
-    });
-  }
+    const interpretationKey = isHighOrVeryHigh(config.level)
+      ? "high"
+      : isLowOrVeryLow(config.level)
+        ? "low"
+        : null;
 
-  // Редукция (уровень выгорания уже отражён в label)
-  if (isHighOrVeryHigh(levels.reduction)) {
-    cards.push({
-      key: "reduction",
-      tone: "danger",
-      title: "Снижение ощущения профессиональной эффективности",
-      icon: ICONS.reduction,
-      text:
-        "Есть признаки того, что профессиональная самооценка и ощущение результата просели. Это влияет на мотивацию и повышает риск выгорания.",
-      actions: [
-        "Сфокусируйся на маленьких измеримых задачах (быстрые победы)",
-        "Верни себе обратную связь: что получилось за неделю/месяц",
-        "Обсуди ожидания и приоритеты с руководителем/командой",
-      ],
-    });
-  } else if (isLowOrVeryLow(levels.reduction)) {
-    cards.push({
-      key: "reduction",
-      tone: "good",
-      title: "Ощущение профессиональной эффективности сохранено",
-      icon: ICONS.reduction,
-      text: "Самооценка как специалиста и ощущение значимости результатов в порядке — это сильная опора.",
-      actions: ["Продолжай фиксировать результаты", "Поддерживай нагрузку на устойчивом уровне", "Сохраняй задачи, которые дают смысл и интерес"],
-    });
-  }
+    const interpretation = interpretationKey ? scaleInterpretations[interpretationKey] : null;
+    if (!interpretation) return cards;
 
-  return cards;
+    cards.push({
+      key: config.key,
+      icon: ICONS[config.key],
+      ...interpretation,
+    });
+
+    return cards;
+  }, []);
 }
 
 const MbiRecommendationsSection = ({ mbiResults }) => {
