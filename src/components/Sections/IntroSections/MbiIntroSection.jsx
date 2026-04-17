@@ -6,7 +6,7 @@ const Chip = ({ children, variant = "default" }) => (
   <span className={`mbi-description__chip mbi-description__chip--${variant}`}>{children}</span>
 );
 
-const PatternItem = ({
+const MbiItem = ({
   icon,
   title,
   questions,
@@ -49,9 +49,9 @@ const PatternItem = ({
 
 const MbiIntroSection = () => {
   return (
-    <section className="mbi-description" aria-labelledby="patterns-title">
+    <section className="mbi-description" aria-labelledby="mbi-title">
       <div className="mbi-description__container">
-        <h2 className="mbi-description__title" id="patterns-title">
+        <h2 className="mbi-description__title" id="mbi-title">
           О тесте
         </h2>
 
@@ -63,7 +63,7 @@ const MbiIntroSection = () => {
         </div>
 
         <div className="mbi-description__grid">
-          <PatternItem
+          <MbiItem
             icon="emotional-exhaustion.svg"
             title="Психоэмоциональное истощение"
             questions={9}
@@ -71,7 +71,7 @@ const MbiIntroSection = () => {
             description="Исчерпание эмоциональных, физических и энергетических ресурсов. Проявляется в хроническом утомлении, равнодушии и раздражительности."
           />
 
-          <PatternItem
+          <MbiItem
             icon="depersonalization.svg"
             title="Деперсонализация"
             questions={5}
@@ -79,7 +79,7 @@ const MbiIntroSection = () => {
             description="Снижение вовлечённости в общение: меньше контактов, больше раздражительности, негативное отношение к коллегам и окружающим."
           />
 
-          <PatternItem
+          <MbiItem
             icon="reduced-achievement.svg"
             title="Редукция личных достижений"
             questions={8}
@@ -88,7 +88,7 @@ const MbiIntroSection = () => {
             description="Снижение чувства компетентности и удовлетворённости своей работой. По этой шкале интерпретация обратная: чем ниже балл — тем выше выгорание."
           />
 
-          <PatternItem
+          <MbiItem
             icon="burnout-index.svg"
             title="Итоговый индекс выгорания"
             maxScore={132}
