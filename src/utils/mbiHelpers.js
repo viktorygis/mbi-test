@@ -67,13 +67,10 @@ export function computeBurnoutIndex(exhaustion, depersonalization, reduction, re
  */
 export function createMbiResults(answerIndices, mbiData) {
   const { scales, burnoutIndex: burnoutConfig, scores: scoreMap } = mbiData;
-
   const scores = computeMbiScores(answerIndices, scales, scoreMap);
-
   const exhaustionLevel = getScaleLevel(scores.exhaustion, scales.exhaustion.norms);
   const depersonalizationLevel = getScaleLevel(scores.depersonalization, scales.depersonalization.norms);
   const reductionLevel = getScaleLevel(scores.reduction, scales.reduction.norms);
-
   const burnoutIndex = computeBurnoutIndex(
     scores.exhaustion,
     scores.depersonalization,
