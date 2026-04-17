@@ -90,12 +90,20 @@
     height: 24px;
   }
 
-  &__card-title {
-    font-size: 14px;
+  //mbi-recommendations__card-category
+  &__card-category {
+    font-size: 15px;
     font-weight: 700;
-    line-height: 1.25;
+    margin-bottom: 2px;
   }
 
+  //mbi-recommendations__card-title
+  &__card-title {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+//mbi-recommendations__text
   &__text {
     font-size: 13px;
     line-height: 155%;
@@ -130,4 +138,6 @@
       }
     }
   }
+
+
 }

@@ -1,4 +1,6 @@
 // src/utils/mbiHelpers.js
+import { PINK, GRAY, BLUE } from './pdf/pdfStyles';
+
 // Вспомогательные функции для расчёта результатов теста MBI (Маслач-Джексон)
 
 /**
@@ -11,7 +13,7 @@
 export function computeScaleScore(answerIndices, itemIds, scoreMap) {
   return itemIds.reduce((sum, id) => {
     const idx = answerIndices[id - 1]; // id is 1-based
-    if (typeof idx !== 'number' || idx < 0 || idx >= scoreMap.length) return sum;
+    if (typeof idx !== "number" || idx < 0 || idx >= scoreMap.length) return sum;
     return sum + scoreMap[idx];
   }, 0);
 }
@@ -37,13 +39,14 @@ export function computeMbiScores(answerIndices, scalesConfig, scoreMap) {
  * @param {Array<{label:string, min:number, max:number}>} norms
  * @returns {string}
  */
-export function getScaleLevel(score, norms) {
+// Внутренняя функция (не экспортируется)
+function getLevelLabel(score, norms) {
   for (const norm of norms) {
     if (score >= norm.min && score <= norm.max) {
       return norm.label;
     }
   }
-  return '—';
+  return "—";
 }
 
 /**
@@ -65,19 +68,15 @@ export function computeBurnoutIndex(exhaustion, depersonalization, reduction, re
  * @param {object} mbiData - полные данные из questions.json
  * @returns {object}
  */
+
 export function createMbiResults(answerIndices, mbiData) {
   const { scales, burnoutIndex: burnoutConfig, scores: scoreMap } = mbiData;
   const scores = computeMbiScores(answerIndices, scales, scoreMap);
-  const exhaustionLevel = getScaleLevel(scores.exhaustion, scales.exhaustion.norms);
-  const depersonalizationLevel = getScaleLevel(scores.depersonalization, scales.depersonalization.norms);
-  const reductionLevel = getScaleLevel(scores.reduction, scales.reduction.norms);
-  const burnoutIndex = computeBurnoutIndex(
-    scores.exhaustion,
-    scores.depersonalization,
-    scores.reduction,
-    scales.reduction.maxScore
-  );
-  const burnoutLevel = getScaleLevel(burnoutIndex, burnoutConfig.norms);
+  const exhaustionLevel = getLevelLabel(scores.exhaustion, scales.exhaustion.norms);
+  const depersonalizationLevel = getLevelLabel(scores.depersonalization, scales.depersonalization.norms);
+  const reductionLevel = getLevelLabel(scores.reduction, scales.reduction.norms);
+  const burnoutIndex = computeBurnoutIndex(scores.exhaustion, scores.depersonalization, scores.reduction, scales.reduction.maxScore);
+  const burnoutLevel = getLevelLabel(burnoutIndex, burnoutConfig.norms);
 
   return {
     scores,
@@ -92,3 +91,47 @@ export function createMbiResults(answerIndices, mbiData) {
     burnoutConfig,
   };
 }
+
+// Цвета для уровней шкал
+const LEVEL_COLORS = {
+  veryLow: "#22c55e",
+  low: "#86efac",
+  mid: "#facc15",
+  high: "#f97316",
+  veryHigh: "#ef4444",
+};
+
+// Цветы “линейки/бара” по показателю
+const SCALE_BAR_COLORS = {
+  exhaustion: "#ff9900",
+  depersonalization: "#06eadc",
+  reduction: "#fa00ff",
+  burnoutIndex: "#0386ff",
+};
+
+// Приводит строку уровня к ключу
+function normalizeLevelKey(label) {
+  if (!label) return "mid";
+  const lower = label.toLowerCase();
+  if (lower.includes("крайне низк")) return "veryLow";
+  if (lower.startsWith("низк")) return "low";
+  if (lower.startsWith("средн")) return "mid";
+  if (lower.includes("крайне высок")) return "veryHigh";
+  if (lower.includes("высок")) return "high";
+  return "mid";
+}
+
+// Получить цвет для уровня по его текстовому обозначению
+function getLevelColor(label) {
+  return LEVEL_COLORS[normalizeLevelKey(label)] || "#555";
+}
+function centerLine(widthPx = 300, thickness = 2) {
+  const contentWidth = 515;
+  const leftOffset = (contentWidth - widthPx) / 2;
+  return {
+    canvas: [{ type: "rect", x: leftOffset, y: 0, w: widthPx, h: thickness, color: PINK }],
+    margin: [0, 0, 0, 12],
+  };
+}
+
+export { LEVEL_COLORS, SCALE_BAR_COLORS, getLevelColor, centerLine };
