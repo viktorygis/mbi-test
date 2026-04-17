@@ -6,8 +6,6 @@ import LiteratureSection from './../Sections/ResultsSections/LiteratureSection';
 import ExtrasSection from './../Sections/ResultsSections/ExtrasSection';
 import { downloadMbiPDF } from '../../utils/pdf/mbiPdfGenerator';
 import MbiInterpretationSection from './../Sections/ResultsSections/MbiInterpretationSection';
-// DEBUG-КОМПОНЕНТ (можно легко удалить / закомментировать)
-import ResultsAnswersDebugTable from '../Debug/ResultsAnswersDebugTable';
 import MbiRecommendationsSection from './../Sections/ResultsSections/MbiRecommendationsSection';
 
 // Один флаг — и вся отладка отключена.
@@ -52,18 +50,6 @@ const ResultsScreen = ({
         <MbiRecommendationsSection mbiResults={mbiResults} />
         <MbiInterpretationSection />
       </div>
-
-      {/* ОТЛАДКА — ОТДЕЛЬНО */}
-      {ENABLE_RESULTS_DEBUG && (
-        <ResultsAnswersDebugTable
-          enabled={true}
-          questions={questions}
-          answerIndices={answerIndices}
-          answerOptions={answerOptions}
-          mbiResults={mbiResults}
-        />
-      )}
-
       <ExtrasSection onRetakeTest={handleRetakeTest} />
       <LiteratureSection />
     </div>
