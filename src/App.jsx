@@ -13,11 +13,7 @@ function ResultsRedirect() {
   return <Navigate to={`/mbi-result/${id}`} replace />;
 }
 
-// Редирект с /pattern-result/:id → /mbi-result/:id для обратной совместимости
-function PatternResultRedirect() {
-  const { id } = useParams();
-  return <Navigate to={`/mbi-result/${id}`} replace />;
-}
+
 
 function App() {
   return (
@@ -30,7 +26,6 @@ function App() {
 
       {/* Обратная совместимость: старые маршруты перенаправляют на новые */}
       <Route path="/results/:id" element={<ResultsRedirect />} />
-      <Route path="/pattern-result/:id" element={<PatternResultRedirect />} />
 
       {/* Любой другой путь ведет на старт теста */}
       <Route path="*" element={<Navigate to="/" />} />
