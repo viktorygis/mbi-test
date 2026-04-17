@@ -1,16 +1,27 @@
 // src/utils/pdf/blocks/resultsBlock.js
 import { getLevelForScore } from "../../mbiNorms";
 import { SCALE_BAR_COLORS, getLevelColor, centerLine } from "../../mbiHelpers";
-import { PINK, GRAY, BLUE } from '../pdfStyles';
+import { PINK, GRAY, BLUE } from "../pdfStyles";
 
 function barRow(score, maxScore, color) {
-  const filled = maxScore > 0 ? Math.round((score / maxScore) * 515) : 0;
-  const empty = 515 - filled;
+  const barWidth = 515;
+  const barHeight = 8;
+  const radius = 3;
+
+  const filled = maxScore > 0 ? Math.max(0, Math.round((score / maxScore) * barWidth)) : 0;
+
+  const elements = [
+    // ВСЕГДА рисуем серую полоску со скруглёнными концами (фоновый бар)
+    { type: "rect", x: 0, y: 0, w: barWidth, h: barHeight, r: radius, color: "#e5e7eb" }
+  ];
+
+  // Накладываем цветной бар, если большая 0
+  if (filled > 0) {
+    elements.push({ type: "rect", x: 0, y: 0, w: filled, h: barHeight, r: radius, color });
+  }
+
   return {
-    canvas: [
-      { type: "rect", x: 0, y: 0, w: filled, h: 10, r: 3, color },
-      { type: "rect", x: filled, y: 0, w: empty, h: 10, r: 3, color: "#e5e7eb" },
-    ],
+    canvas: elements,
     margin: [0, 4, 0, 8],
   };
 }
