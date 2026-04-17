@@ -550,11 +550,6 @@ function contactsBlock() {
 // ─── Стили документа ──────────────────────────────────────────────────────────
 
 const docStyles = {
-  tableHeader: {
-    fontSize: 11,
-    bold: true,
-    fillColor: "#fdf2f8",
-  },
   pages: {
     fontSize: 10,
     color: GRAY,
