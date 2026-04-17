@@ -1,9 +1,9 @@
 import React from "react";
 
-const Badge = ({ children }) => <span className="patterns-description__badge">{children}</span>;
+const Badge = ({ children }) => <span className="mbi-description__badge">{children}</span>;
 
 const Chip = ({ children, variant = "default" }) => (
-  <span className={`patterns-description__chip patterns-description__chip--${variant}`}>{children}</span>
+  <span className={`mbi-description__chip mbi-description__chip--${variant}`}>{children}</span>
 );
 
 const PatternItem = ({
@@ -15,21 +15,21 @@ const PatternItem = ({
   chips = [],
   variant = "default",
 }) => (
-  <article className={`patterns-description__card patterns-description__card--${variant}`}>
-    <header className="patterns-description__card-header">
-      <img className="patterns-description__icon" src={`img/test-mbi/${icon}`} alt={title} />
+  <article className={`mbi-description__card mbi-description__card--${variant}`}>
+    <header className="mbi-description__card-header">
+      <img className="mbi-description__icon" src={`img/test-mbi/${icon}`} alt={title} />
 
-      <div className="patterns-description__headings">
-        <div className="patterns-description__title-row">
-          <h3 className="patterns-description__card-title">{title}</h3>
+      <div className="mbi-description__headings">
+        <div className="mbi-description__title-row">
+          <h3 className="mbi-description__card-title">{title}</h3>
           {maxScore != null && <Badge>{maxScore} баллов</Badge>}
         </div>
 
-        <div className="patterns-description__meta-line">
-          {questions != null && <span className="patterns-description__meta">{questions} утверждений</span>}
+        <div className="mbi-description__meta-line">
+          {questions != null && <span className="mbi-description__meta">{questions} утверждений</span>}
 
           {chips?.length > 0 && (
-            <div className="patterns-description__chips">
+            <div className="mbi-description__chips">
               {chips.map((c, idx) => (
                 <Chip key={idx} variant={c.variant || "default"}>
                   {c.label}
@@ -41,28 +41,28 @@ const PatternItem = ({
       </div>
     </header>
 
-    <div className="patterns-description__card-body">
-      <p className="patterns-description__card-text">{description}</p>
+    <div className="mbi-description__card-body">
+      <p className="mbi-description__card-text">{description}</p>
     </div>
   </article>
 );
 
-const PatternsIntroSection = () => {
+const MbiIntroSection = () => {
   return (
-    <section className="patterns-description" aria-labelledby="patterns-title">
-      <div className="patterns-description__container">
-        <h2 className="patterns-description__title" id="patterns-title">
+    <section className="mbi-description" aria-labelledby="patterns-title">
+      <div className="mbi-description__container">
+        <h2 className="mbi-description__title" id="patterns-title">
           О тесте
         </h2>
 
-        <div className="patterns-description__lead">
+        <div className="mbi-description__lead">
           <p>
             Опросник оценивает три компонента профессионального выгорания. Он содержит 22 утверждения — для каждого выберите,
             как часто вы испытываете описанное состояние.
           </p>
         </div>
 
-        <div className="patterns-description__grid">
+        <div className="mbi-description__grid">
           <PatternItem
             icon="emotional-exhaustion.svg"
             title="Психоэмоциональное истощение"
@@ -102,4 +102,4 @@ const PatternsIntroSection = () => {
   );
 };
 
-export default PatternsIntroSection;
+export default MbiIntroSection;
