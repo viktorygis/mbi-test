@@ -28,7 +28,7 @@ const MbiInterpretationSection = () => {
     <section className="mbi-interpretation" aria-labelledby="mbi-interpretation-title">
       <div className="mbi-interpretation__container">
         <h2 className="mbi-interpretation__title" id="mbi-interpretation-title">
-          Расшифровка шкал
+          Справочная информация
         </h2>
 
         <div className="mbi-interpretation__grid">

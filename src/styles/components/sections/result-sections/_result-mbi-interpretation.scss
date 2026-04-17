@@ -3,7 +3,7 @@
 
 .mbi-interpretation {
   padding: 40px 0;
-  background: $color-bg-gray-light;
+  background: $color-bg-white;
 
   &__container {
     max-width: $container-max-width;
@@ -16,6 +16,7 @@
     font-weight: 800;
     line-height: 1.25;
     margin: 0 0 18px 0;
+    text-align: center;
     color: $color-text-dark;
   }
 
@@ -181,6 +182,7 @@
       padding-left: 0;
       gap: 8px;
       font-size: 14px;
+      line-height: 140%;
     }
 
     .mbi-interpretation__list li {

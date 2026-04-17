@@ -194,11 +194,13 @@ function headerBlock(userData, timeDisplay) {
   ];
 }
 
-// ─── Блок 2: Результаты по шкалам ────────────────────────────────────────────
+// ─── Блок 2: Результаты тестирования  ────────────────────────────────────────────
 
+//scaleBlock - универсальная функция для создания блока с результатами по одной шкале
 function scaleBlock(title, score, maxScore, level, description, invertedNote, barColor = PINK) {
   const percent = maxScore > 0 ? Math.round((score / maxScore) * 100) : 0;
 
+  // Структура блока для одной шкалы: название + уровень, баллы + процент, бар, описание, примечание (для редукции)
   const rows = [
     {
       columns: [
@@ -221,10 +223,11 @@ function scaleBlock(title, score, maxScore, level, description, invertedNote, ba
     },
     barRow(score, maxScore, barColor),
   ];
-
+// Если есть описание — добавляем его под баром
   if (description) {
     rows.push({ text: description, fontSize: 11, color: GRAY, margin: [0, 0, 0, 4] });
   }
+  // Для шкалы редукции добавляем примечание о том, что она интерпретируется в обратную сторону
   if (invertedNote) {
     rows.push({
       text: `⚠ ${invertedNote}`,
@@ -238,6 +241,7 @@ function scaleBlock(title, score, maxScore, level, description, invertedNote, ba
   return rows;
 }
 
+//resultsBlock - формирует блок с результатами по всем шкалам и общим индексом
 function resultsBlock(mbiResults) {
   const { scores, levels, burnoutIndex, burnoutLevel, scales, burnoutConfig } = mbiResults;
 
@@ -295,6 +299,8 @@ function resultsBlock(mbiResults) {
 
   return content;
 }
+
+// ─── Блок 3: Индивидуальная интерпретация─────────────────────────────────────────────
 function recommendationsBlock(mbiResults) {
   const { levels } = mbiResults;
 
@@ -353,9 +359,11 @@ function recommendationsBlock(mbiResults) {
     { text: "", margin: [0, 0, 0, 6] },
   ];
 }
-function interpretationBlock() {
+
+// ─── Блок 4: Справочная информация ─────────────────────────────────────────────────────────
+ function interpretationBlock() {
   return [
-    { text: "Пояснения к шкалам", fontSize: 18, bold: true, alignment: "center", margin: [0, 0, 0, 4] },
+    { text: "Справочная информация", fontSize: 18, bold: true, alignment: "center", margin: [0, 0, 0, 4] },
     centerLine(300),
 
     { text: "Шкала Эмоциональное истощение", fontSize: 13, bold: true, margin: [0, 12, 0, 6] },
@@ -470,7 +478,7 @@ function interpretationBlock() {
     { text: "", pageBreak: "after" },
   ];
 }
-// ─── Блок 3: Контакты ─────────────────────────────────────────────────────────
+// ─── Блок 5: Контакты ─────────────────────────────────────────────────────────
 
 function contactsBlock() {
   return [

@@ -10,11 +10,6 @@
 
 //.result-main
 .result-main {
-  padding: 0px 0 60px 0;
-
-  @include respond-to($breakpoint-sm) {
-  padding: 0px 0 30px 0;
-  }
 
   //.result-main__subtitle-------------------------------
   &__subtitle {
@@ -37,8 +32,7 @@
   &__download {
     display: flex;
     justify-content: center;
-    background: #fafafa;
-    padding: 20px 0 60px 0;
+    padding: 20px 0 50px 0;
   }
 
 
