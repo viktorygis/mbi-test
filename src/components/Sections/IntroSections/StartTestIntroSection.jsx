@@ -10,7 +10,7 @@ const StartTestIntroSection = ({ onStart }) => (
           <img src="img/test-mbi/fairway-example.svg" alt="Пример фарватера" />
           <button
             id="trek-button"
-            className="trek__button patterns-button patterns-button-primary"
+            className="trek__button button button-primary"
             onClick={onStart}
           >
             Пройти тест

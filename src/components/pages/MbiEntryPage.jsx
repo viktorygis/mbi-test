@@ -100,7 +100,7 @@ const MbiEntryPage = () => {
             <h2 className="test-completed__title">Тест завершен! </h2>
             <h3 className="test-completed__subtitle">Спасибо за участие в тестировании.</h3>
             <p className="test-completed__text">Ваши результаты тестирования доступны по ссылке:</p>
-            <Link className="patterns-button"
+            <Link className="button"
               to={`/mbi-result/${resultId}`}
             >
               Посмотреть результат

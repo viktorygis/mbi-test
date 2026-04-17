@@ -63,7 +63,7 @@ const OfferIntroSection = () => {
             </p>
 
             <div className="offer-test__bottom">
-              <a href="#button-hipe-test" className="offer-test__button patterns-button">
+              <a href="#button-hipe-test" className="offer-test__button button">
                 Пройти тест
               </a>
 

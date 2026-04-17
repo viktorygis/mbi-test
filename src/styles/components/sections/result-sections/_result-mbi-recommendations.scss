@@ -3,8 +3,8 @@
 
 //.mbi-recommendations
 .mbi-recommendations {
-  padding: 0 0 40px 0;
-  background: $color-bg-gray-light;
+  padding: 40px 0;
+  background: $color-bg-white;
 
   //mbi-recommendations__container
   &__container {
@@ -15,11 +15,15 @@
 
   //mbi-recommendations__title
   &__title {
-    font-size: 18px;
-    font-weight: 800;
-    margin: 0 0 20px 0;
+    line-height: 120%;
+    font-size: 26px;
+    font-weight: 700;
+    margin: 0px 0px 20px 0px;
     text-align: center;
-    color: $color-text-dark;
+
+    @include respond-to($breakpoint-sm) {
+      font-size: 22px;
+    }
   }
 
   //mbi-recommendations__neutral
@@ -39,11 +43,6 @@
     display: grid;
     gap: 24px;
     grid-template-columns: 1fr;
-
-    @media (min-width: 1024px) {
-      grid-template-columns: repeat(3, 1fr);
-      align-items: start;
-    }
   }
 
   //mbi-recommendations__card

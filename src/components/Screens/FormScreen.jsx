@@ -264,7 +264,7 @@ const FormScreen = ({ onSubmit }) => {
 							</div>
 						</div>
 
-						<button type="submit" id="start-test-button" className="patterns-button form-start__button">
+						<button type="submit" id="start-test-button" className="button form-start__button">
 							Пройти тест
 						</button>
 					</form>

@@ -246,7 +246,7 @@ function resultsBlock(mbiResults) {
   const { scores, levels, burnoutIndex, burnoutLevel, scales, burnoutConfig } = mbiResults;
 
   const content = [
-    { text: "Результаты тестирования", fontSize: 18, bold: true, alignment: "center", margin: [0, 0, 0, 4] },
+    { text: "Результаты вашего тестирования", fontSize: 18, bold: true, alignment: "center", margin: [0, 0, 0, 4] },
     centerLine(400),
 
     // Истощение
@@ -300,7 +300,7 @@ function resultsBlock(mbiResults) {
   return content;
 }
 
-// ─── Блок 3: Индивидуальная интерпретация─────────────────────────────────────────────
+// ─── Блок 3: Рекомендации по результатам─────────────────────────────────────────────
 function recommendationsBlock(mbiResults) {
   const { levels } = mbiResults;
 
@@ -348,7 +348,7 @@ function recommendationsBlock(mbiResults) {
   }
 
   return [
-    { text: "Индивидуальная интерпретация", fontSize: 18, bold: true, alignment: "center", margin: [0, 0, 0, 4] },
+    { text: "Рекомендации по результатам", fontSize: 18, bold: true, alignment: "center", margin: [0, 0, 0, 4] },
     centerLine(300),
     { text: "Коротко о том, что означает ваш результат и на что обратить внимание:", fontSize: 11, color: GRAY, margin: [0, 6, 0, 8] },
     {

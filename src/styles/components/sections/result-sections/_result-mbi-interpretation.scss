@@ -3,7 +3,7 @@
 
 .mbi-interpretation {
   padding: 40px 0;
-  background: $color-bg-white;
+  background: $color-bg-gray-light;
 
   &__container {
     max-width: $container-max-width;
@@ -12,12 +12,15 @@
   }
 
   &__title {
-    font-size: 22px;
-    font-weight: 800;
-    line-height: 1.25;
-    margin: 0 0 18px 0;
+    line-height: 120%;
+    font-size: 26px;
+    font-weight: 700;
+    margin: 0px 0px 20px 0px;
     text-align: center;
-    color: $color-text-dark;
+
+    @include respond-to($breakpoint-sm) {
+      font-size: 22px;
+    }
   }
 
   //.mb-interpretation__grid

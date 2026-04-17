@@ -12,7 +12,7 @@ const ExtrasSection = ({ onRetakeTest }) => (
             Хотите получить индивидуальные рекомендации или задать вопросы?		</p>
           <p className="extras__text">Запишитесь на консультацию:
           </p>
-          <a className="extras__button patterns-button" href="https://ai4g.ru/serf-session.html" target="_blank" rel="noopener noreferrer">
+          <a className="extras__button button" href="https://ai4g.ru/serf-session.html" target="_blank" rel="noopener noreferrer">
             Записаться
           </a></div>
       </section>
@@ -63,7 +63,7 @@ const ExtrasSection = ({ onRetakeTest }) => (
           <p className="extras__text">
             Мы рекомендуем делать это не чаще одного раза в 3 месяца.
           </p>
-          <button className="extras__button patterns-button" onClick={onRetakeTest}>
+          <button className="extras__button button" onClick={onRetakeTest}>
             Пройти тест повторно
           </button></div>
       </section>

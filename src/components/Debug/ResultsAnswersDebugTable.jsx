@@ -88,7 +88,7 @@ export default function ResultsAnswersDebugTable({
     <div style={{ margin: '16px auto', maxWidth: 900 }}>
       {/* Кнопка включить/выключить таблицу */}
       <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}>
-        <button className="patterns-button" type="button" onClick={toggleDebugTable}>
+        <button className="button" type="button" onClick={toggleDebugTable}>
           {showDebugTable ? 'Скрыть таблицу ответов' : 'Показать таблицу ответов'}
         </button>
       </div>

@@ -34,7 +34,7 @@ const MbiInterpretationSection = () => {
         <div className="mbi-interpretation__grid">
           {/* Эмоциональное истощение */}
           <article className="mbi-interpretation__card">
-            <CardHeader iconSrc={ICONS.exhaustion} title="Эмоциональное истощение" />
+            <CardHeader iconSrc={ICONS.exhaustion} title="Шкала Эмоциональное истощение" />
 
             <LabelBlock label="Что измеряет:">
               Насколько человек психологически «выгорел» и исчерпан эмоционально.
@@ -66,7 +66,7 @@ const MbiInterpretationSection = () => {
 
           {/* Деперсонализация */}
           <article className="mbi-interpretation__card">
-            <CardHeader iconSrc={ICONS.depersonalization} title="Деперсонализация" />
+            <CardHeader iconSrc={ICONS.depersonalization} title="Шкала Деперсонализация" />
 
             <LabelBlock label="Что измеряет:">
               Степень отчуждения и «обезличивания» в отношении людей, с которыми человек работает.
@@ -99,7 +99,7 @@ const MbiInterpretationSection = () => {
 
           {/* Редукция достижений */}
           <article className="mbi-interpretation__card">
-            <CardHeader iconSrc={ICONS.reduction} title="Редукция профессиональных достижений" />
+            <CardHeader iconSrc={ICONS.reduction} title="Шкала Редукция профессиональных достижений" />
 
             <LabelBlock label="Что измеряет:">
               Насколько человек удовлетворен собой как специалистом и чувствует свою эффективность.

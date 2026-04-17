@@ -8,12 +8,27 @@
   padding: 40px 0;
   background: $color-bg-gray-light;
 
+  //mbi-scales-section__container-------------------------------
   &__container {
     max-width: $container-max-width;
     margin: 0 auto;
     padding: 0 20px;
   }
 
+  //.mbi-scales-section__subtitle-------------------------------
+  &__subtitle {
+    line-height: 120%;
+    font-size: 26px;
+    font-weight: 700;
+    margin: 0px 0px 20px 0px;
+    text-align: center;
+
+    @include respond-to($breakpoint-sm) {
+      font-size: 22px;
+    }
+  }
+
+  //.mbi-scales-section__scales-------------------------------
   &__scales {
     display: grid;
     grid-template-columns: 1fr;
@@ -25,6 +40,7 @@
     }
   }
 
+  //.mbi-scales-section__norms-------------------------------
   &__norms {
     display: grid;
     grid-template-columns: 1fr;
@@ -41,13 +57,14 @@
   }
 }
 
-// Карточка одной шкалы
+// Блок одной шкалы
 .mbi-scale {
   background: $color-bg-white;
   border-radius: $radius-block;
   padding: 20px;
   box-shadow: $shadow-block;
 
+  //mbi-scale__header
   &__header {
     display: flex;
     justify-content: space-between;
@@ -56,6 +73,7 @@
     margin-bottom: 10px;
   }
 
+  //mbi-scale__title
   &__title {
     font-size: 15px;
     font-weight: 600;
@@ -67,21 +85,25 @@
     }
   }
 
+  //mbi-scale__score-line
   &__score-line {
     margin-bottom: 8px;
   }
 
+  //mbi-scale__score
   &__score {
     font-size: 28px;
     font-weight: 700;
     color: $color-text-dark;
   }
 
+  //mbi-scale__max
   &__max {
     font-size: 14px;
     color: $color-counter;
   }
 
+  //mbi-scale__bar-container
   &__bar-container {
     height: 8px;
     background: $color-hist-bar-bg;
@@ -90,6 +112,7 @@
     margin-bottom: 10px;
   }
 
+  //mbi-scale__bar
   &__bar {
     height: 100%;
     background: $color-primary;
@@ -97,22 +120,12 @@
     transition: width 0.4s ease;
   }
 
+  //mbi-scale__description
   &__description {
     font-size: 13px;
     color: #555;
     line-height: 1.5;
     margin-top: 8px;
-  }
-
-  &__note {
-    font-size: 12px;
-    color: #888;
-    margin-top: 6px;
-    font-style: italic;
-
-    &--inverted {
-      color: $color-accent;
-    }
   }
 }
 
@@ -124,6 +137,7 @@
   box-shadow: $shadow-block;
   border-left: 4px solid $color-accent;
 
+  //mbi-burnout-index__title--------------------------------
   &__title {
     font-size: 17px;
     font-weight: 700;
@@ -131,30 +145,35 @@
     margin-bottom: 12px;
   }
 
+  //mbi-burnout-index__score-line--------------------------------
   &__score-line {
     display: flex;
-        justify-content: space-between;
+    justify-content: space-between;
     align-items: baseline;
     gap: 10px;
     margin-bottom: 10px;
     flex-wrap: wrap;
   }
 
+  //mbi-burnout-index__score--------------------------------
   &__score {
     font-size: 36px;
     font-weight: 700;
     color: $color-text-dark;
   }
 
+  //mbi-burnout-index__max--------------------------------
   &__max {
     font-size: 16px;
     color: $color-counter;
   }
 
+  //mbi-burnout-index__level--------------------------------
   &__level {
     font-size: 14px;
   }
 
+  //mbi-burnout-index__bar-container--------------------------------
   &__bar-container {
     height: 10px;
     background: $color-hist-bar-bg;
@@ -163,6 +182,7 @@
     margin-bottom: 12px;
   }
 
+  //mbi-burnout-index__bar--------------------------------
   &__bar {
     height: 100%;
     background: $color-accent;
@@ -170,6 +190,7 @@
     transition: width 0.4s ease;
   }
 
+  //mbi-burnout-index__description--------------------------------
   &__description {
     font-size: 13px;
     color: #555;
@@ -178,6 +199,7 @@
 }
 
 // Уровни (badge)
+//mbi-level-------------------------------
 .mbi-level {
   display: inline-block;
   padding: 3px 10px;
@@ -185,76 +207,4 @@
   font-size: 12px;
   font-weight: 600;
   white-space: nowrap;
-
-  &--very-low {
-    background: #d1fae5;
-    color: #065f46;
-  }
-
-  &--low {
-    background: #dbeafe;
-    color: #1e40af;
-  }
-
-  &--medium {
-    background: #fef3c7;
-    color: #92400e;
-  }
-
-  &--high {
-    background: #fee2e2;
-    color: #991b1b;
-  }
-
-  &--very-high {
-    background: #fecdd3;
-    color: #881337;
-  }
-}
-
-// Таблицы норм
-.mbi-norms {
-  background: $color-bg-white;
-  border-radius: $radius-block;
-  padding: 16px;
-  box-shadow: $shadow-block;
-
-  &__title {
-    font-size: 13px;
-    font-weight: 600;
-    color: $color-text-dark;
-    margin-bottom: 10px;
-  }
-
-  &__table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 13px;
-
-    th {
-      text-align: left;
-      color: $color-counter;
-      font-weight: 500;
-      padding: 4px 8px;
-      border-bottom: 1px solid $color-border;
-    }
-
-    td {
-      padding: 5px 8px;
-      border-bottom: 1px solid $color-border;
-    }
-
-    tr:last-child td {
-      border-bottom: none;
-    }
-  }
-
-  &__row--active {
-    background: #eff6ff;
-    font-weight: 600;
-
-    td {
-      color: $color-primary;
-    }
-  }
 }

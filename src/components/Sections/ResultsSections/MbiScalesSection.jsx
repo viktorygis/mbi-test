@@ -117,6 +117,8 @@ const MbiScalesSection = ({ mbiResults }) => {
   return (
     <div className="mbi-scales-section">
       <div className="mbi-scales-section__container">
+        <h2 className="mbi-scales-section__subtitle">Результаты вашего тестирования</h2>
+
         {/* Три шкалы */}
         <div className="mbi-scales-section__scales">
           <ScaleRow

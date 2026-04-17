@@ -2,9 +2,13 @@
 // Компонент заголовка результатов тестирования MBI
 import React from 'react';
 
-
-const ResultsHeader = ({ fullName, timeDisplay, showSuccess, setShowSuccess }) => {
-
+const ResultsHeader = ({
+  fullName,
+  timeDisplay,
+  showSuccess,
+  setShowSuccess,
+  onDownloadPDF // новый проп
+}) => {
   return (
     <div className="result-header">
       <div className="result-header__container">
@@ -17,14 +21,26 @@ const ResultsHeader = ({ fullName, timeDisplay, showSuccess, setShowSuccess }) =
             <div className="result-header__info-item">
               Дата тестирования: <span>{timeDisplay}</span>
             </div>
+
           </div>
           <div className="result-header__text">
             Вы прошли опросник на определение уровня психического выгорания (MBI) по К. Маслач и С. Джексон
             (адаптация Н.Е. Водопьяновой). Ниже представлены ваши результаты по трём шкалам и общий индекс
             психического выгорания. Используйте полученные данные для осознания своего состояния и принятия
             своевременных мер для профилактики профессионального выгорания.
-          </div>
+          </div>   {/* Добавляем блок для кнопки */}
+          <div className="result-header__download">
+            <span className="result-header__download-text">
+              Скачать ваш отчет в формате pdf
+            </span>
+            <button
+              className="result-header__download-btn button"
+              onClick={onDownloadPDF}
+            >
+              📄 Скачать PDF
+            </button>
 
+          </div>
           {/* Модальное окно успешного шаринга */}
           {showSuccess && (
             <div
