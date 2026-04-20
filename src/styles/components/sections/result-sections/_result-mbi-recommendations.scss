@@ -103,7 +103,8 @@
     font-weight: 600;
     line-height: 1.4;
   }
-//mbi-recommendations__text
+
+  //mbi-recommendations__text
   &__text {
     font-size: 13px;
     line-height: 155%;
@@ -134,10 +135,109 @@
         height: 6px;
         border-radius: 50%;
         background-color: $color-text-dark;
-
       }
     }
   }
 
+  //.mbi-recommendations__short
+  &__short {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: $color-text-gray;
+  }
 
+  //.mbi-recommendations__combined
+  &__combined {
+    background: $color-bg-white;
+    border-radius: $radius-block;
+    box-shadow: $shadow-block;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    padding: 16px;
+    height: 100%;
+    margin-top: 24px;
+
+    //.mbi-recommendations__combined-header
+    &-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    //.mbi-recommendations__combined-icon-wrap
+    &-icon-wrap {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: rgba(0, 0, 0, 0.04);
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      flex: 0 0 42px;
+    }
+
+    //.mbi-recommendations__combined-icon
+    &-icon {
+      width: 24px;
+      height: 24px;
+    }
+
+    //.mbi-recommendations__combined-title
+    &-title {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    //.mbi-recommendations__combined-text
+    &-text {
+      padding-left: 18px;
+      font-size: 13px;
+      line-height: 155%;
+      font-weight: 600;
+      color: $color-text-gray;
+    }
+
+    // ul внутри блока профиля — используем стандарт
+    ul {
+      margin: 0;
+      padding-left: 18px;
+      font-size: 13px;
+      line-height: 155%;
+      opacity: 0.92;
+
+      li {
+        position: relative;
+        padding-left: 15px;
+        margin-bottom: 5px;
+
+        &::before {
+          position: absolute;
+          content: "";
+          left: 0;
+          top: 7px;
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background-color: $color-text-dark;
+        }
+      }
+    }
+  }
+
+  @media (max-width: 600px) {
+    &__combined {
+      padding: 1rem 0.5rem;
+
+      &-title {
+        font-size: 1rem;
+        margin-bottom: 0.7rem;
+      }
+
+      ul {
+        font-size: 0.97rem;
+      }
+    }
+  }
 }

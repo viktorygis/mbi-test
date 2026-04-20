@@ -1,13 +1,11 @@
-import { getLevelForScore, getRecommendation } from "../../mbiNorms";
+import { getLevelForScore, getRecommendation, combinedInterpretation } from "../../mbiNorms";
 import { getLevelColor, centerLine } from "../../mbiHelpers";
 import { GRAY } from "../pdfStyles";
 
 function levelIcon(level) {
   // Для fontSize 13 — идеально height: 13, центр y: 6.5
   return {
-    canvas: [
-      { type: "ellipse", x: 6.5, y: 6.5, color: getLevelColor(level), r1: 6.5, r2: 6.5 }
-    ],
+    canvas: [{ type: "ellipse", x: 6.5, y: 6.5, color: getLevelColor(level), r1: 6.5, r2: 6.5 }],
     width: 13,
     height: 13,
     margin: [0, 0, 4, 0],
@@ -26,12 +24,16 @@ function isRecoValid(reco) {
 
 function recoTextObj(reco) {
   if (!reco) return "";
-  if (typeof reco === "string") return reco;
   if (typeof reco === "object") {
-    return [
-      reco.short ? { text: reco.short, margin: [0, 0, 0, 2] } : undefined,
-      Array.isArray(reco.details) && reco.details.length ? { ul: reco.details, fontSize: 10 } : undefined,
-    ].filter(Boolean);
+    const arr = [];
+    if (reco.short) {
+      arr.push({ text: reco.short, fontSize: 11, margin: [0, 0, 0, 2], color: GRAY, bold: true }); // <-- bold!
+    }
+    if (Array.isArray(reco.details) && reco.details.length) {
+      // Лучше делать список, а не просто массив строк
+      arr.push({ ul: reco.details, fontSize: 10, margin: [0, 0, 0, 4], color: GRAY });
+    }
+    return arr;
   }
   return "";
 }
@@ -60,41 +62,35 @@ export function recommendationsBlock(mbiResults) {
     },
   ].filter((r) => isRecoValid(r.reco));
 
+  const combinedReco = combinedInterpretation(scores);
+
   return [
     { text: "Рекомендации по результатам", fontSize: 18, bold: true, alignment: "center", margin: [0, 0, 0, 4] },
     centerLine(300),
-    { text: "Коротко о том, что означает ваш результат и на что обратить внимание:", fontSize: 11, color: GRAY, margin: [0, 6, 0, 8] },
-    ...(recos.length
-      ? recos
-          .map((r) => [
-            // Подзаголовок
-            { text: r.label, fontSize: 13, bold: true, margin: [0, 6, 0, 2] },
-            // Уровень с цветным кружком и текстом
-            {
-              columns: [
-                levelIcon(r.level),
-                {
-                  text: r.level,
-                  color: getLevelColor(r.level),
-                  fontSize: 11,
-                  bold: true,
-                  margin: [0, 0, 8, 0],
-                },
-              ],
-              columnGap: 4,
-              margin: [0, 0, 0, 2],
-            },
-            // Текст рекомендации (строка или объект)
-            { text: recoTextObj(r.reco), fontSize: 11, margin: [0, 0, 0, 6], color: GRAY },
-          ])
-          .flat()
-      : [
+    ...recos.map((r) => [
+      { text: r.label, fontSize: 13, bold: true, margin: [0, 6, 0, 2] },
+      {
+        columns: [
+          levelIcon(r.level),
           {
-            text: "Уровни по шкалам находятся в средней зоне. Если есть субъективное ощущение перегрузки — ориентируйтесь на самочувствие и добавляйте восстановление.",
+            text: r.level,
+            color: getLevelColor(r.level),
             fontSize: 11,
-            margin: [0, 0, 0, 10],
+            bold: true,
+            margin: [0, 0, 8, 0],
           },
-        ]),
+        ],
+        columnGap: 4,
+        margin: [0, 0, 0, 2],
+      },
+      recoTextObj(r.reco),
+    ]).flat(),
+    ...(combinedReco && combinedReco.length
+      ? [
+          { text: "Профиль выгорания", fontSize: 13, bold: true, margin: [0, 12, 0, 4] },
+          { ul: combinedReco, fontSize: 11, color: GRAY, margin: [0, 0, 0, 6] },
+        ]
+      : []),
     { text: "", margin: [0, 0, 0, 6] },
   ];
 }

@@ -11,6 +11,7 @@ $colors: (
 	error: #dc2626,
 	bg-light: #f8f9fa,
 	text-dark: #150931,
+	text-gray: #828282,
 	bg-white: #fff,
 	bg-gray: #f4f4f5,
 	bg-gray-light: #fafafa,
@@ -42,6 +43,7 @@ $color-counter: map.get($colors, 'counter');
 $color-bg-gray: map.get($colors, 'bg-gray');
 $color-bg-gray-light: map.get($colors, 'bg-gray-light');
 $color-text-dark: map.get($colors, 'text-dark');
+$color-text-gray: map.get($colors, 'text-gray');
 $color-bg-white: map.get($colors, 'bg-white');
 $color-error: map.get($colors, 'error');
 $color-border-radio: map.get($colors, 'border-radio');

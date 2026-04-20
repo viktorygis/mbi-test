@@ -1,4 +1,4 @@
-import { getLevelForScore, getRecommendation } from '../../../utils/mbiNorms';
+import { getLevelForScore, getRecommendation, combinedInterpretation } from '../../../utils/mbiNorms';
 import RecommendationCard from './RecommendationCard';
 
 const ICONS = {
@@ -36,6 +36,12 @@ function buildRecommendations(mbiResults) {
 const MbiRecommendationsSection = ({ mbiResults }) => {
   const cards = buildRecommendations(mbiResults);
   const showNeutral = cards.length === 0;
+  const combined =
+    mbiResults && Array.isArray(mbiResults.scores)
+      ? combinedInterpretation(mbiResults.scores)
+      : mbiResults
+        ? combinedInterpretation(mbiResults.scores)
+        : [];
 
   return (
     <section className="mbi-recommendations" aria-labelledby="mbi-recommendations-title">
@@ -48,17 +54,38 @@ const MbiRecommendationsSection = ({ mbiResults }) => {
             У вас нет выраженных рисков эмоционального выгорания по основным шкалам. Поддерживайте профилактические практики и наблюдайте за своим состоянием.
           </div>
         ) : (
-          <div className="mbi-recommendations__grid">
-            {cards.map(card => (
-              <RecommendationCard
-                key={card.key}
-                icon={card.icon}
-                title={card.title}
-                level={card.level}
-                recommendation={card.recommendation}
-              />
-            ))}
-          </div>
+          <>
+            <div className="mbi-recommendations__grid">
+              {cards.map(card => (
+                <RecommendationCard
+                  key={card.key}
+                  icon={card.icon}
+                  title={card.title}
+                  level={card.level}
+                  recommendation={card.recommendation}
+                />
+              ))}
+            </div>
+            {combined && combined.length > 0 && (
+              <div className="mbi-recommendations__combined">
+                <div className="mbi-recommendations__combined-header">
+                <div className="mbi-recommendations__combined-icon-wrap">
+                  <img
+                    className="mbi-recommendations__combined-icon"
+                    src="img/test-mbi/burnout-index.svg"
+                    alt=""
+                    aria-hidden="true"
+                  />  </div>
+                  <h3 className="mbi-recommendations__combined-title">
+                    Профиль выгорания
+                  </h3>
+                </div>
+                <div className="mbi-recommendations__combined-text">
+                  {combined}
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
     </section>
