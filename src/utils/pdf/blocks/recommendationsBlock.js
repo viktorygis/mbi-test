@@ -1,6 +1,7 @@
 import { getLevelForScore, getRecommendation } from "../../mbiNorms";
 import { getLevelColor, centerLine } from "../../mbiHelpers";
-import { PINK, GRAY, BLUE } from "../pdfStyles";
+import { GRAY } from "../pdfStyles";
+
 function levelIcon(level) {
   // Для fontSize 13 — идеально height: 13, центр y: 6.5
   return {
@@ -11,6 +12,28 @@ function levelIcon(level) {
     height: 13,
     margin: [0, 0, 4, 0],
   };
+}
+
+function isRecoValid(reco) {
+  if (!reco) return false;
+  if (typeof reco === "string") return reco.trim().length > 0;
+  if (typeof reco === "object") {
+    const short = reco.short && String(reco.short).trim();
+    return !!(short || (Array.isArray(reco.details) && reco.details.length));
+  }
+  return false;
+}
+
+function recoTextObj(reco) {
+  if (!reco) return "";
+  if (typeof reco === "string") return reco;
+  if (typeof reco === "object") {
+    return [
+      reco.short ? { text: reco.short, margin: [0, 0, 0, 2] } : undefined,
+      Array.isArray(reco.details) && reco.details.length ? { ul: reco.details, fontSize: 10 } : undefined,
+    ].filter(Boolean);
+  }
+  return "";
 }
 
 export function recommendationsBlock(mbiResults) {
@@ -35,7 +58,7 @@ export function recommendationsBlock(mbiResults) {
       level: getLevelForScore("reduction", scores.reduction),
       reco: getRecommendation("reduction", scores.reduction),
     },
-  ].filter((r) => r.reco && r.reco.trim());
+  ].filter((r) => isRecoValid(r.reco));
 
   return [
     { text: "Рекомендации по результатам", fontSize: 18, bold: true, alignment: "center", margin: [0, 0, 0, 4] },
@@ -61,8 +84,8 @@ export function recommendationsBlock(mbiResults) {
               columnGap: 4,
               margin: [0, 0, 0, 2],
             },
-            // Текст рекомендации
-            { text: r.reco, fontSize: 11, margin: [0, 0, 0, 6], color: GRAY },
+            // Текст рекомендации (строка или объект)
+            { text: recoTextObj(r.reco), fontSize: 11, margin: [0, 0, 0, 6], color: GRAY },
           ])
           .flat()
       : [

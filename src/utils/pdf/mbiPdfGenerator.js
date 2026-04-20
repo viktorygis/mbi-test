@@ -8,7 +8,6 @@ import { docStyles } from "./pdfStyles";
 // Функция для форматирования даты: если dateString уже в формате dd-mm-yyyy, то оставляем как есть
 function formatDate(dateString) {
   if (!dateString) return "";
-  // Если строка уже типа 20-04-2026, возвращаем без изменений
   if (/^\d{2}-\d{2}-\d{4}$/.test(dateString)) return dateString;
   const dateObj = new Date(dateString);
   if (isNaN(dateObj)) return dateString;
@@ -29,11 +28,20 @@ export async function downloadMbiPDF(mbiResults, userData, timeDisplay) {
     alert("Нет данных для создания PDF!");
     return;
   }
-  const [{ default: pdfMake }, { default: pdfFonts }] = await Promise.all([import("pdfmake/build/pdfmake"), import("pdfmake/build/vfs_fonts")]);
+  const [{ default: pdfMake }, { default: pdfFonts }] = await Promise.all([
+    import("pdfmake/build/pdfmake"),
+    import("pdfmake/build/vfs_fonts"),
+  ]);
   pdfMake.addVirtualFileSystem(pdfFonts.pdfMake?.vfs ?? pdfFonts);
 
   const docDefinition = {
-    content: [...headerBlock(userData, timeDisplay), ...resultsBlock(mbiResults), ...recommendationsBlock(mbiResults), ...interpretationBlock(), ...contactsBlock()],
+    content: [
+      ...headerBlock(userData, timeDisplay),
+      ...resultsBlock(mbiResults),
+      ...recommendationsBlock(mbiResults),
+      ...interpretationBlock(),
+      ...contactsBlock(),
+    ],
     styles: docStyles,
     footer: (currentPage, pageCount) => ({
       text: `Страница ${currentPage} из ${pageCount}   |   ai4g.ru`,
