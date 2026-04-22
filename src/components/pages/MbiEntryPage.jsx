@@ -136,7 +136,7 @@ const MbiEntryPage = () => {
     }
 
     // На localhost/127.0.0.1 всегда используем сервер! 👇
-    fetch("/api/test-mbi/submit", {
+    fetch("/api/mbi-test/submit", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ user: userData, answerIndices, date })

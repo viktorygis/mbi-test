@@ -1,0 +1,288 @@
+// src/styles/components/sections/intro-sections/_result-histogram.scss
+@use '../../../base/variables' as *;
+@use '../../../base/mixins' as *;
+
+.histogram {
+
+	//.histogram__container-------------------------------
+	&__container {
+		//max-width: 1170px;
+		padding: 0 15px;
+		margin: 0 auto;
+	}
+
+	//.histogram__body-------------------------------
+	&__body {
+		margin-bottom: 30px;
+		border-radius: $radius-block;
+		color: $color-text-dark;
+		padding: 30px;
+		box-shadow: $shadow-block;
+		background-color: $color-bg-white;
+
+
+		@include respond-to($breakpoint-md) {
+			padding: 15px;
+		}
+	}
+
+	//.histogram__title-------------------------------
+	&__title {
+		text-align: center;
+		line-height: 120%;
+		font-size: 24px;
+		font-weight: 700;
+		margin: 0 0 15px 0;
+		color: $color-text-dark;
+
+
+		@include respond-to($breakpoint-md) {
+			padding: 10px 10px 20px 10px;
+			font-size: 20px;
+			font-weight: 700;
+			margin: 0;
+		}
+	}
+
+	//.histogram__info-------------------------------
+	&__info {
+		font-size: 18px;
+		line-height: 1.4;
+		text-align: justify;
+		margin: 0 auto;
+		color: $color-text-dark;
+		max-width: 800px;
+		padding-bottom: 20px;
+		//font-weight: 500;
+
+		@include respond-to($breakpoint-md) {
+			font-size: 16px;
+		}
+
+
+	}
+
+	//.histogram__info-text-------------------------------
+	&__info-text {
+		display: inline;
+		//histogram__info-text--highlight
+		&--highlight {
+			font-weight: 600;
+			color: $color-accent;
+		}
+
+	}
+
+	//.histogram__info-strong-count
+	.histogram__info-strong-count {
+		//font-weight: 600;
+		text-align: center;
+		padding-bottom: 10px;
+
+		@include respond-to($breakpoint-md) {
+			font-size: 16px;
+		}
+	}
+
+
+
+	//.histogram__content-------------------------------
+	&__content {
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
+	}
+
+	//.histogram__category-wrapper-------------------------------
+	&__category-wrapper {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 40px;
+		padding: 15px;
+		border: 1px solid $color-border;
+		border-radius: $radius-block;
+
+
+		@include respond-to($breakpoint-xl) {
+			grid-template-columns: 1fr;
+			gap: 20px;
+		}
+
+		@include respond-to($breakpoint-md) {
+			gap: 10px;
+		}
+
+		//histogram__category-wrapper .border
+		&.border {
+			border: 1px solid $color-accent-light;
+		}
+	}
+
+	//.histogram__category-description-------------------------------
+	&__category-description {
+		font-size: 14px;
+		line-height: 1.4;
+	}
+
+	//.histogram__category-------------------------------
+	&__category {
+		font-weight: 700;
+		font-size: 16px;
+		line-height: 1.4;
+		margin: 0 0 10px 0;
+
+		@include respond-to($breakpoint-md) {
+			text-align: center;
+		}
+
+	}
+
+	//.histogram__columns-------------------------------
+	&__columns {
+		display: flex;
+		align-items: flex-end;
+		justify-content: space-between;
+		flex-direction: column;
+		height: auto;
+		gap: 3px;
+	}
+
+	//histogram__column-------------------------------
+	&__column {
+		display: flex;
+		align-items: center;
+		height: 100%;
+		width: 100%;
+		gap: 10px;
+		margin-bottom: 0;
+	}
+
+	//histogram__percentage-------------------------------
+	&__percentage {
+		color: $color-text-dark;
+		font-size: 14px;
+		line-height: 140%;
+		font-weight: 500;
+		width: 50px;
+		text-align: right;
+		margin-bottom: 0;
+	}
+
+	//histogram__bar-container-------------------------------
+	&__bar-container {
+		flex-grow: 1;
+		width: 100%;
+		position: relative;
+		background-color: $color-hist-bar-bg;
+		border-radius: $radius-small;
+		overflow: hidden;
+		height: 8px;
+	}
+
+	//histogram__bar-------------------------------
+	&__bar {
+		position: absolute;
+		bottom: 0;
+		width: auto;
+		height: 8px;
+		transition: width 0.3s ease;
+		border-radius: $radius-small;
+
+		//histogram__bar	.category-block__mind
+		&.category-block__mind {
+			background-color: $color-hist-mind;
+		}
+
+		//histogram__bar	.category-block__man
+		&.category-block__man {
+			background-color: $color-hist-man;
+		}
+
+		//histogram__bar	.category-block__hands
+		&.category-block__hands {
+			background-color: $color-hist-hands;
+		}
+
+		//histogram__bar	.category-block__clock
+		&.category-block__clock {
+			background-color: $color-hist-clock;
+		}
+	}
+
+	//histogram__pattern-abr-------------------------------
+	&__pattern-abr {
+		font-size: 14px;
+		color: $color-text-dark;
+		width: 50px;
+		font-family: "PT Sans";
+
+		@include respond-to($breakpoint-md) {
+			font-weight: 600;
+		}
+	}
+
+	//histogram__pattern-------------------------------
+	&__pattern {
+		font-size: 12px;
+		font-weight: 600;
+		line-height: 1.4;
+		color: $color-text-dark;
+		width: 440px;
+		font-family: "PT Sans";
+		text-transform: uppercase;
+
+		@include respond-to($breakpoint-md) {
+			display: none;
+		}
+	}
+}
+
+// .legend-------------------------------
+.legend {
+	display: none;
+
+	@include respond-to($breakpoint-md) {
+		display: block;
+		padding: 0 10px;
+		color: $color-hist-legend;
+	}
+
+	//.legend__grid-------------------------------
+	&__grid {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+		font-size: 14px;
+		line-height: 120%;
+		font-family: "PT Sans";
+
+		@include respond-to($breakpoint-md) {
+			gap: 7px;
+		}
+	}
+
+	//.legend__title-------------------------------
+	&__title {
+		line-height: 120%;
+		font-weight: 600;
+		font-size: 14px;
+		margin: 0 0 10px 0;
+	}
+
+	//.legend__item-------------------------------
+	&__item {
+		display: grid;
+		grid-template-columns: 13% 5% 1fr;
+	}
+}
+
+//.abbreviation
+.abbreviation {
+	font-weight: 600;
+}
+
+//.maximum
+.maximum {
+	color: $color-hist-maximum;
+	font-weight: bold;
+}

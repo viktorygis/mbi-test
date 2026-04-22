@@ -1,12 +1,12 @@
 import React from "react";
 
-const Badge = ({ children }) => <span className="mbi-description__badge">{children}</span>;
+const Badge = ({ children }) => <span className="patterns-description__badge">{children}</span>;
 
 const Chip = ({ children, variant = "default" }) => (
-  <span className={`mbi-description__chip mbi-description__chip--${variant}`}>{children}</span>
+  <span className={`patterns-description__chip patterns-description__chip--${variant}`}>{children}</span>
 );
 
-const MbiItem = ({
+const PatternItem = ({
   icon,
   title,
   questions,
@@ -15,21 +15,21 @@ const MbiItem = ({
   chips = [],
   variant = "default",
 }) => (
-  <article className={`mbi-description__card mbi-description__card--${variant}`}>
-    <header className="mbi-description__card-header">
-      <img className="mbi-description__icon" src={`img/test-mbi/${icon}`} alt={title} />
+  <article className={`patterns-description__card patterns-description__card--${variant}`}>
+    <header className="patterns-description__card-header">
+      <img className="patterns-description__icon" src={`img/test-mbi/${icon}`} alt={title} />
 
-      <div className="mbi-description__headings">
-        <div className="mbi-description__title-row">
-          <h3 className="mbi-description__card-title">{title}</h3>
+      <div className="patterns-description__headings">
+        <div className="patterns-description__title-row">
+          <h3 className="patterns-description__card-title">{title}</h3>
           {maxScore != null && <Badge>{maxScore} баллов</Badge>}
         </div>
 
-        <div className="mbi-description__meta-line">
-          {questions != null && <span className="mbi-description__meta">{questions} утверждений</span>}
+        <div className="patterns-description__meta-line">
+          {questions != null && <span className="patterns-description__meta">{questions} утверждений</span>}
 
           {chips?.length > 0 && (
-            <div className="mbi-description__chips">
+            <div className="patterns-description__chips">
               {chips.map((c, idx) => (
                 <Chip key={idx} variant={c.variant || "default"}>
                   {c.label}
@@ -41,29 +41,29 @@ const MbiItem = ({
       </div>
     </header>
 
-    <div className="mbi-description__card-body">
-      <p className="mbi-description__card-text">{description}</p>
+    <div className="patterns-description__card-body">
+      <p className="patterns-description__card-text">{description}</p>
     </div>
   </article>
 );
 
-const MbiIntroSection = () => {
+const PatternsIntroSection = () => {
   return (
-    <section className="mbi-description" aria-labelledby="mbi-title">
-      <div className="mbi-description__container">
-        <h2 className="mbi-description__title" id="mbi-title">
+    <section className="patterns-description" aria-labelledby="patterns-title">
+      <div className="patterns-description__container">
+        <h2 className="patterns-description__title" id="patterns-title">
           О тесте
         </h2>
 
-        <div className="mbi-description__lead">
+        <div className="patterns-description__lead">
           <p>
             Опросник оценивает три компонента профессионального выгорания. Он содержит 22 утверждения — для каждого выберите,
             как часто вы испытываете описанное состояние.
           </p>
         </div>
 
-        <div className="mbi-description__grid">
-          <MbiItem
+        <div className="patterns-description__grid">
+          <PatternItem
             icon="emotional-exhaustion.svg"
             title="Психоэмоциональное истощение"
             questions={9}
@@ -71,7 +71,7 @@ const MbiIntroSection = () => {
             description="Исчерпание эмоциональных, физических и энергетических ресурсов. Проявляется в хроническом утомлении, равнодушии и раздражительности."
           />
 
-          <MbiItem
+          <PatternItem
             icon="depersonalization.svg"
             title="Деперсонализация"
             questions={5}
@@ -79,7 +79,7 @@ const MbiIntroSection = () => {
             description="Снижение вовлечённости в общение: меньше контактов, больше раздражительности, негативное отношение к коллегам и окружающим."
           />
 
-          <MbiItem
+          <PatternItem
             icon="reduced-achievement.svg"
             title="Редукция личных достижений"
             questions={8}
@@ -88,7 +88,7 @@ const MbiIntroSection = () => {
             description="Снижение чувства компетентности и удовлетворённости своей работой. По этой шкале интерпретация обратная: чем ниже балл — тем выше выгорание."
           />
 
-          <MbiItem
+          <PatternItem
             icon="burnout-index.svg"
             title="Итоговый индекс выгорания"
             maxScore={132}
@@ -102,4 +102,4 @@ const MbiIntroSection = () => {
   );
 };
 
-export default MbiIntroSection;
+export default PatternsIntroSection;

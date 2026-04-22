@@ -163,13 +163,13 @@ const SocialShare = () => (
     <div className="share__block">
       <SocialButton
         title="telegram"
-        href="https://t.me/share/url?url=https://ai4g.ru/test-mbi&text=Пройдите%20тест%20MBI%20на%20определение%20уровня%20профессионального%20выгорания!%20Узнайте%20свои%20показатели%20по%20шкалам%20истощения,%20деперсонализации%20и%20редукции%20личных%20достижений."
+        href="https://t.me/share/url?url=https://ai4g.ru/mbi-test&text=Пройдите%20тест%20MBI%20на%20определение%20уровня%20профессионального%20выгорания!%20Узнайте%20свои%20показатели%20по%20шкалам%20истощения,%20деперсонализации%20и%20редукции%20личных%20достижений."
         icon="telegram.svg"
         alt="Telegram"
       />
       <SocialButton
         title="whatsapp"
-        href="https://api.whatsapp.com/send?text=Пройдите%20тест%20MBI%20на%20определение%20уровня%20профессионального%20выгорания.%20Ссылка:%20https://ai4g.ru/test-mbi"
+        href="https://api.whatsapp.com/send?text=Пройдите%20тест%20MBI%20на%20определение%20уровня%20профессионального%20выгорания.%20Ссылка:%20https://ai4g.ru/mbi-test"
         icon="whatsapp.svg"
         alt="WhatsApp"
       />

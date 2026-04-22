@@ -1,7 +1,7 @@
 @use '../../../base/variables' as *;
 @use '../../../base/mixins' as *;
 
-.mbi-description {
+.patterns-description {
   padding: 30px 0;
   color: #000;
   background-color: $color-bg-gray;
@@ -62,7 +62,7 @@
   &__card--total {
     border-color: $color-accent;
 
-    & .mbi-description__badge {
+    & .patterns-description__badge {
       color: $color-accent;
     }
   }
