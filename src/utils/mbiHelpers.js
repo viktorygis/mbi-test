@@ -1,5 +1,5 @@
 // src/utils/mbiHelpers.js
-import { PINK, GRAY, BLUE } from './pdf/pdfStyles';
+import { PINK, GRAY, BLUE } from "./pdf/pdfStyles";
 
 // Вспомогательные функции для расчёта результатов теста MBI (Маслач-Джексон)
 
@@ -69,26 +69,25 @@ export function computeBurnoutIndex(exhaustion, depersonalization, reduction, re
  * @returns {object}
  */
 
-export function createMbiResults(answerIndices, mbiData) {
-  const { scales, burnoutIndex: burnoutConfig, scores: scoreMap } = mbiData;
-  const scores = computeMbiScores(answerIndices, scales, scoreMap);
-  const exhaustionLevel = getLevelLabel(scores.exhaustion, scales.exhaustion.norms);
-  const depersonalizationLevel = getLevelLabel(scores.depersonalization, scales.depersonalization.norms);
-  const reductionLevel = getLevelLabel(scores.reduction, scales.reduction.norms);
-  const burnoutIndex = computeBurnoutIndex(scores.exhaustion, scores.depersonalization, scores.reduction, scales.reduction.maxScore);
-  const burnoutLevel = getLevelLabel(burnoutIndex, burnoutConfig.norms);
+export function createMbiResults(answerIndices, { scales, burnoutIndex, scores }) {
+  const scoresObj = computeMbiScores(answerIndices, scales, scores);
+  const exhaustionLevel = getLevelLabel(scoresObj.exhaustion, scales.exhaustion.norms);
+  const depersonalizationLevel = getLevelLabel(scoresObj.depersonalization, scales.depersonalization.norms);
+  const reductionLevel = getLevelLabel(scoresObj.reduction, scales.reduction.norms);
+  const burnoutIndexValue = computeBurnoutIndex(scoresObj.exhaustion, scoresObj.depersonalization, scoresObj.reduction, scales.reduction.maxScore);
+  const burnoutLevel = getLevelLabel(burnoutIndexValue, burnoutIndex.norms);
 
   return {
-    scores,
+    scores: scoresObj,
     levels: {
       exhaustion: exhaustionLevel,
       depersonalization: depersonalizationLevel,
       reduction: reductionLevel,
     },
-    burnoutIndex,
+    burnoutIndex: burnoutIndexValue,
     burnoutLevel,
     scales,
-    burnoutConfig,
+    burnoutConfig: burnoutIndex,
   };
 }
 

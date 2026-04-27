@@ -39,7 +39,7 @@ export async function downloadMbiPDF(mbiResults, userData, timeDisplay) {
       ...headerBlock(userData, timeDisplay),
       ...resultsBlock(mbiResults),
       ...recommendationsBlock(mbiResults),
-      ...interpretationBlock(),
+      ...interpretationBlock(mbiResults),
       ...contactsBlock(),
     ],
     styles: docStyles,

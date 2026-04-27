@@ -1,45 +1,25 @@
-// src/components/pages/MbiResultPage.jsx
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useContext, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import ResultsScreen from "../Screens/ResultsScreen";
 import { createMbiResults } from "../../utils/mbiHelpers";
+import { MbiDataContext } from "../../context/MbiDataContext";
+
+// Универсальный нормализатор массива ответов
+function normalizeAnswers(ans, n) {
+  if (!Array.isArray(ans)) return Array(n).fill(0);
+  if (ans.length > n) return ans.slice(0, n);
+  if (ans.length < n) return ans.concat(Array(n - ans.length).fill(0));
+  return ans;
+}
 
 export default function MbiResultPage() {
   const { id } = useParams();
+  const { questions, scales, scores, burnoutIndex, loading: mbiLoading } = useContext(MbiDataContext);
+
   const [resultData, setResultData] = useState(null);
-  const [mbiData, setMbiData] = useState(null);
-  const [mbiDataLoading, setMbiDataLoading] = useState(true);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
-  // Эффект 1: Загружаем конфигурацию MBI (один раз при монтировании)
-  useEffect(() => {
-    let isMounted = true;
-
-    const loadMbiData = async () => {
-      try {
-        const res = await fetch(import.meta.env.BASE_URL + "data/questions.json");
-        const data = await res.json();
-        if (isMounted) {
-          setMbiData(data);
-          setMbiDataLoading(false);
-        }
-      } catch (err) {
-        console.error("Ошибка загрузки конфигурации MBI:", err);
-        if (isMounted) {
-          setMbiDataLoading(false);
-        }
-      }
-    };
-
-    loadMbiData();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
-  // Эффект 2: Загрузка данных по id
   useEffect(() => {
     if (!id) {
       setResultData(null);
@@ -47,16 +27,14 @@ export default function MbiResultPage() {
       setLoading(false);
       return;
     }
-
     let isMounted = true;
 
-    const loadResultData = async () => {
+    async function loadResultData() {
       setLoading(true);
       setError(false);
       setResultData(null);
-
       try {
-        // Пытаемся загрузить из localStorage
+        // localStorage (преимущественно фронтовый режим)
         const localData = localStorage.getItem(`test-result-${id}`);
         if (localData) {
           const parsedData = JSON.parse(localData);
@@ -66,15 +44,10 @@ export default function MbiResultPage() {
           }
           return;
         }
-
-        // Загружаем с сервера
+        // Серверная часть (по желанию)
         const response = await fetch(`/api/mbi-test/results/${id}`);
-
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const data = await response.json();
-
         if (isMounted) {
           setResultData(data);
           setError(false);
@@ -87,64 +60,74 @@ export default function MbiResultPage() {
           setLoading(false);
         }
       }
-    };
+    }
 
     loadResultData();
-
-    return () => {
-      isMounted = false;
-    };
+    return () => { isMounted = false; };
   }, [id]);
 
-  // Заглушка если данных нет
+  // Fallback для пустого результата
   const fallbackResultData = useMemo(() => {
-    if (error && mbiData && !resultData) {
+    if (error && questions && !resultData) {
       return {
-        user: {
-          fullName: "Иван Иванов",
-          phone: "+79998887766",
-          telegram: "@ivanov",
-          email: "ivan@example.com",
-        },
-        // "Никогда" (индекс 0) для всех 22 вопросов
-        answerIndices: Array(22).fill(0),
+        user: { fullName: "Иван Иванов" },
+        answerIndices: Array(questions.length).fill(0),
         date: new Date().toLocaleDateString("ru-RU"),
       };
     }
     return null;
-  }, [error, mbiData, resultData]);
+  }, [error, questions, resultData]);
 
   const displayedResultData = resultData ?? fallbackResultData;
 
-  // Вычисляем результаты MBI
+  // Ждём полной загрузки всех необходимых данных
+  const isReady =
+    !mbiLoading &&
+    questions &&
+    Array.isArray(questions) &&
+    !!scales &&
+    !!scores &&
+    !!burnoutIndex &&
+    displayedResultData;
+
+  // Нормализуем ответы
+  const answerIndices = normalizeAnswers(
+    displayedResultData?.answerIndices,
+    Array.isArray(questions) ? questions.length : 22
+  );
+
+  // Вычисляем результат
   const mbiResults = useMemo(() => {
-    if (!displayedResultData || !mbiData) return null;
+    if (
+      !isReady ||
+      !scales ||
+      !burnoutIndex ||
+      !scores ||
+      !Array.isArray(answerIndices) ||
+      answerIndices.length !== questions.length ||
+      !scales.exhaustion ||
+      !scales.depersonalization ||
+      !scales.reduction
+    ) {
+      console.error("MBI DATA INCOMPLETE", { scales, burnoutIndex, scores, answerIndices });
+      return null;
+    }
     try {
-      const indices = Array.isArray(displayedResultData.answerIndices)
-        ? displayedResultData.answerIndices
-        : Array(22).fill(0);
-      return createMbiResults(indices, mbiData);
+      return createMbiResults(answerIndices, {
+        scales,
+        burnoutIndex,
+        scores,
+      });
     } catch (err) {
       console.error("Ошибка вычисления MBI результатов:", err);
       return null;
     }
-  }, [displayedResultData, mbiData]);
+  }, [isReady, scales, burnoutIndex, scores, answerIndices, questions.length]);
 
-  if (mbiDataLoading) {
-    return <div>Загрузка конфигурации теста...</div>;
-  }
-
-  if (loading || !mbiResults) {
-    return <div>Загрузка результатов...</div>;
-  }
-
-  if (!displayedResultData) {
-    return <div>Данные не найдены</div>;
-  }
-
-  const answerIndices = Array.isArray(displayedResultData.answerIndices)
-    ? displayedResultData.answerIndices
-    : Array(22).fill(0);
+  if (mbiLoading) return <div>Загрузка конфигурации теста...</div>;
+  if (loading) return <div>Загрузка результатов...</div>;
+  if (!displayedResultData) return <div>Данные не найдены</div>;
+  if (!mbiResults) return <div>Ошибка обработки результатов теста</div>;
 
   return (
     <ResultsScreen
@@ -156,8 +139,8 @@ export default function MbiResultPage() {
         new Date().toLocaleDateString("ru-RU")
       }
       answerIndices={answerIndices}
-      questions={mbiData?.questions ?? []}
-      answerOptions={mbiData?.answerOptions ?? []}
+      questions={questions}
+      answerOptions={scores}
     />
   );
 }
