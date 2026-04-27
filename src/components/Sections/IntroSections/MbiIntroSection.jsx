@@ -17,7 +17,7 @@ const MbiItem = ({
 }) => (
   <article className={`mbi-description__card mbi-description__card--${variant}`}>
     <header className="mbi-description__card-header">
-      <img className="mbi-description__icon" src={`img/test-mbi/${icon}`} alt={title} />
+      <img className="mbi-description__icon" src={`img/mbi-test/${icon}`} alt={title} />
 
       <div className="mbi-description__headings">
         <div className="mbi-description__title-row">

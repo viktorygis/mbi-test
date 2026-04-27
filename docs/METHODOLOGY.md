@@ -96,7 +96,7 @@
                                                       │
                                               sendResults({ user, answerIndices, date })
                                                       │
-                                      localStorage / API POST /api/test-mbi/submit
+                                      localStorage / API POST /api/mbi-test/submit
                                                       │
                                                /mbi-result/:id
                                                       │

@@ -1,9 +1,9 @@
 {
-  "name": "test-mbi",
+  "name": "mbi-test",
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "/test-mbi",
+  "homepage": "/mbi-test",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

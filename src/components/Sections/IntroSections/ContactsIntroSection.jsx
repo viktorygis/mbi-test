@@ -66,7 +66,7 @@ const SocialShare = () => (
 
 const SocialButton = ({ title, href, icon, alt }) => (
   <a className="share__button" title={title} target="_blank" rel="noopener noreferrer" href={href}>
-    <img src={`img/test-mbi/${icon}`} alt={alt} />
+    <img src={`img/mbi-test/${icon}`} alt={alt} />
   </a>
 );
 

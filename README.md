@@ -45,7 +45,7 @@ mbi-test/
 ├── package.json
 ├── public/
 │   ├── data/questions.json
-│   └── img/test-mbi/
+│   └── img/mbi-test/
 └── src/
     ├── App.jsx
     ├── components/

@@ -1,10 +1,10 @@
 import React from "react";
 
 const ICONS = {
-  exhaustion: "img/test-mbi/emotional-exhaustion.svg",
-  depersonalization: "img/test-mbi/depersonalization.svg",
-  reduction: "img/test-mbi/reduced-achievement.svg",
-  burnoutIndex: "img/test-mbi/burnout-index.svg",
+  exhaustion: "img/mbi-test/emotional-exhaustion.svg",
+  depersonalization: "img/mbi-test/depersonalization.svg",
+  reduction: "img/mbi-test/reduced-achievement.svg",
+  burnoutIndex: "img/mbi-test/burnout-index.svg",
 };
 
 const CardHeader = ({ iconSrc, title }) => (

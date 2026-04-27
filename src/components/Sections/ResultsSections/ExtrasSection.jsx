@@ -85,14 +85,14 @@ const ExtrasSection = ({ onRetakeTest }) => (
           <li className="extras__materials-item">
             <a className="extras__materials-link" href="https://ai4g.ru/patterns.html" target="_blank" rel="noopener noreferrer">
 
-              <img src={import.meta.env.BASE_URL + "img/test-mbi/materials/materials01.jpg"} alt="" />
+              <img src={import.meta.env.BASE_URL + "img/mbi-test/materials/materials01.jpg"} alt="" />
               <h3>О паттернах</h3>
               <p>Какие существуют паттерны. Как они проявляются и что с ними делать.</p>
             </a>
           </li>
           <li className="extras__materials-item">
             <a className="extras__materials-link" href="https://ai4g.ru/vozmozhnosti.html" target="_blank" rel="noopener noreferrer">
-              <img src={import.meta.env.BASE_URL + "img/test-mbi/materials/materials02.jpg"} alt="" />
+              <img src={import.meta.env.BASE_URL + "img/mbi-test/materials/materials02.jpg"} alt="" />
               <h3>Возможности</h3>
               <p>Как использовать свои сильные стороны и ресурсы для повышения устойчивости к стрессу и улучшения качества жизни.</p>
 
@@ -100,7 +100,7 @@ const ExtrasSection = ({ onRetakeTest }) => (
           </li>
           <li className="extras__materials-item">
             <a className="extras__materials-link" href="https://ai4g.ru/technics.html" target="_blank" rel="noopener noreferrer">
-              <img src={import.meta.env.BASE_URL + "img/test-mbi/materials/materials03.jpg"} alt="" />
+              <img src={import.meta.env.BASE_URL + "img/mbi-test/materials/materials03.jpg"} alt="" />
               <h3>Техники самовосстановления</h3>
               <p>Методы и подходы, которые помогут восстановить эмоциональные ресурсы и повысить устойчивость к стрессу.</p>
             </a>
@@ -108,7 +108,7 @@ const ExtrasSection = ({ onRetakeTest }) => (
 
           <li className="extras__materials-item">
             <a className="extras__materials-link" href="https://t.me/life_watch" target="_blank" rel="noopener noreferrer">
-              <img src={import.meta.env.BASE_URL + "img/test-mbi/materials/materials04.jpg"} alt="" />
+              <img src={import.meta.env.BASE_URL + "img/mbi-test/materials/materials04.jpg"} alt="" />
 
               <h3>Канал проекта в Telegram</h3>
               <p>Полезные статьи, советы и материалы о психологическом благополучии и профессиональном развитии.</p>
@@ -179,7 +179,7 @@ const SocialShare = () => (
 
 const SocialButton = ({ title, href, icon, alt }) => (
   <a className="share__button" title={title} target="_blank" rel="noopener noreferrer" href={href}>
-    <img src={import.meta.env.BASE_URL + `img/test-mbi/${icon}`} alt={alt} />
+    <img src={import.meta.env.BASE_URL + `img/mbi-test/${icon}`} alt={alt} />
   </a>
 );
 export default ExtrasSection;

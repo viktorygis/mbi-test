@@ -15,7 +15,7 @@ app.use(cors());
 app.use(json());
 
 // Получение результата по id
-app.get("/api/test-mbi/results/:id", (req, res) => {
+app.get("/api/mbi-test/results/:id", (req, res) => {
   const { id } = req.params;
   if (resultsDB[id]) {
     res.json(resultsDB[id]);
@@ -30,7 +30,7 @@ app.get("/api/results", (req, res) => {
 });
 
 // Сохранение результатов теста
-app.post("/api/test-mbi/submit", (req, res) => {
+app.post("/api/mbi-test/submit", (req, res) => {
   const data = req.body;
   const id = Date.now().toString(36) + Math.random().toString(36).substr(2, 6); // генерация id
   resultsDB[id] = data;

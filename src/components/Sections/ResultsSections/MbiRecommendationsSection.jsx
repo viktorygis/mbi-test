@@ -2,10 +2,10 @@ import { getLevelForScore, getRecommendation, combinedInterpretation } from '../
 import RecommendationCard from './RecommendationCard';
 
 const ICONS = {
-  exhaustion: "img/test-mbi/emotional-exhaustion.svg",
-  depersonalization: "img/test-mbi/depersonalization.svg",
-  reduction: "img/test-mbi/reduced-achievement.svg",
-  burnoutIndex: "img/test-mbi/burnout-index.svg",
+  exhaustion: "img/mbi-test/emotional-exhaustion.svg",
+  depersonalization: "img/mbi-test/depersonalization.svg",
+  reduction: "img/mbi-test/reduced-achievement.svg",
+  burnoutIndex: "img/mbi-test/burnout-index.svg",
 };
 
 const TITLES = {
@@ -72,7 +72,7 @@ const MbiRecommendationsSection = ({ mbiResults }) => {
                 <div className="mbi-recommendations__combined-icon-wrap">
                   <img
                     className="mbi-recommendations__combined-icon"
-                    src="img/test-mbi/burnout-index.svg"
+                    src="img/mbi-test/burnout-index.svg"
                     alt=""
                     aria-hidden="true"
                   />  </div>

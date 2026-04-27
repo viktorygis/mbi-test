@@ -7,7 +7,7 @@ const StartTestIntroSection = ({ onStart }) => (
       <div className="trek__container">
         <div className="trek__body">
           <h2 className="trek__title">Перейти к тестированию</h2>
-          <img src="img/test-mbi/fairway-example.svg" alt="Пример фарватера" />
+          <img src="img/mbi-test/fairway-example.svg" alt="Пример фарватера" />
           <button
             id="trek-button"
             className="trek__button button button-primary"

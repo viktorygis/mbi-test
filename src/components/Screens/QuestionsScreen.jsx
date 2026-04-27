@@ -3,7 +3,6 @@
 import React, { useEffect, useMemo, useCallback, useState } from 'react';
 
 const QuestionsScreen = ({
-  //questionsUrl = '/data/questions.json',
   questionsUrl = import.meta.env.BASE_URL + 'data/questions.json',
   onComplete,
   userData,
@@ -274,7 +273,7 @@ const QuestionsScreen = ({
             <button
               className="question-test__button"
               type="button"
-              style={{ margin: '20px auto', display: 'none' }}
+              style={{ margin: '20px auto', display: 'block' }}
               onClick={handleFillTestAnswers}
             >
               Заполнить тестовые ответы

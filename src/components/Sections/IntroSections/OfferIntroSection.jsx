@@ -25,7 +25,7 @@ const OfferIntroSection = () => {
             <div className="offer-test__bullets" role="list">
               <div className="offer-test__bullet offer-test__bullet--exhaustion" role="listitem">
                 <div className="offer-test__bullet-icon">
-                  <img src="img/test-mbi/emotional-exhaustion.svg" alt="" />
+                  <img src="img/mbi-test/emotional-exhaustion.svg" alt="" />
                 </div>
                 <div className="offer-test__bullet-body">
                   <span className="offer-test__bullet-num">01</span>
@@ -36,7 +36,7 @@ const OfferIntroSection = () => {
 
               <div className="offer-test__bullet offer-test__bullet--depersonalization" role="listitem">
                 <div className="offer-test__bullet-icon">
-                  <img src="img/test-mbi/depersonalization.svg" alt="" />
+                  <img src="img/mbi-test/depersonalization.svg" alt="" />
                 </div>
                 <div className="offer-test__bullet-body">
                   <span className="offer-test__bullet-num">02</span>
@@ -47,7 +47,7 @@ const OfferIntroSection = () => {
 
               <div className="offer-test__bullet offer-test__bullet--reduction" role="listitem">
                 <div className="offer-test__bullet-icon">
-                  <img src="img/test-mbi/reduced-achievement.svg" alt="" />
+                  <img src="img/mbi-test/reduced-achievement.svg" alt="" />
                 </div>
                 <div className="offer-test__bullet-body">
                   <span className="offer-test__bullet-num">03</span>
@@ -86,19 +86,19 @@ const OfferIntroSection = () => {
             <div className="offer-test__visual-grid">
               <div className="offer-test__visual-item offer-test__visual-item--exhaustion">
                 <div className="offer-test__visual-circle"></div>
-                <img src="img/test-mbi/emotional-exhaustion.svg" alt="" />
+                <img src="img/mbi-test/emotional-exhaustion.svg" alt="" />
               </div>
               <div className="offer-test__visual-item offer-test__visual-item--depersonalization">
                 <div className="offer-test__visual-circle"></div>
-                <img src="img/test-mbi/depersonalization.svg" alt="" />
+                <img src="img/mbi-test/depersonalization.svg" alt="" />
               </div>
               <div className="offer-test__visual-item offer-test__visual-item--reduction">
                 <div className="offer-test__visual-circle"></div>
-                <img src="img/test-mbi/reduced-achievement.svg" alt="" />
+                <img src="img/mbi-test/reduced-achievement.svg" alt="" />
               </div>
               <div className="offer-test__visual-item offer-test__visual-item--index">
                 <div className="offer-test__visual-circle"></div>
-                <img src="img/test-mbi/burnout-index.svg" alt="" />
+                <img src="img/mbi-test/burnout-index.svg" alt="" />
               </div>
             </div>
           </div>
