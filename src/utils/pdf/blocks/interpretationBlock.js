@@ -1,6 +1,6 @@
-import { getNormLevel, getInterpretation } from "../utils/mbiNorms";
+import { getNormLevel, getInterpretation } from "../../mbiNorms";
 
-export function makeInterpretationBlock(results, scales) {
+export function interpretationBlock(results, scales) {
   const blocks = [];
   for (const key of ["exhaustion", "depersonalization", "reduction"]) {
     const scale = scales[key];

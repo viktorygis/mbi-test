@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
-import { MbiDataContext } from "../../context/MbiDataContext";
-import { getNormLevel, getInterpretation } from "../../utils/mbiNorms";
+import { MbiDataContext } from "../../../context/MbiDataContext";
+import { getNormLevel, getInterpretation } from "../../../utils/mbiNorms";
 
 export default function MbiInterpretationSection({ results }) {
   const { scales } = useContext(MbiDataContext);
