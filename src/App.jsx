@@ -13,23 +13,30 @@ function ResultsRedirect() {
   return <Navigate to={`/mbi-result/${id}`} replace />;
 }
 
-
+import { MbiDataContext } from "./context/MbiDataContext";
+import { useMbiData } from "./hooks/useMbiData.js";
 
 function App() {
+  const mbi = useMbiData();
+  if (mbi.loading) return <div>Загрузка…</div>;
   return (
-    <Routes>
-      {/* Главная страница теста: интро, форма, вопросы, переход к результату */}
-      <Route path="/" element={<MbiEntryPage />} />
+    <MbiDataContext.Provider value={mbi}>
 
-      {/* Страница просмотра результата по уникальному id */}
-      <Route path="/mbi-result/:id" element={<MbiResultPage />} />
+      <Routes>
+        {/* Главная страница теста: интро, форма, вопросы, переход к результату */}
+        <Route path="/" element={<MbiEntryPage />} />
 
-      {/* Обратная совместимость: старые маршруты перенаправляют на новые */}
-      <Route path="/results/:id" element={<ResultsRedirect />} />
+        {/* Страница просмотра результата по уникальному id */}
+        <Route path="/mbi-result/:id" element={<MbiResultPage />} />
 
-      {/* Любой другой путь ведет на старт теста */}
-      <Route path="*" element={<Navigate to="/" />} />
-    </Routes>
+        {/* Обратная совместимость: старые маршруты перенаправляют на новые */}
+        <Route path="/results/:id" element={<ResultsRedirect />} />
+
+        {/* Любой другой путь ведет на старт теста */}
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+    </MbiDataContext.Provider>
+
   );
 }
 

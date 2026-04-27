@@ -1,3 +1,4 @@
+// src/components/pages/MbiResultPage.jsx
 import React, { useEffect, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import ResultsScreen from "../Screens/ResultsScreen";
