@@ -45,8 +45,8 @@ const SocialShare = () => (
         title="telegram"
         href={
           "https://t.me/share/url?" +
-          "url=https://ai4g.ru/test-mbi" +
-          "&text=Пройди%20онлайн-тест%20на%20профессиональное%20выгорание%20(MBI)%20и%20узнай%20свой%20уровень!%20Результаты%20с%20интерпретацией%20и%20рекомендациями:%20https://ai4g.ru/test-mbi"
+          "url=https://ai4g.ru/mbi-test/" +
+          "&text=Пройди%20онлайн-тест%20на%20профессиональное%20выгорание%20(MBI)%20и%20узнай%20свой%20уровень!%20Результаты%20с%20интерпретацией%20и%20рекомендациями:%20https://ai4g.ru/mbi-test/"
         }
         icon="telegram.svg"
         alt="Telegram"
@@ -55,7 +55,7 @@ const SocialShare = () => (
         title="whatsapp"
         href={
           "https://api.whatsapp.com/send?text=" +
-          encodeURIComponent("Пройди онлайн-тест на профессиональное выгорание (MBI) и узнай свой уровень! Результаты с интерпретацией и рекомендациями: https://ai4g.ru/test-mbi")
+          encodeURIComponent("Пройди онлайн-тест на профессиональное выгорание (MBI) и узнай свой уровень! Результаты с интерпретацией и рекомендациями: https://ai4g.ru/mbi-test/")
         }
         icon="whatsapp.svg"
         alt="WhatsApp"

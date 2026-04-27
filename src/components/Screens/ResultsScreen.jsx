@@ -30,7 +30,7 @@ const ResultsScreen = ({
   };
 
   const handleRetakeTest = () => {
-    window.open('https://ai4g.ru/test-mbi', '_blank');
+    window.open('https://ai4g.ru/mbi-test/', '_blank');
   };
 
   const fullName = userData?.fullName || '';

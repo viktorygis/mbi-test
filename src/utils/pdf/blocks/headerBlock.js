@@ -33,7 +33,7 @@ export function headerBlock(userData, timeDisplay) {
         },
         {
           text: "Пройти тест ещё раз",
-          link: "https://ai4g.ru/test-mbi",
+          link: "https://ai4g.ru/mbi-test/",
           style: "subtitle",
           alignment: "right",
           decoration: "underline",

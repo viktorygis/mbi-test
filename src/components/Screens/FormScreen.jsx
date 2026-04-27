@@ -115,7 +115,7 @@ const FormScreen = ({ onSubmit }) => {
 		<div className="form-start" id="form-start">
 			<div className="form-start__container">
 				<div className="form-start__body">
-					<h2 className="form-start__title">Тест MBI</h2>
+					<h2 className="form-start__title">Тест MBI на выгорание Маслач</h2>
 					<h2 className="form-start__subtitle">Введите ваши данные для прохождения теста:</h2>
 
 					<form className="form-start__form" onSubmit={handleSubmit} noValidate>
