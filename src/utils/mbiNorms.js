@@ -1,21 +1,24 @@
 // src/utils/mbiNorms.js
-// Работа с данными шкал и рекомендациями, загружаемыми из public/data/scales.json
+// Работа с чистыми функциями для обработки шкал и рекомендаций
 
-let SCALES = null;
-
+// Загружаем scales и burnoutIndex — ты загружаешь ВНЕ и передаёшь в функции
 export async function loadScales(path = "/data/scales.json") {
-  if (SCALES) return SCALES; // кеширование
   const res = await fetch(path);
   const data = await res.json();
-  SCALES = data.scales || {};
-  SCALES.burnoutIndex = data.burnoutIndex || {};
-  return SCALES;
+  // Возвращаем весь объект с burnoutIndex и scales, чтобы всё удобно пробрасывать
+  return {
+    ...data.scales,
+    burnoutIndex: data.burnoutIndex || {}
+  };
 }
+
 // Поиск диапазонов по шкале и баллу
-export function getLevelForScore(scale, score) {
-  if (!SCALES?.[scale] || !Array.isArray(SCALES[scale].ranges)) return "Нет данных";
-  return SCALES[scale].ranges.find((r) => score >= r.min && score <= r.max)?.label || "Нет данных";
+export function getLevelForScore(scales, scaleKey, score) {
+  const scale = scales?.[scaleKey];
+  if (!scale || !Array.isArray(scale.ranges)) return "Нет данных";
+  return scale.ranges.find((r) => score >= r.min && score <= r.max)?.label || "Нет данных";
 }
+
 export function getScaleKeyByLabel(label) {
   const map = {
     "Психоэмоциональное истощение": "exhaustion",
@@ -25,12 +28,15 @@ export function getScaleKeyByLabel(label) {
   return map[label] || label;
 }
 
+// Поиск уровня нормы
 export function getNormLevel(scales, key, score) {
-  const scale = scales[key];
+  const scale = scales?.[key];
   if (!scale) return "Нет данных";
   const norm = (scale.norms || []).find((r) => score >= r.min && score <= r.max);
   return norm?.label || "Нет диапазона";
-} // Поиск ключа (как раньше — можно доработать чтобы ключи были в json)
+}
+
+// Преобразовать русcкий текст уровня в ключ
 export function getLevelKey(label) {
   const s = String(label || "").toLowerCase();
   if (s.includes("крайне низк")) return "veryLow";
@@ -40,16 +46,19 @@ export function getLevelKey(label) {
   if (s.includes("высок")) return "high";
   return "mid";
 }
-// Получить интерпретацию
-export function getRecommendation(scale, score) {
-  if (!SCALES?.[scale]) return "";
-  const label = getLevelForScore(scale, score);
+
+// Получить рекомендацию/интерпретацию уровня
+export function getRecommendation(scales, scaleKey, score) {
+  const scale = scales?.[scaleKey];
+  if (!scale) return "";
+  const label = getLevelForScore(scales, scaleKey, score);
   const key = getLevelKey(label);
-  return SCALES[scale]?.interpretations?.[key] || "";
+  return scale?.interpretations?.[key] || "";
 }
 
 export function getInterpretation(scales, key, levelLabel) {
-  if (!scales[key]) return null;
+  const scale = scales?.[key];
+  if (!scale) return null;
   const labelKey = {
     "Крайне низкое": "veryLow",
     "Крайне низкая": "veryLow",
@@ -63,27 +72,53 @@ export function getInterpretation(scales, key, levelLabel) {
     "Крайне высокая": "veryHigh",
   };
   const intKey = labelKey[levelLabel] || "mid";
-  return scales[key].interpretations?.[intKey] || null;
+  return scale.interpretations?.[intKey] || null;
 }
-export function isScalesLoaded() {
-  return !!SCALES;
-}
-//Профиль выгорания
+
+// Профиль "выгорания" по результатам
 export function combinedInterpretation(scores) {
-  const exhausted = scores.exhaustion >= 31; // высокий/крайне высокий
-  const depersonal = scores.depersonalization >= 18;
-  const reduced = scores.reduction <= 18; // обратная шкала: чем ниже, тем лучше
+  let exhaustion, depersonalization, reduction;
+
+  // Если массив — достаем по индексам (если порядок правильный)
+  if (Array.isArray(scores)) {
+    exhaustion = scores[0];
+    depersonalization = scores[1];
+    reduction = scores[2];
+  } else if (scores && typeof scores === 'object') {
+    exhaustion = scores.exhaustion;
+    depersonalization = scores.depersonalization;
+    reduction = scores.reduction;
+  }
+
+  // Если что-то не определено — возвращаем пусто или какую-то заглушку
+  if (
+    typeof exhaustion !== 'number' ||
+    typeof depersonalization !== 'number' ||
+    typeof reduction !== 'number'
+  ) {
+    return [];
+  }
+
+  const exhausted = exhaustion >= 31;
+  const depersonal = depersonalization >= 18;
+  const reduced = reduction <= 18; // обратная шкала: чем ниже, тем лучше
 
   const messages = [];
 
   if (exhausted && depersonal && reduced) {
-    messages.push("По всем трём шкалам есть выраженные признаки выгорания: человек сильно истощён, эмоционально дистанцируется и чувствует снижение профессиональной эффективности.");
+    messages.push(
+      "По всем трём шкалам есть выраженные признаки выгорания: человек сильно истощён, эмоционально дистанцируется и чувствует снижение профессиональной эффективности."
+    );
   } else {
     if (exhausted && depersonal) {
-      messages.push("Сочетание высокого истощения и выраженной дистанции в общении говорит о том, что ресурсы уже сильно снижены, а взаимодействие с людьми даётся с трудом.");
+      messages.push(
+        "Сочетание высокого истощения и выраженной дистанции в общении говорит о том, что ресурсы уже сильно снижены, а взаимодействие с людьми даётся с трудом."
+      );
     }
     if (exhausted && reduced) {
-      messages.push("Сочетание высокого истощения и снижения ощущения профессиональной эффективности говорит о риске потери мотивации и уверенности в своей работе.");
+      messages.push(
+        "Сочетание высокого истощения и снижения ощущения профессиональной эффективности говорит о риске потери мотивации и уверенности в своей работе."
+      );
     }
   }
 

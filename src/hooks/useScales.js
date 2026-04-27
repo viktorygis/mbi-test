@@ -1,3 +1,5 @@
+// src/hooks/useScales.js
+
 import { useEffect, useState } from "react";
 
 // Универсальный хук загрузки scales.json (асинхронно)

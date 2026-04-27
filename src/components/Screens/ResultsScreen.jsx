@@ -15,10 +15,7 @@ const ENABLE_RESULTS_DEBUG = false;
 const ResultsScreen = ({
   mbiResults,
   userData,
-  timeDisplay,
-  answerIndices = [],
-  questions = [],
-  answerOptions = [],
+  timeDisplay
 }) => {
   const [showSuccess, setShowSuccess] = useState(false);
 
