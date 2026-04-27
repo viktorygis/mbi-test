@@ -48,7 +48,8 @@ const ResultsScreen = ({
       <div className="result-main">
         <MbiScalesSection mbiResults={mbiResults} />
         <MbiRecommendationsSection mbiResults={mbiResults} />
-        <MbiInterpretationSection />
+        <MbiInterpretationSection results={mbiResults} />
+
       </div>
       <ExtrasSection onRetakeTest={handleRetakeTest} />
       <LiteratureSection />
