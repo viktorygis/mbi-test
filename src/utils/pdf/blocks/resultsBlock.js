@@ -12,7 +12,7 @@ function barRow(score, maxScore, color) {
 
   const elements = [
     // ВСЕГДА рисуем серую полоску со скруглёнными концами (фоновый бар)
-    { type: "rect", x: 0, y: 0, w: barWidth, h: barHeight, r: radius, color: "#e5e7eb" }
+    { type: "rect", x: 0, y: 0, w: barWidth, h: barHeight, r: radius, color: "#e5e7eb" },
   ];
 
   // Накладываем цветной бар, если большая 0
@@ -66,10 +66,14 @@ function scaleBlock(title, score, maxScore, level, description, invertedNote, ba
 
 export function resultsBlock(mbiResults) {
   const { scores, burnoutIndex, scales, burnoutConfig } = mbiResults;
-  const levelExh = getLevelForScore("exhaustion", scores.exhaustion);
-  const levelDep = getLevelForScore("depersonalization", scores.depersonalization);
-  const levelRed = getLevelForScore("reduction", scores.reduction);
-  const levelBurnout = getLevelForScore("burnoutIndex", burnoutIndex);
+  const levelExh = getLevelForScore(scales, "exhaustion", scores.exhaustion);
+  const levelDep = getLevelForScore(scales, "depersonalization", scores.depersonalization);
+  const levelRed = getLevelForScore(scales, "reduction", scores.reduction);
+  const levelBurnout = getLevelForScore(
+    { burnoutIndex: burnoutConfig }, // объект с нормами, maxScore и т.д.
+    "burnoutIndex",
+    burnoutIndex,
+  );
   return [
     { text: "Результаты вашего тестирования", fontSize: 18, bold: true, alignment: "center", margin: [0, 0, 0, 4] },
     centerLine(400),

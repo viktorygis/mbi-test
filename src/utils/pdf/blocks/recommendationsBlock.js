@@ -45,20 +45,20 @@ export function recommendationsBlock(mbiResults) {
     {
       key: "exhaustion",
       label: "Эмоциональное истощение",
-      level: getLevelForScore("exhaustion", scores.exhaustion),
-      reco: getRecommendation("exhaustion", scores.exhaustion),
+      level: getLevelForScore(mbiResults.scales, "exhaustion", scores.exhaustion),
+      reco: getRecommendation(mbiResults.scales, "exhaustion", scores.exhaustion),
     },
     {
       key: "depersonalization",
       label: "Деперсонализация",
-      level: getLevelForScore("depersonalization", scores.depersonalization),
-      reco: getRecommendation("depersonalization", scores.depersonalization),
+      level: getLevelForScore(mbiResults.scales, "depersonalization", scores.depersonalization),
+      reco: getRecommendation(mbiResults.scales, "depersonalization", scores.depersonalization),
     },
     {
       key: "reduction",
       label: "Редукция профессиональных достижений",
-      level: getLevelForScore("reduction", scores.reduction),
-      reco: getRecommendation("reduction", scores.reduction),
+      level: getLevelForScore(mbiResults.scales, "reduction", scores.reduction),
+      reco: getRecommendation(mbiResults.scales, "reduction", scores.reduction),
     },
   ].filter((r) => isRecoValid(r.reco));
 
@@ -67,24 +67,26 @@ export function recommendationsBlock(mbiResults) {
   return [
     { text: "Рекомендации по результатам", fontSize: 18, bold: true, alignment: "center", margin: [0, 0, 0, 4] },
     centerLine(300),
-    ...recos.map((r) => [
-      { text: r.label, fontSize: 13, bold: true, margin: [0, 6, 0, 2] },
-      {
-        columns: [
-          levelIcon(r.level),
-          {
-            text: r.level,
-            color: getLevelColor(r.level),
-            fontSize: 11,
-            bold: true,
-            margin: [0, 0, 8, 0],
-          },
-        ],
-        columnGap: 4,
-        margin: [0, 0, 0, 2],
-      },
-      recoTextObj(r.reco),
-    ]).flat(),
+    ...recos
+      .map((r) => [
+        { text: r.label, fontSize: 13, bold: true, margin: [0, 6, 0, 2] },
+        {
+          columns: [
+            levelIcon(r.level),
+            {
+              text: r.level,
+              color: getLevelColor(r.level),
+              fontSize: 11,
+              bold: true,
+              margin: [0, 0, 8, 0],
+            },
+          ],
+          columnGap: 4,
+          margin: [0, 0, 0, 2],
+        },
+        recoTextObj(r.reco),
+      ])
+      .flat(),
     ...(combinedReco && combinedReco.length
       ? [
           { text: "Профиль выгорания", fontSize: 13, bold: true, margin: [0, 12, 0, 4] },

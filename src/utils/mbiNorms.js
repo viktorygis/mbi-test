@@ -15,8 +15,8 @@ export async function loadScales(path = "/data/scales.json") {
 // Поиск диапазонов по шкале и баллу
 export function getLevelForScore(scales, scaleKey, score) {
   const scale = scales?.[scaleKey];
-  if (!scale || !Array.isArray(scale.ranges)) return "Нет данных";
-  return scale.ranges.find((r) => score >= r.min && score <= r.max)?.label || "Нет данных";
+  if (!scale || !Array.isArray(scale.norms)) return "Нет данных";
+  return scale.norms.find((r) => score >= r.min && score <= r.max)?.label || "Нет данных";
 }
 
 export function getScaleKeyByLabel(label) {
