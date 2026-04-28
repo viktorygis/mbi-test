@@ -8,13 +8,19 @@ import { PINK, GRAY, BLUE } from "./pdf/pdfStyles";
  * @param {number[]} answerIndices - массив индексов ответов (0..5) длиной 22
  * @param {number[]} itemIds - номера вопросов для данной шкалы (1-based)
  * @param {number[]} scoreMap - соответствие индекса ответа баллу (например [0,1,3,4,5,6])
+ * * @param {boolean} invert - инвертировать баллы? (только для "редукции")
+
  * @returns {number}
  */
-export function computeScaleScore(answerIndices, itemIds, scoreMap) {
+export function computeScaleScore(answerIndices, itemIds, scoreMap, invert = false) {
   return itemIds.reduce((sum, id) => {
     const idx = answerIndices[id - 1]; // id is 1-based
     if (typeof idx !== "number" || idx < 0 || idx >= scoreMap.length) return sum;
-    return sum + scoreMap[idx];
+    let score = scoreMap[idx];
+    if (invert) {
+      score = scoreMap[scoreMap.length - 1] - score;
+    }
+    return sum + score;
   }, 0);
 }
 
@@ -28,7 +34,7 @@ export function computeScaleScore(answerIndices, itemIds, scoreMap) {
 export function computeMbiScores(answerIndices, scalesConfig, scoreMap) {
   const exhaustion = computeScaleScore(answerIndices, scalesConfig.exhaustion.items, scoreMap);
   const depersonalization = computeScaleScore(answerIndices, scalesConfig.depersonalization.items, scoreMap);
-  const reduction = computeScaleScore(answerIndices, scalesConfig.reduction.items, scoreMap);
+  const reduction = computeScaleScore(answerIndices, scalesConfig.reduction.items, scoreMap, true);
   return { exhaustion, depersonalization, reduction };
 }
 
@@ -55,11 +61,10 @@ function getLevelLabel(score, norms) {
  * @param {number} exhaustion
  * @param {number} depersonalization
  * @param {number} reduction
- * @param {number} reductionMax - максимальный балл по шкале редукции (48)
  * @returns {number}
  */
-export function computeBurnoutIndex(exhaustion, depersonalization, reduction, reductionMax = 48) {
-  return exhaustion + depersonalization + (reductionMax - reduction);
+export function computeBurnoutIndex(exhaustion, depersonalization, reduction) {
+  return exhaustion + depersonalization + reduction;
 }
 
 /**
@@ -74,7 +79,8 @@ export function createMbiResults(answerIndices, { scales, burnoutIndex, scores }
   const exhaustionLevel = getLevelLabel(scoresObj.exhaustion, scales.exhaustion.norms);
   const depersonalizationLevel = getLevelLabel(scoresObj.depersonalization, scales.depersonalization.norms);
   const reductionLevel = getLevelLabel(scoresObj.reduction, scales.reduction.norms);
-  const burnoutIndexValue = computeBurnoutIndex(scoresObj.exhaustion, scoresObj.depersonalization, scoresObj.reduction, scales.reduction.maxScore);
+  // Исправлено!
+  const burnoutIndexValue = computeBurnoutIndex(scoresObj.exhaustion, scoresObj.depersonalization, scoresObj.reduction);
   const burnoutLevel = getLevelLabel(burnoutIndexValue, burnoutIndex.norms);
 
   return {

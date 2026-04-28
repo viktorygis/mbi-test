@@ -1,3 +1,5 @@
+//MbiInterpretationSection.jsx - справочная информация по шкалам и их комбинациям
+
 import React from "react";
 
 const ICONS = {

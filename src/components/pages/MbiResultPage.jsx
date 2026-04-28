@@ -1,3 +1,4 @@
+// MbiResultPage.jsx - страница отображения результатов теста MBI, с загрузкой данных и обработкой ошибок
 import React, { useEffect, useState, useContext, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import ResultsScreen from "../Screens/ResultsScreen";
@@ -34,7 +35,6 @@ export default function MbiResultPage() {
       setError(false);
       setResultData(null);
       try {
-        // localStorage (преимущественно фронтовый режим)
         const localData = localStorage.getItem(`test-result-${id}`);
         if (localData) {
           const parsedData = JSON.parse(localData);
@@ -44,7 +44,6 @@ export default function MbiResultPage() {
           }
           return;
         }
-        // Серверная часть (по желанию)
         const response = await fetch(`/api/mbi-test/results/${id}`);
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const data = await response.json();
@@ -53,8 +52,7 @@ export default function MbiResultPage() {
           setError(false);
           setLoading(false);
         }
-      } catch (err) {
-        console.error("Ошибка загрузки результата:", err);
+      } catch {
         if (isMounted) {
           setError(true);
           setLoading(false);
@@ -80,7 +78,6 @@ export default function MbiResultPage() {
 
   const displayedResultData = resultData ?? fallbackResultData;
 
-  // Ждём полной загрузки всех необходимых данных
   const isReady =
     !mbiLoading &&
     questions &&
@@ -90,13 +87,12 @@ export default function MbiResultPage() {
     !!burnoutIndex &&
     displayedResultData;
 
-  // Нормализуем ответы
   const answerIndices = normalizeAnswers(
     displayedResultData?.answerIndices,
     Array.isArray(questions) ? questions.length : 22
   );
 
-  // Вычисляем результат
+  // Корректный useMemo — только вычисления, никаких setState!
   const mbiResults = useMemo(() => {
     if (
       !isReady ||
@@ -109,7 +105,6 @@ export default function MbiResultPage() {
       !scales.depersonalization ||
       !scales.reduction
     ) {
-      console.error("MBI DATA INCOMPLETE", { scales, burnoutIndex, scores, answerIndices });
       return null;
     }
     try {
@@ -118,8 +113,7 @@ export default function MbiResultPage() {
         burnoutIndex,
         scores,
       });
-    } catch (err) {
-      console.error("Ошибка вычисления MBI результатов:", err);
+    } catch {
       return null;
     }
   }, [isReady, scales, burnoutIndex, scores, answerIndices, questions.length]);

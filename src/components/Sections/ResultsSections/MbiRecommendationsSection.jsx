@@ -1,3 +1,5 @@
+// MbiRecommendationsSection.jsx - отображение рекомендаций по результатам теста MBI
+
 import { getLevelForScore, getRecommendation, combinedInterpretation } from '../../../utils/mbiNorms';
 import RecommendationCard from './RecommendationCard';
 
@@ -17,12 +19,9 @@ const TITLES = {
 const MbiRecommendationsSection = ({ mbiResults, scales }) => {
   const cards = buildRecommendations(mbiResults, scales);
   const showNeutral = cards.length === 0;
-  const combined =
-    mbiResults && Array.isArray(mbiResults.scores)
-      ? combinedInterpretation(mbiResults.scores)
-      : mbiResults
-        ? combinedInterpretation(mbiResults.scores)
-        : [];
+  const combined = mbiResults && mbiResults.scores
+    ? combinedInterpretation(mbiResults.scores)
+    : [];
 
   return (
     <section className="mbi-recommendations" aria-labelledby="mbi-recommendations-title">
@@ -75,15 +74,13 @@ const MbiRecommendationsSection = ({ mbiResults, scales }) => {
 };
 
 function buildRecommendations(mbiResults, scales) {
-  if (!mbiResults || !mbiResults.scores || !scales)  {
-    console.log('!mbiResults'); return [];
+  if (!mbiResults || !mbiResults.scores || !scales) {
+    return [];
   }
-  console.log('mbiResults.scores:', mbiResults.scores);
   const keys = ["exhaustion", "depersonalization", "reduction"];
   return keys.map(key => {
     const score = mbiResults.scores[key];
     const recommendation = getRecommendation(scales, key, score);
-    console.log('key:', key, 'score:', score, 'recommendation:', recommendation);
     const levelLabel = getLevelForScore(scales, key, score);
     if (!recommendation) return null;
     return {
@@ -95,4 +92,5 @@ function buildRecommendations(mbiResults, scales) {
     };
   }).filter(Boolean);
 }
+
 export default MbiRecommendationsSection;

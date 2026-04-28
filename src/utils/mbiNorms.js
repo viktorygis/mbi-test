@@ -55,9 +55,7 @@ export function getRecommendation(scales, scaleKey, score) {
   const key = getLevelKey(label);
   return scale?.interpretations?.[key] || "";
 }
-console.log(getRecommendation("exhaustion", 17));
-console.log(getRecommendation("depersonalization", 21));
-console.log(getRecommendation("reduction", 27));
+
 export function getInterpretation(scales, key, levelLabel) {
   const scale = scales?.[key];
   if (!scale) return null;
