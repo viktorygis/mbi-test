@@ -8,7 +8,7 @@ export async function loadScales(path = "/data/scales.json") {
   // Возвращаем весь объект с burnoutIndex и scales, чтобы всё удобно пробрасывать
   return {
     ...data.scales,
-    burnoutIndex: data.burnoutIndex || {}
+    burnoutIndex: data.burnoutIndex || {},
   };
 }
 
@@ -55,7 +55,9 @@ export function getRecommendation(scales, scaleKey, score) {
   const key = getLevelKey(label);
   return scale?.interpretations?.[key] || "";
 }
-
+console.log(getRecommendation("exhaustion", 17));
+console.log(getRecommendation("depersonalization", 21));
+console.log(getRecommendation("reduction", 27));
 export function getInterpretation(scales, key, levelLabel) {
   const scale = scales?.[key];
   if (!scale) return null;
@@ -84,18 +86,14 @@ export function combinedInterpretation(scores) {
     exhaustion = scores[0];
     depersonalization = scores[1];
     reduction = scores[2];
-  } else if (scores && typeof scores === 'object') {
+  } else if (scores && typeof scores === "object") {
     exhaustion = scores.exhaustion;
     depersonalization = scores.depersonalization;
     reduction = scores.reduction;
   }
 
   // Если что-то не определено — возвращаем пусто или какую-то заглушку
-  if (
-    typeof exhaustion !== 'number' ||
-    typeof depersonalization !== 'number' ||
-    typeof reduction !== 'number'
-  ) {
+  if (typeof exhaustion !== "number" || typeof depersonalization !== "number" || typeof reduction !== "number") {
     return [];
   }
 
@@ -106,19 +104,13 @@ export function combinedInterpretation(scores) {
   const messages = [];
 
   if (exhausted && depersonal && reduced) {
-    messages.push(
-      "По всем трём шкалам есть выраженные признаки выгорания: человек сильно истощён, эмоционально дистанцируется и чувствует снижение профессиональной эффективности."
-    );
+    messages.push("По всем трём шкалам есть выраженные признаки выгорания: человек сильно истощён, эмоционально дистанцируется и чувствует снижение профессиональной эффективности.");
   } else {
     if (exhausted && depersonal) {
-      messages.push(
-        "Сочетание высокого истощения и выраженной дистанции в общении говорит о том, что ресурсы уже сильно снижены, а взаимодействие с людьми даётся с трудом."
-      );
+      messages.push("Сочетание высокого истощения и выраженной дистанции в общении говорит о том, что ресурсы уже сильно снижены, а взаимодействие с людьми даётся с трудом.");
     }
     if (exhausted && reduced) {
-      messages.push(
-        "Сочетание высокого истощения и снижения ощущения профессиональной эффективности говорит о риске потери мотивации и уверенности в своей работе."
-      );
+      messages.push("Сочетание высокого истощения и снижения ощущения профессиональной эффективности говорит о риске потери мотивации и уверенности в своей работе.");
     }
   }
 

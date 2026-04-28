@@ -14,27 +14,8 @@ const TITLES = {
   reduction: "Редукция профессиональных достижений",
 };
 
-function buildRecommendations(mbiResults) {
-  if (!mbiResults) return [];
-  const { scores } = mbiResults;
-  const keys = ["exhaustion", "depersonalization", "reduction"];
-  return keys.map(key => {
-    const score = scores[key];
-    const levelLabel = getLevelForScore(key, score);
-    const recommendation = getRecommendation(key, score);
-    if (!recommendation) return null;
-    return {
-      key,
-      icon: ICONS[key],
-      title: TITLES[key],
-      level: levelLabel,
-      recommendation,
-    };
-  }).filter(Boolean);
-}
-
-const MbiRecommendationsSection = ({ mbiResults }) => {
-  const cards = buildRecommendations(mbiResults);
+const MbiRecommendationsSection = ({ mbiResults, scales }) => {
+  const cards = buildRecommendations(mbiResults, scales);
   const showNeutral = cards.length === 0;
   const combined =
     mbiResults && Array.isArray(mbiResults.scores)
@@ -69,13 +50,14 @@ const MbiRecommendationsSection = ({ mbiResults }) => {
             {combined && combined.length > 0 && (
               <div className="mbi-recommendations__combined">
                 <div className="mbi-recommendations__combined-header">
-                <div className="mbi-recommendations__combined-icon-wrap">
-                  <img
-                    className="mbi-recommendations__combined-icon"
-                    src="img/mbi-test/burnout-index.svg"
-                    alt=""
-                    aria-hidden="true"
-                  />  </div>
+                  <div className="mbi-recommendations__combined-icon-wrap">
+                    <img
+                      className="mbi-recommendations__combined-icon"
+                      src="img/mbi-test/burnout-index.svg"
+                      alt=""
+                      aria-hidden="true"
+                    />
+                  </div>
                   <h3 className="mbi-recommendations__combined-title">
                     Профиль выгорания
                   </h3>
@@ -92,4 +74,25 @@ const MbiRecommendationsSection = ({ mbiResults }) => {
   );
 };
 
+function buildRecommendations(mbiResults, scales) {
+  if (!mbiResults) {
+    console.log('!mbiResults'); return [];
+  }
+  console.log('mbiResults.scores:', mbiResults.scores);
+  const keys = ["exhaustion", "depersonalization", "reduction"];
+  return keys.map(key => {
+    const score = mbiResults.scores[key];
+    const recommendation = getRecommendation(scales, key, score);
+    console.log('key:', key, 'score:', score, 'recommendation:', recommendation);
+    const levelLabel = getLevelForScore(scales, key, score);
+    if (!recommendation) return null;
+    return {
+      key,
+      icon: ICONS[key],
+      title: TITLES[key],
+      level: levelLabel,
+      recommendation,
+    };
+  }).filter(Boolean);
+}
 export default MbiRecommendationsSection;
