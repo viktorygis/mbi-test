@@ -12,13 +12,21 @@ const ScaleRow = ({ title, score, maxScore, level, scaleConfig }) => {
       <div className="mbi-scale__header">
         <h3 className="mbi-scale__title">{title}</h3>
       </div>
+      {/* ======= Уровень теперь сверху полосы ======= */}
+      {level && (
+        <div
+          className="mbi-scale__level-label"
+          style={{
+            color: getLevelColor(level),
+
+          }}
+        >
+          {level}
+        </div>
+      )}
       <div className="mbi-scale__score-line">
         <span className="mbi-scale__score">{score}</span>
         <span className="mbi-scale__max"> / {maxScore}</span>
-      </div>
-      <div className="mbi-scale__bar-labels-row" style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', marginBottom: '2px' }}>
-        <span>0%</span>
-        <span>100%</span>
       </div>
       <div className="mbi-scale__bar-container">
         <div
@@ -29,22 +37,13 @@ const ScaleRow = ({ title, score, maxScore, level, scaleConfig }) => {
           }}
         />
       </div>
-      {/* ======= СЮДА: подпись уровня ======= */}
-      {level && (
-        <div
-          className="mbi-scale__level-label"
-          style={{
-            color: getLevelColor(level),
-            fontWeight: 'bold',
-            marginTop: '4px',
-            fontSize: '14px',
-            textAlign: 'right'
-          }}
-        >
-          {level}
-        </div>
-      )}
-      {/* ======/ конец подписи уровня ====== */}
+      {/* ====== проценты под полосой ====== */}
+      <div
+        className="mbi-scale__bar-labels-row"
+      >
+        <span>0%</span>
+        <span>100%</span>
+      </div>
       {/* Интерпретация */}
       <div className="mbi-scale__recommendation">
         {recommendationObj?.short || recommendationObj}
@@ -61,11 +60,10 @@ const BurnoutIndexBlock = ({
   burnoutConfig
 }) => {
   const percent = maxScore > 0 ? Math.round((burnoutIndex / maxScore) * 100) : 0;
-  // Рекомендация для общего индекса (например, через "burnoutIndex" или "burnout" как key)
   const recommendationObj = getRecommendation(
-    { burnoutIndex: burnoutConfig }, // объект-конфиг
-    'burnoutIndex',                  // ключ
-    burnoutIndex                     // число баллов
+    { burnoutIndex: burnoutConfig },
+    'burnoutIndex',
+    burnoutIndex
   );
 
   return (
@@ -73,23 +71,23 @@ const BurnoutIndexBlock = ({
       <h3 className="mbi-burnout-index__title">
         Общий индекс психического выгорания
       </h3>
-      <div className="mbi-burnout-index__score-line">
-        <div>
+      {/* ======= Уровень теперь сверху полосы ======= */}
+      {burnoutLevel && (
+        <div
+          className="mbi-burnout-index__level-label"
+          style={{
+            color: getLevelColor(burnoutLevel),
+          }}
+
+        >
+          {burnoutLevel}
+        </div>
+      )}
+      <div className="mbi-burnout-index__score-line" style={{ marginBottom: 0 }}>
+        <div className="mbi-burnout-index__score-line">
           <span className="mbi-burnout-index__score">{burnoutIndex}</span>
           <span className="mbi-burnout-index__max"> / {maxScore}</span>
         </div>
-      </div>
-      {/* Подписи 0% и 100% */}
-      <div
-        className="mbi-burnout-index__bar-labels-row"
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          fontSize: '12px',
-          marginBottom: '2px'
-        }}>
-        <span>0%</span>
-        <span>100%</span>
       </div>
       <div className="mbi-burnout-index__bar-container">
         <div
@@ -100,14 +98,21 @@ const BurnoutIndexBlock = ({
           }}
         />
       </div>
-      {/* Только интерпретация, уровень не выводим */}
+      {/* ====== проценты под полосой ====== */}
+      <div
+        className="mbi-burnout-index__bar-labels-row"
+       >
+        <span>0%</span>
+        <span>100%</span>
+      </div>
+      {/* Интерпретация */}
       <div className="mbi-burnout-index__recommendation">
         {recommendationObj?.short || recommendationObj}
-
       </div>
     </div>
   );
 };
+
 // Основной компонент секции
 const MbiScalesSection = ({ mbiResults }) => {
   if (!mbiResults) return null;

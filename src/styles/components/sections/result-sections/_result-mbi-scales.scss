@@ -85,14 +85,13 @@
     }
   }
 
-  //mbi-scale__score-line
+  //.mbi-scale__score-line
   &__score-line {
     margin-bottom: 8px;
   }
 
   //mbi-scale__score
   &__score {
-    font-size: 28px;
     font-weight: 700;
     color: $color-text-dark;
   }
@@ -103,7 +102,16 @@
     color: $color-counter;
   }
 
-  //mbi-scale__bar-container
+  //======= уровень над полосой =========
+  &__level-label {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    text-align: left;
+    line-height: 1.2;
+  }
+
+  //========= bar (прогресс) =========
   &__bar-container {
     height: 8px;
     background: $color-hist-bar-bg;
@@ -111,21 +119,28 @@
     overflow: hidden;
     margin-bottom: 10px;
   }
-
-  //mbi-scale__bar
   &__bar {
     height: 100%;
-    background: $color-primary;
     border-radius: 4px;
     transition: width 0.4s ease;
   }
 
-  //mbi-scale__description
-  &__description {
+  //========== проценты под полосой ==========
+  &__bar-labels-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: $color-counter;
+    margin-top: 2px;
+    margin-bottom: 2px;
+  }
+
+  //mbi-scale__recommendation
+  &__recommendation {
     font-size: 13px;
-    color: #555;
+    color: #505050;
     line-height: 1.5;
-    margin-top: 8px;
+    margin-top: 9px;
   }
 }
 
@@ -145,6 +160,15 @@
     margin-bottom: 12px;
   }
 
+  //======= уровень над полосой =========
+  &__level-label {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    text-align: left;
+    line-height: 1.2;
+  }
+
   //mbi-burnout-index__score-line--------------------------------
   &__score-line {
     display: flex;
@@ -154,26 +178,16 @@
     margin-bottom: 10px;
     flex-wrap: wrap;
   }
-
-  //mbi-burnout-index__score--------------------------------
   &__score {
-    font-size: 36px;
     font-weight: 700;
     color: $color-text-dark;
   }
-
-  //mbi-burnout-index__max--------------------------------
   &__max {
     font-size: 16px;
     color: $color-counter;
   }
 
-  //mbi-burnout-index__level--------------------------------
-  &__level {
-    font-size: 14px;
-  }
-
-  //mbi-burnout-index__bar-container--------------------------------
+  //========= bar (прогресс) =========
   &__bar-container {
     height: 10px;
     background: $color-hist-bar-bg;
@@ -181,30 +195,27 @@
     overflow: hidden;
     margin-bottom: 12px;
   }
-
-  //mbi-burnout-index__bar--------------------------------
   &__bar {
     height: 100%;
-    background: $color-accent;
-    border-radius: 5px;
+    border-radius: 4px;
     transition: width 0.4s ease;
   }
 
-  //mbi-burnout-index__description--------------------------------
-  &__description {
-    font-size: 13px;
-    color: #555;
-    line-height: 1.5;
+  //========== проценты под полосой ==========
+  &__bar-labels-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: $color-counter;
+    margin-top: 2px;
+    margin-bottom: 2px;
   }
-}
 
-// Уровни (badge)
-//mbi-level-------------------------------
-.mbi-level {
-  display: inline-block;
-  padding: 3px 10px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 600;
-  white-space: nowrap;
+  //mbi-burnout-index__recommendation
+  &__recommendation {
+    font-size: 13px;
+    color: #505050;
+    line-height: 1.5;
+    margin-top: 9px;
+  }
 }
