@@ -75,7 +75,7 @@ const MbiRecommendationsSection = ({ mbiResults, scales }) => {
 };
 
 function buildRecommendations(mbiResults, scales) {
-  if (!mbiResults) {
+  if (!mbiResults || !mbiResults.scores || !scales)  {
     console.log('!mbiResults'); return [];
   }
   console.log('mbiResults.scores:', mbiResults.scores);

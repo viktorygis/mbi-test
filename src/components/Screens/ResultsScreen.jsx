@@ -44,7 +44,8 @@ const ResultsScreen = ({
 
       <div className="result-main">
         <MbiScalesSection mbiResults={mbiResults} />
-        <MbiRecommendationsSection mbiResults={mbiResults} />
+        <MbiRecommendationsSection mbiResults={mbiResults} scales={mbiResults?.scales} />
+
         <MbiInterpretationSection results={mbiResults} />
 
       </div>

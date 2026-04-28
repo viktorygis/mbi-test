@@ -112,6 +112,7 @@ const SCALE_BAR_COLORS = {
 function normalizeLevelKey(label) {
   if (!label) return "mid";
   const lower = label.toLowerCase();
+  if (lower === "нет данных" || lower === "—") return "mid";
   if (lower.includes("крайне низк")) return "veryLow";
   if (lower.startsWith("низк")) return "low";
   if (lower.startsWith("средн")) return "mid";
