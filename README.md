@@ -69,6 +69,7 @@ mbi-test/
 | Форма            | IMask (маска телефона)                           |
 | Сервер           | Node.js, Express 5 *(опционально)*               |
 | Линтер           | ESLint 9                                         |
+| pdf              | pdfmake 0.3.7                                      |
 
 ---
 
