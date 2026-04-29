@@ -12,6 +12,8 @@ import { PINK, GRAY, BLUE } from "./pdf/pdfStyles";
 
  * @returns {number}
  */
+
+// Внутренняя функция (не экспортируется) - вычисляет балл для одной шкалы
 export function computeScaleScore(answerIndices, itemIds, scoreMap, invert = false) {
   return itemIds.reduce((sum, id) => {
     const idx = answerIndices[id - 1]; // id is 1-based
@@ -31,6 +33,8 @@ export function computeScaleScore(answerIndices, itemIds, scoreMap, invert = fal
  * @param {number[]} scoreMap
  * @returns {{ exhaustion: number, depersonalization: number, reduction: number }}
  */
+
+//computeMbiScores - принимает массив индексов ответов и конфигурацию шкал, возвращает объект с баллами по каждой шкале
 export function computeMbiScores(answerIndices, scalesConfig, scoreMap) {
   const exhaustion = computeScaleScore(answerIndices, scalesConfig.exhaustion.items, scoreMap);
   const depersonalization = computeScaleScore(answerIndices, scalesConfig.depersonalization.items, scoreMap);
@@ -63,6 +67,7 @@ function getLevelLabel(score, norms) {
  * @param {number} reduction
  * @returns {number}
  */
+//computeBurnoutIndex - принимает баллы по трём шкалам и возвращает общий индекс выгорания. Для редукции используется обратная шкала: чем ниже балл, тем выше выгорание.
 export function computeBurnoutIndex(exhaustion, depersonalization, reduction) {
   return exhaustion + depersonalization + reduction;
 }
@@ -74,6 +79,7 @@ export function computeBurnoutIndex(exhaustion, depersonalization, reduction) {
  * @returns {object}
  */
 
+// createMbiResults - принимает массив индексов ответов и полные данные из questions.json, возвращает объект с баллами, уровнями и рекомендациями для всех шкал и общего индекса выгорания
 export function createMbiResults(answerIndices, { scales, burnoutIndex, scores }) {
   const scoresObj = computeMbiScores(answerIndices, scales, scores);
   const exhaustionLevel = getLevelLabel(scoresObj.exhaustion, scales.exhaustion.norms);

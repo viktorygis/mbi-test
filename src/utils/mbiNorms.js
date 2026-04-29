@@ -1,17 +1,6 @@
 // src/utils/mbiNorms.js
 // Работа с чистыми функциями для обработки шкал и рекомендаций
 
-// Загружаем scales и burnoutIndex — ты загружаешь ВНЕ и передаёшь в функции
-export async function loadScales(path = "/data/scales.json") {
-  const res = await fetch(path);
-  const data = await res.json();
-  // Возвращаем весь объект с burnoutIndex и scales, чтобы всё удобно пробрасывать
-  return {
-    ...data.scales,
-    burnoutIndex: data.burnoutIndex || {},
-  };
-}
-
 // Поиск диапазонов по шкале и баллу
 export function getLevelForScore(scales, scaleKey, score) {
   const scale = scales?.[scaleKey];
@@ -19,22 +8,6 @@ export function getLevelForScore(scales, scaleKey, score) {
   return scale.norms.find((r) => score >= r.min && score <= r.max)?.label || "Нет данных";
 }
 
-export function getScaleKeyByLabel(label) {
-  const map = {
-    "Психоэмоциональное истощение": "exhaustion",
-    Деперсонализация: "depersonalization",
-    "Редукция личных достижений": "reduction",
-  };
-  return map[label] || label;
-}
-
-// Поиск уровня нормы
-export function getNormLevel(scales, key, score) {
-  const scale = scales?.[key];
-  if (!scale) return "Нет данных";
-  const norm = (scale.norms || []).find((r) => score >= r.min && score <= r.max);
-  return norm?.label || "Нет диапазона";
-}
 
 // Преобразовать русcкий текст уровня в ключ
 export function getLevelKey(label) {
@@ -54,25 +27,6 @@ export function getRecommendation(scales, scaleKey, score) {
   const label = getLevelForScore(scales, scaleKey, score);
   const key = getLevelKey(label);
   return scale?.interpretations?.[key] || "";
-}
-
-export function getInterpretation(scales, key, levelLabel) {
-  const scale = scales?.[key];
-  if (!scale) return null;
-  const labelKey = {
-    "Крайне низкое": "veryLow",
-    "Крайне низкая": "veryLow",
-    Низкое: "low",
-    Низкая: "low",
-    Среднее: "mid",
-    Средняя: "mid",
-    Высокое: "high",
-    Высокая: "high",
-    "Крайне высокое": "veryHigh",
-    "Крайне высокая": "veryHigh",
-  };
-  const intKey = labelKey[levelLabel] || "mid";
-  return scale.interpretations?.[intKey] || null;
 }
 
 // Профиль "выгорания" по результатам
