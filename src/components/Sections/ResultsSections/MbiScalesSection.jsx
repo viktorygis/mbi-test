@@ -3,31 +3,39 @@ import React from 'react';
 import { getLevelColor } from '../../../utils/mbiHelpers';
 import { getRecommendation } from '../../../utils/mbiNorms';
 
+const ICONS = {
+  exhaustion: "img/mbi-test/emotional-exhaustion.svg",
+  depersonalization: "img/mbi-test/depersonalization.svg",
+  reduction: "img/mbi-test/reduced-achievement.svg",
+  burnoutIndex: "img/mbi-test/burnout-index.svg",
+};
 // Одна строка для выводимой шкалы
-const ScaleRow = ({ title, score, maxScore, level, scaleConfig }) => {
+const ScaleRow = ({ title, score, maxScore, level, scaleConfig, icon }) => {
   const percent = maxScore > 0 ? Math.round((score / maxScore) * 100) : 0;
   const recommendationObj = getRecommendation({ [scaleConfig.key]: scaleConfig }, scaleConfig.key, score);
   return (
     <div className="mbi-scale">
       <div className="mbi-scale__header">
+        {icon && (
+          <div className="mbi-scale__icon-wrap">
+            <img src={icon} alt="" className="mbi-scale__icon" />
+          </div>
+        )}
         <h3 className="mbi-scale__title">{title}</h3>
       </div>
-      {/* ======= Уровень теперь сверху полосы ======= */}
-      {level && (
-        <div
-          className="mbi-scale__level-label"
-          style={{
-            color: getLevelColor(level),
-
-          }}
-        >
-          {level}
+      <div className="mbi-scale__score-row">
+        {level && (
+          <div className="mbi-scale__level-label" style={{ color: getLevelColor(level), }}>
+            {level}
+          </div>
+        )}
+        <div className="mbi-scale__score-line">
+          <span className="mbi-scale__score">{score}</span>
+          <span className="mbi-scale__max"> / {maxScore}</span>
         </div>
-      )}
-      <div className="mbi-scale__score-line">
-        <span className="mbi-scale__score">{score}</span>
-        <span className="mbi-scale__max"> / {maxScore}</span>
       </div>
+
+
       <div className="mbi-scale__bar-container">
         <div
           className="mbi-scale__bar"
@@ -53,12 +61,7 @@ const ScaleRow = ({ title, score, maxScore, level, scaleConfig }) => {
 };
 
 // Блок с общим индексом выгорания
-const BurnoutIndexBlock = ({
-  burnoutIndex,
-  maxScore,
-  burnoutLevel,
-  burnoutConfig
-}) => {
+const BurnoutIndexBlock = ({ burnoutIndex, maxScore, burnoutLevel, burnoutConfig, icon }) => {
   const percent = maxScore > 0 ? Math.round((burnoutIndex / maxScore) * 100) : 0;
   const recommendationObj = getRecommendation(
     { burnoutIndex: burnoutConfig },
@@ -68,22 +71,31 @@ const BurnoutIndexBlock = ({
 
   return (
     <div className="mbi-burnout-index">
-      <h3 className="mbi-burnout-index__title">
-        Общий индекс психического выгорания
-      </h3>
-      {/* ======= Уровень теперь сверху полосы ======= */}
-      {burnoutLevel && (
-        <div
-          className="mbi-burnout-index__level-label"
-          style={{
-            color: getLevelColor(burnoutLevel),
-          }}
+      <div className="mbi-burnout-index__header">
+        {icon && (
+          <div className="mbi-burnout-index__icon-wrap">
+            <img src={icon} alt="" className="mbi-burnout-index__icon" />
+          </div>
+        )}
+        <h3 className="mbi-burnout-index__title">
+          Общий индекс психического выгорания
+        </h3>
+      </div>
+      <div className="mbi-burnout-index__score-row">
+        {/* ======= Уровень теперь сверху полосы ======= */}
+        {burnoutLevel && (
+          <div
+            className="mbi-burnout-index__level-label"
+            style={{
+              color: getLevelColor(burnoutLevel),
+            }}
 
-        >
-          {burnoutLevel}
-        </div>
-      )}
-      <div className="mbi-burnout-index__score-line" style={{ marginBottom: 0 }}>
+          >
+            {burnoutLevel}
+          </div>
+
+        )
+        }
         <div className="mbi-burnout-index__score-line">
           <span className="mbi-burnout-index__score">{burnoutIndex}</span>
           <span className="mbi-burnout-index__max"> / {maxScore}</span>
@@ -101,7 +113,7 @@ const BurnoutIndexBlock = ({
       {/* ====== проценты под полосой ====== */}
       <div
         className="mbi-burnout-index__bar-labels-row"
-       >
+      >
         <span>0%</span>
         <span>100%</span>
       </div>
@@ -109,7 +121,7 @@ const BurnoutIndexBlock = ({
       <div className="mbi-burnout-index__recommendation">
         {recommendationObj?.short || recommendationObj}
       </div>
-    </div>
+    </div >
   );
 };
 
@@ -126,6 +138,7 @@ const MbiScalesSection = ({ mbiResults }) => {
         <div className="mbi-scales-section__scales">
           <ScaleRow
             title={scales.exhaustion.title}
+            icon={ICONS.exhaustion}
             score={scores.exhaustion}
             maxScore={scales.exhaustion.maxScore}
             level={levels.exhaustion}
@@ -133,6 +146,7 @@ const MbiScalesSection = ({ mbiResults }) => {
           />
           <ScaleRow
             title={scales.depersonalization.title}
+            icon={ICONS.depersonalization}
             score={scores.depersonalization}
             maxScore={scales.depersonalization.maxScore}
             level={levels.depersonalization}
@@ -140,6 +154,7 @@ const MbiScalesSection = ({ mbiResults }) => {
           />
           <ScaleRow
             title={scales.reduction.title}
+            icon={ICONS.reduction}
             score={scores.reduction}
             maxScore={scales.reduction.maxScore}
             level={levels.reduction}
@@ -148,6 +163,7 @@ const MbiScalesSection = ({ mbiResults }) => {
         </div>
         <BurnoutIndexBlock
           burnoutIndex={burnoutIndex}
+          icon={ICONS.burnoutIndex}
           maxScore={burnoutConfig.maxScore}
           burnoutLevel={burnoutLevel}
           burnoutConfig={burnoutConfig}

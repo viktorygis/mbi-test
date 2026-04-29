@@ -67,10 +67,27 @@
   //mbi-scale__header
   &__header {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 8px;
+    align-items: center;
+    gap: 10px;
     margin-bottom: 10px;
+  }
+
+  //mbi-scale__icon-wrap
+  &__icon-wrap {
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    background: rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    flex: 0 0 42px;
+  }
+
+  //mbi-scale__icon
+  &__icon {
+    width: 24px;
+    height: 24px;
   }
 
   //mbi-scale__title
@@ -80,9 +97,12 @@
     color: $color-text-dark;
     line-height: 1.4;
 
-    @media (min-width: 768px) {
-      min-height: 42px;
-    }
+  }
+
+  &__score-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
 
   //.mbi-scale__score-line
@@ -119,6 +139,7 @@
     overflow: hidden;
     margin-bottom: 10px;
   }
+
   &__bar {
     height: 100%;
     border-radius: 4px;
@@ -142,6 +163,8 @@
     line-height: 1.5;
     margin-top: 9px;
   }
+
+
 }
 
 // Блок общего индекса выгорания
@@ -152,12 +175,39 @@
   box-shadow: $shadow-block;
   border-left: 4px solid $color-accent;
 
+  //mbi-scale__header
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  //mbi-scale__icon-wrap
+  &__icon-wrap {
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    background: rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    flex: 0 0 42px;
+  }
+
+  //mbi-scale__icon
+  &__icon {
+    width: 24px;
+    height: 24px;
+  }
+
   //mbi-burnout-index__title--------------------------------
   &__title {
     font-size: 17px;
     font-weight: 700;
     color: $color-text-dark;
-    margin-bottom: 12px;
+    line-height: 1.4;
   }
 
   //======= уровень над полосой =========
@@ -178,10 +228,18 @@
     margin-bottom: 10px;
     flex-wrap: wrap;
   }
+
+  &__score-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
   &__score {
     font-weight: 700;
     color: $color-text-dark;
   }
+
   &__max {
     font-size: 16px;
     color: $color-counter;
@@ -195,6 +253,7 @@
     overflow: hidden;
     margin-bottom: 12px;
   }
+
   &__bar {
     height: 100%;
     border-radius: 4px;
@@ -218,4 +277,5 @@
     line-height: 1.5;
     margin-top: 9px;
   }
+
 }
