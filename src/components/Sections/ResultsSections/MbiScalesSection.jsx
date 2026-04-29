@@ -56,6 +56,19 @@ const ScaleRow = ({ title, score, maxScore, level, scaleConfig, icon }) => {
       <div className="mbi-scale__recommendation">
         {recommendationObj?.short || recommendationObj}
       </div>
+      <div className="mbi-scale__list">
+
+        {/* Элементы списка details */}
+        {recommendationObj?.details && Array.isArray(recommendationObj.details) && (
+          <ul className="mbi-scale__details-list">
+            {recommendationObj.details.map((item, index) => (
+              <li key={index} className="mbi-scale__details-item">
+                {item}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
   );
 };
@@ -86,16 +99,8 @@ const BurnoutIndexBlock = ({ burnoutIndex, maxScore, burnoutLevel, burnoutConfig
         {burnoutLevel && (
           <div
             className="mbi-burnout-index__level-label"
-            style={{
-              color: getLevelColor(burnoutLevel),
-            }}
-
-          >
-            {burnoutLevel}
-          </div>
-
-        )
-        }
+            style={{ color: getLevelColor(burnoutLevel), }}>{burnoutLevel}</div>
+        )}
         <div className="mbi-burnout-index__score-line">
           <span className="mbi-burnout-index__score">{burnoutIndex}</span>
           <span className="mbi-burnout-index__max"> / {maxScore}</span>
@@ -121,6 +126,16 @@ const BurnoutIndexBlock = ({ burnoutIndex, maxScore, burnoutLevel, burnoutConfig
       <div className="mbi-burnout-index__recommendation">
         {recommendationObj?.short || recommendationObj}
       </div>
+      {/* Элементы списка details */}
+      {recommendationObj?.details && Array.isArray(recommendationObj.details) && (
+        <ul className="mbi-burnout-index__list">
+          {recommendationObj.details.map((item, index) => (
+            <li key={index} className="mbi-burnout-index__details-item">
+              {item}
+            </li>
+          ))}
+        </ul>
+      )}
     </div >
   );
 };

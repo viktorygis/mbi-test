@@ -158,13 +158,37 @@
 
   //mbi-scale__recommendation
   &__recommendation {
-    font-size: 13px;
-    color: #505050;
+       font-size: 14px;
     line-height: 1.5;
-    margin-top: 9px;
+    margin: 9px 0 3px 0;
+    font-weight: 500;
   }
 
+ //mbi-recommendations__list
+  &__list {
+    margin: 0;
+    display: grid;
+    gap: 6px;
+    font-size: 13px;
+    line-height: 155%;
+    opacity: 0.92;
 
+    & li {
+      position: relative;
+      padding-left: 15px;
+
+      &::before {
+        position: absolute;
+        content: "";
+        left: 0;
+        top: 7px;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background-color: $color-text-dark;
+      }
+    }
+  }
 }
 
 // Блок общего индекса выгорания
@@ -272,10 +296,34 @@
 
   //mbi-burnout-index__recommendation
   &__recommendation {
-    font-size: 13px;
-    color: #505050;
+    font-size: 14px;
     line-height: 1.5;
-    margin-top: 9px;
+    margin: 9px 0 3px 0;
+    font-weight: 500;
   }
+ //mbi-recommendations__list
+  &__list {
+    margin: 0;
+    display: grid;
+    gap: 6px;
+    font-size: 13px;
+    line-height: 155%;
+    opacity: 0.92;
 
+    & li {
+      position: relative;
+      padding-left: 15px;
+
+      &::before {
+        position: absolute;
+        content: "";
+        left: 0;
+        top: 7px;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background-color: $color-text-dark;
+      }
+    }
+  }
 }

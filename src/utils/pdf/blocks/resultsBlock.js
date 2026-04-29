@@ -1,11 +1,41 @@
 // src/utils/pdf/blocks/resultsBlock.js
-import { getLevelForScore } from "../../mbiNorms";
-import { SCALE_BAR_COLORS, getLevelColor, centerLine } from "../../mbiHelpers";
-import { PINK, GRAY, BLUE } from "../pdfStyles";
+import { getLevelForScore, getRecommendation } from "../../mbiNorms";
+import { getLevelColor } from "../../mbiHelpers";
+import { GRAY } from "../pdfStyles";
 
+import emotionalBase64 from "../image/emotional";
+import depersonalizationBase64 from "../image/depersonalization";
+import reductionBase64 from "../image/reduction";
+import burnoutBase64 from "../image/burnout";
+
+const ICONS = {
+  exhaustion: emotionalBase64,
+  depersonalization: depersonalizationBase64,
+  reduction: reductionBase64,
+  burnoutIndex: burnoutBase64,
+};
+
+//recoTextObj - превращает рекомендацию в объект для PDF. Может принимать строку или объект { short, details }
+function recoTextObj(reco) {
+  if (!reco) return "";
+  if (typeof reco === "object") {
+    const arr = [];
+    if (reco.short) {
+      arr.push({ text: reco.short, style: "recoTitle" });
+    }
+    if (Array.isArray(reco.details) && reco.details.length) {
+      arr.push({ ul: reco.details, style: "recoText" });
+    }
+    return arr;
+  }
+  // если вдруг просто строка
+  return { text: reco, style: "recoTitle", margin: [0, 0, 0, 8] };
+}
+
+// Рисует линейку для шкалы. На вход получает баллы, максимум и цвет для заполненной части
 function barRow(score, maxScore, color) {
   const barWidth = 515;
-  const barHeight = 8;
+  const barHeight = 5;
   const radius = 3;
 
   const filled = maxScore > 0 ? Math.max(0, Math.round((score / maxScore) * barWidth)) : 0;
@@ -15,53 +45,127 @@ function barRow(score, maxScore, color) {
     { type: "rect", x: 0, y: 0, w: barWidth, h: barHeight, r: radius, color: "#e5e7eb" },
   ];
 
-  // Накладываем цветной бар, если большая 0
+  // Накладываем цветной бар
   if (filled > 0) {
     elements.push({ type: "rect", x: 0, y: 0, w: filled, h: barHeight, r: radius, color });
   }
 
   return {
     canvas: elements,
+
     margin: [0, 4, 0, 8],
   };
 }
-function scaleBlock(title, score, maxScore, level, description, invertedNote, barColor = PINK) {
+
+// Блок для одной шкалы
+function scaleBlockPdf(key, title, score, maxScore, level, recommendation, iconBase64) {
   const percent = maxScore > 0 ? Math.round((score / maxScore) * 100) : 0;
-  const rows = [
+  const color = getLevelColor(level);
+
+  return [
+    // Заголовок с иконкой
     {
       columns: [
-        { text: title, fontSize: 14, bold: true },
+        {
+          image: iconBase64,
+          width: 16,
+          height: 16,
+          margin: [0, 0, 8, 0],
+        },
+        { text: title, style: "scaleTitle" },
+      ],
+      columnGap: 8,
+      margin: [0, 0, 0, 2],
+    },
+    // Уровень и баллы
+    {
+      columns: [
+        {
+          text: `${score} баллов из ${maxScore} (${percent}%)`,
+          style: "scalePercent",
+        },
         {
           text: level,
-          fontSize: 12,
-          bold: true,
-          color: getLevelColor(level),
-          alignment: "right",
+          style: "scaleLabel",
+          color,
         },
       ],
       margin: [0, 0, 0, 2],
     },
+    // Линейка
+    barRow(score, maxScore, color),
+    // Проценты под линейкой
     {
-      text: `${score} баллов из ${maxScore} (${percent}%)`,
-      fontSize: 11,
-      color: GRAY,
+      columns: [
+        { text: "0%", style: "scalePercentLine", width: 35 },
+        {
+          stack: [{ text: `${percent}%`, style: "scalePercentLine", alignment: "center" }],
+          width: "*",
+        },
+        { text: "100%", style: "scalePercentLine", alignment: "right", width: 35 },
+      ],
+      margin: [0, -5, 0, 8],
+      columnGap: 0,
+    },
+    // Рекомендация
+    ...[].concat(recoTextObj(recommendation)),
+    { text: "", margin: [0, 0, 0, 10] },
+  ];
+}
+
+// Блок для общего индекса выгорания.
+function burnoutIndexBlockPdf(title, index, maxScore, level, recommendation, iconBase64) {
+  const percent = maxScore > 0 ? Math.round((index / maxScore) * 100) : 0;
+  const color = getLevelColor(level);
+
+  return [
+    // Заголовок с иконкой
+    {
+      columns: [
+        {
+          image: iconBase64,
+          width: 16,
+          height: 16,
+          margin: [0, 0, 8, 0],
+        },
+        { text: title, style: "scaleTitle" },
+      ],
+      columnGap: 8,
       margin: [0, 0, 0, 2],
     },
-    barRow(score, maxScore, barColor),
+    // Уровень и баллы
+    {
+      columns: [
+        {
+          text: `${index} баллов из ${maxScore} (${percent}%)`,
+          style: "scalePercent",
+        },
+        {
+          text: level,
+          style: "scaleLabel",
+          color,
+        },
+      ],
+      margin: [0, 0, 0, 2],
+    },
+    // Линейка
+    barRow(index, maxScore, color),
+    // Проценты под линейкой
+    {
+      columns: [
+        { text: "0%", style: "scalePercentLine", width: 35 },
+        {
+          stack: [{ text: `${percent}%`, alignment: "center", style: "scalePercentLine" }],
+          width: "*",
+        },
+        { text: "100%", style: "scalePercentLine", alignment: "right", color: GRAY, width: 35 },
+      ],
+      margin: [0, -5, 0, 8],
+      columnGap: 0,
+    },
+    // Рекомендация
+    ...[].concat(recoTextObj(recommendation)),
   ];
-  if (description) {
-    rows.push({ text: description, fontSize: 11, color: GRAY, margin: [0, 0, 0, 4] });
-  }
-  if (invertedNote) {
-    rows.push({
-      text: `⚠ ${invertedNote}`,
-      fontSize: 10,
-      color: "#9a3412",
-      italics: true,
-      margin: [0, 0, 0, 4],
-    });
-  }
-  return rows;
 }
 
 export function resultsBlock(mbiResults) {
@@ -69,54 +173,22 @@ export function resultsBlock(mbiResults) {
   const levelExh = getLevelForScore(scales, "exhaustion", scores.exhaustion);
   const levelDep = getLevelForScore(scales, "depersonalization", scores.depersonalization);
   const levelRed = getLevelForScore(scales, "reduction", scores.reduction);
-  const levelBurnout = getLevelForScore(
-    { burnoutIndex: burnoutConfig }, // объект с нормами, maxScore и т.д.
-    "burnoutIndex",
-    burnoutIndex,
-  );
+  const levelBurnout = getLevelForScore({ burnoutIndex: burnoutConfig }, "burnoutIndex", burnoutIndex);
+
+  // Рекомендация для каждой шкалы!
+  const recExh = getRecommendation(scales, "exhaustion", scores.exhaustion);
+  const recDep = getRecommendation(scales, "depersonalization", scores.depersonalization);
+  const recRed = getRecommendation(scales, "reduction", scores.reduction);
+  const recBurnout = getRecommendation({ burnoutIndex: burnoutConfig }, "burnoutIndex", burnoutIndex);
+
   return [
-    { text: "Результаты вашего тестирования", fontSize: 18, bold: true, alignment: "center", margin: [0, 0, 0, 4] },
-    centerLine(400),
+    { text: "Результаты вашего тестирования", style: "sectionTitle" },
 
-    ...scaleBlock(scales.exhaustion.title, scores.exhaustion, scales.exhaustion.maxScore, levelExh, scales.exhaustion.description, undefined, SCALE_BAR_COLORS.exhaustion),
-    { text: "", margin: [0, 0, 0, 14] },
+    ...scaleBlockPdf("exhaustion", scales.exhaustion.title, scores.exhaustion, scales.exhaustion.maxScore, levelExh, recExh, ICONS.exhaustion),
+    ...scaleBlockPdf("depersonalization", scales.depersonalization.title, scores.depersonalization, scales.depersonalization.maxScore, levelDep, recDep, ICONS.depersonalization),
+    ...scaleBlockPdf("reduction", scales.reduction.title, scores.reduction, scales.reduction.maxScore, levelRed, recRed, ICONS.reduction),
 
-    ...scaleBlock(
-      scales.depersonalization.title,
-      scores.depersonalization,
-      scales.depersonalization.maxScore,
-      levelDep,
-      scales.depersonalization.description,
-      undefined,
-      SCALE_BAR_COLORS.depersonalization,
-    ),
-    { text: "", margin: [0, 0, 0, 14] },
-
-    ...scaleBlock(scales.reduction.title, scores.reduction, scales.reduction.maxScore, levelRed, scales.reduction.description, undefined, SCALE_BAR_COLORS.reduction),
-    { text: "", margin: [0, 0, 0, 14] },
-
-    { canvas: [{ type: "rect", x: 0, y: 0, w: 515, h: 1, color: "#e5e7eb" }], margin: [0, 8, 0, 8] },
-    {
-      columns: [
-        { text: "Общий индекс психического выгорания", fontSize: 14, bold: true },
-        {
-          text: levelBurnout,
-          fontSize: 12,
-          bold: true,
-          color: getLevelColor(levelBurnout),
-          alignment: "right",
-        },
-      ],
-      margin: [0, 0, 0, 2],
-    },
-    {
-      text: `${burnoutIndex} баллов из ${burnoutConfig.maxScore} (${burnoutConfig.maxScore > 0 ? Math.round((burnoutIndex / burnoutConfig.maxScore) * 100) : 0}%)`,
-      fontSize: 11,
-      color: GRAY,
-      margin: [0, 0, 0, 2],
-    },
-    barRow(burnoutIndex, burnoutConfig.maxScore, SCALE_BAR_COLORS.burnoutIndex),
-    burnoutConfig.description ? { text: burnoutConfig.description, fontSize: 11, color: GRAY, margin: [0, 0, 0, 8] } : {},
+    ...burnoutIndexBlockPdf("Общий индекс психического выгорания", burnoutIndex, burnoutConfig.maxScore, levelBurnout, recBurnout, ICONS.burnoutIndex),
     { text: "", pageBreak: "after" },
   ];
 }

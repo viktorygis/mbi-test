@@ -1,6 +1,6 @@
 import { headerBlock } from "./blocks/headerBlock";
 import { resultsBlock } from "./blocks/resultsBlock";
-import { recommendationsBlock } from "./blocks/recommendationsBlock";
+//import { recommendationsBlock } from "./blocks/recommendationsBlock";
 import { informationBlock } from "./blocks/informationBlock";
 import { contactsBlock } from "./blocks/contactsBlock";
 import { docStyles } from "./pdfStyles";
@@ -38,7 +38,7 @@ export async function downloadMbiPDF(mbiResults, userData, timeDisplay) {
     content: [
       ...headerBlock(userData, timeDisplay),
       ...resultsBlock(mbiResults),
-      ...recommendationsBlock(mbiResults),
+      //...recommendationsBlock(mbiResults),
       ...informationBlock(mbiResults),
       ...contactsBlock(),
     ],
@@ -49,7 +49,8 @@ export async function downloadMbiPDF(mbiResults, userData, timeDisplay) {
       margin: [0, 10],
       style: "pages",
     }),
-    pageMargins: [40, 60, 40, 60],
+
+    pageMargins: [40, 50, 40, 50],
   };
 
   // ФИО берем как раньше

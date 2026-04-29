@@ -1,6 +1,6 @@
 // src/utils/pdf/blocks/headerBlock.js
 import logoBase64 from "../image/logo";
-import { PINK, GRAY, BLUE, docStyles } from "../pdfStyles";
+import { PINK, GRAY, BLUE } from "../pdfStyles";
 
 function formatDate(raw) {
   if (!raw) return "";
@@ -15,15 +15,13 @@ export function headerBlock(userData, timeDisplay) {
   const fullName = userData?.fullName || "";
   const date = formatDate(userData?.date) || timeDisplay || "";
   return [
+    // Верхний колонтитул
     {
       columns: [
         {
           text: "www.ai4g.ru",
           link: "https://ai4g.ru/",
-          style: "subtitle", // вместо fontSize, color и т.д.
-          decoration: "underline",
-          bold: true,
-          margin: [0, 8, 0, 0],
+          style: "headerTitle",
         },
         {
           image: logoBase64,
@@ -34,10 +32,8 @@ export function headerBlock(userData, timeDisplay) {
         {
           text: "Пройти тест ещё раз",
           link: "https://ai4g.ru/mbi-test/",
-          style: "subtitle",
+          style: "headerTitle",
           alignment: "right",
-          decoration: "underline",
-          margin: [0, 8, 0, 0],
         },
       ],
       margin: [0, 0, 0, 8],
@@ -46,18 +42,18 @@ export function headerBlock(userData, timeDisplay) {
     { canvas: [{ type: "rect", x: 0, y: 0, w: 515, h: 2, color: PINK }], margin: [0, 0, 0, 10] },
     {
       columns: [
-        { text: fullName ? `ФИО: ${fullName}` : "", style: "label", alignment: "left" },
-        { text: date ? `Дата: ${date}` : "", style: "label", alignment: "right" },
+        { text: fullName ? `ФИО: ${fullName}` : "", style: "headerLabel", alignment: "left" },
+        { text: date ? `Дата: ${date}` : "", style: "headerLabel", alignment: "right" },
       ],
       margin: [0, 0, 0, 6],
     },
     {
       text: [
-        { text: "MBI ", style: "bigTitle" },
-        { text: "Тест на выгорание Маслач", fontSize: 22, bold: true },
+        { text: "MBI ", style: "mainTitleAccent" },
+        { text: "Тест на выгорание Маслач", style: "mainTitle" },
       ],
       alignment: "center",
-      margin: [0, 20, 0, 10],
+      margin: [0, 10, 0, 10],
     },
-  ]
+  ];
 }
