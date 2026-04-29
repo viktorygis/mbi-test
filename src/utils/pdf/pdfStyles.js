@@ -1,11 +1,8 @@
-// src/utils/pdf/pdfStyles.js
-
 export const PINK = "#ff008a";
 export const GRAY = "#71717a";
 export const BLUE = "#007BFF";
 
 export const docStyles = {
-  //header styles  ----------------
   headerTitle: {
     fontSize: 12,
     bold: true,
@@ -18,7 +15,6 @@ export const docStyles = {
     color: GRAY,
   },
 
-  //Заголовок главный----------------
   mainTitle: {
     fontSize: 16,
     bold: true,
@@ -29,7 +25,6 @@ export const docStyles = {
     bold: true,
   },
 
-  // Заголовок раздела--------------------
   sectionTitle: {
     fontSize: 14,
     bold: true,
@@ -37,7 +32,21 @@ export const docStyles = {
     alignment: "center",
     margin: [0, 0, 0, 10],
   },
-  // Стили для шкал ---------------
+
+  summaryTitle: {
+    fontSize: 14,
+    bold: true,
+    color: GRAY,
+    alignment: "center",
+    margin: [0, 0, 0, 2],
+  },
+  summaryText: {
+    fontSize: 11,
+    color: GRAY,
+    alignment: "center",
+    margin: [0, 0, 0, 14],
+  },
+
   scaleTitle: {
     fontSize: 12,
     bold: true,
@@ -56,7 +65,7 @@ export const docStyles = {
     fontSize: 8,
     color: GRAY,
   },
-  // Стили для блока рекомендаций-------
+
   recoTitle: {
     fontSize: 11,
     margin: [0, 0, 0, 2],
@@ -69,13 +78,28 @@ export const docStyles = {
     color: GRAY,
   },
 
-  // Стили для списков ---------------
   ulitem: {
     fontSize: 12,
     margin: [0, 0, 0, 4],
   },
 
-  // Стили для футера ---------------
+  infoSectionTitle: {
+    fontSize: 13,
+    bold: true,
+    margin: [0, 6, 0, 4],
+    color: GRAY,
+  },
+  infoSubtleText: {
+    fontSize: 11,
+    color: GRAY,
+    margin: [0, 0, 0, 6],
+  },
+  infoSmallText: {
+    fontSize: 10.5,
+    color: GRAY,
+    margin: [0, 0, 0, 4],
+  },
+
   pages: {
     fontSize: 10,
     color: GRAY,
