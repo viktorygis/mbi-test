@@ -17,7 +17,7 @@ const MbiItem = ({
 }) => (
   <article className={`mbi-description__card mbi-description__card--${variant}`}>
     <header className="mbi-description__card-header">
-      <img className="mbi-description__icon" src={`img/mbi-test/${icon}`} alt={title} />
+      <img className="mbi-description__icon" src={`img/mbi-test/${icon}`} alt="" aria-hidden="true" />
 
       <div className="mbi-description__headings">
         <div className="mbi-description__title-row">
@@ -28,10 +28,10 @@ const MbiItem = ({
         <div className="mbi-description__meta-line">
           {questions != null && <span className="mbi-description__meta">{questions} утверждений</span>}
 
-          {chips?.length > 0 && (
+          {chips.length > 0 && (
             <div className="mbi-description__chips">
               {chips.map((c, idx) => (
-                <Chip key={idx} variant={c.variant || "default"}>
+                <Chip key={`${c.label}-${idx}`} variant={c.variant || "default"}>
                   {c.label}
                 </Chip>
               ))}
@@ -76,7 +76,7 @@ const MbiIntroSection = () => {
             title="Деперсонализация"
             questions={5}
             maxScore={30}
-            description="Снижение вовлечённости в общение: меньше контактов, больше раздражительности, негативное отношение к коллегам и окружающим."
+            description="Снижение вовлечённости в общение: меньше контактов, больше раздражительности, холоднее отношение к людям и работе."
           />
 
           <MbiItem
@@ -84,8 +84,7 @@ const MbiIntroSection = () => {
             title="Редукция личных достижений"
             questions={8}
             maxScore={48}
-            chips={[{ label: "обратная шкала", variant: "warning" }]}
-            description="Снижение чувства компетентности и удовлетворённости своей работой. По этой шкале интерпретация обратная: чем ниже балл — тем выше выгорание."
+            description="Снижение чувства компетентности и удовлетворённости своей работой. По этой шкале чем ниже балл, тем сильнее выражено выгорание."
           />
 
           <MbiItem

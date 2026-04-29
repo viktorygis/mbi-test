@@ -1,5 +1,3 @@
-// src/styles/components/sections/intro-sections/_instruction-test.scss
-
 @use '../../../base/variables' as *;
 @use '../../../base/mixins' as *;
 
@@ -8,14 +6,23 @@
   color: $color-text-dark;
 
   @include respond-to($breakpoint-sm) {
-    padding: 25px 0px;
+    padding: 25px 0;
+  }
+
+  &__container {
+    max-width: $container-max-width;
+    margin: 0 auto;
+
+    @include respond-to($breakpoint-sm) {
+      padding: 0 15px;
+    }
   }
 
   &__title {
     line-height: 1.2;
     font-size: 34px;
     font-weight: 900;
-    margin: 0px 0px 20px 0px;
+    margin: 0 0 20px 0;
 
     @include respond-to($breakpoint-sm) {
       font-size: 26px;
@@ -24,9 +31,8 @@
 
   &__content {
     display: grid;
-    grid-template-columns: repeat(1, 1fr);
     gap: 15px;
-    margin: 0px 0px 20px 0px;
+    margin: 0 0 20px 0;
 
     @include respond-to($breakpoint-sm) {
       gap: 10px;
@@ -35,82 +41,46 @@
 
   &__item {
     display: grid;
-    grid-template-columns: 30px auto;
-    font-weight: 600;
-    line-height: 1.2;
-    font-size: 20px;
+    grid-template-columns: 30px 1fr;
     gap: 10px;
-
-    @include respond-to($breakpoint-md) {
-      font-size: 24px;
-      grid-template-columns: 20px auto;
-    }
+    align-items: start;
+    font-size: 18px;
+    line-height: 1.4;
+    font-weight: 500;
 
     @include respond-to($breakpoint-sm) {
-      gap: 10px;
-      font-size: 20px;
+      grid-template-columns: 22px 1fr;
+      gap: 8px;
+      font-size: 16px;
     }
   }
 
   &__number-item {
     color: $color-accent;
-  }
-
-  &__label {
-    text-align: left;
-    margin: 0px 0px 10px 0px;
-
-    @include respond-to($breakpoint-sm) {
-      margin: 0px 0px 5px 0px;
-    }
-
-    br {
-      @include respond-to($breakpoint-xs) {
-        display: none;
-      }
-    }
+    font-weight: 700;
+    line-height: 1.2;
   }
 
   &__text-item {
-    font-weight: 500;
-    font-size: 18px;
-    line-height: 1.4;
-
-    @include respond-to($breakpoint-sm) {
-      font-weight: 400;
-    }
-  }
-
-  &__text {
-    font-weight: 500;
-    font-size: 20px;
-    line-height: 1.4;
-
-    @include respond-to($breakpoint-sm) {
-      font-size: 18px;
-      line-height: 1.3;
+    p {
+      margin: 0;
     }
   }
 
   &__list {
+    margin: 10px 0 0 0;
     padding-left: 20px;
-  }
+    display: grid;
+    gap: 6px;
+    font-size: 16px;
+    line-height: 1.35;
 
-  &__list li {
-    position: relative;
-    padding-left: 15px;
+    @include respond-to($breakpoint-sm) {
+      font-size: 15px;
+    }
 
-    &::before {
-      content: "";
-      position: absolute;
-      left: 0;
-      top: 10px;
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background-color: $color-text-dark;
+    li {
+      list-style: disc;
     }
   }
-
-
 }

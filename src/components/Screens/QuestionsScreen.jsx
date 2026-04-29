@@ -1,44 +1,39 @@
-// QuestionsScreen.jsx - компонент для отображения вопросов теста и сбора ответов
-
-import React, { useEffect, useMemo, useCallback, useState } from 'react';
+import React, { useEffect, useMemo, useCallback, useState } from "react";
 
 const QuestionsScreen = ({
-  questionsUrl = import.meta.env.BASE_URL + 'data/questions.json',
+  questionsUrl = import.meta.env.BASE_URL + "data/questions.json",
   onComplete,
   userData,
-  timeDisplay = '',
+  timeDisplay = "",
   showTestFillButton = true,
 }) => {
-  const fullName = userData?.fullName || '';
+  const fullName = userData?.fullName || "";
 
   const [mbiData, setMbiData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-
+  const [error, setError] = useState("");
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answerIndices, setAnswerIndices] = useState([]);
-  const [selected, setSelected] = useState(null);
 
   useEffect(() => {
     const loadQuestions = async () => {
       try {
         setLoading(true);
-        setError('');
+        setError("");
 
         const response = await fetch(questionsUrl);
-        if (!response.ok) throw new Error(`Ошибка HTTP: статус ${response.status}`);
+        if (!response.ok) throw new Error(`Ошибка загрузки: ${response.status}`);
 
         const data = await response.json();
         if (!Array.isArray(data.questions) || data.questions.length === 0) {
-          throw new Error('Данные вопросов не найдены.');
+          throw new Error("Данные вопросов не найдены.");
         }
 
         setMbiData(data);
-        setAnswerIndices([]);
+        setAnswerIndices(Array(data.questions.length).fill(null));
         setCurrentQuestionIndex(0);
-        setSelected(null);
       } catch (err) {
-        setError(err.message || 'Ошибка загрузки вопросов');
+        setError(err.message || "Ошибка загрузки вопросов");
       } finally {
         setLoading(false);
       }
@@ -50,25 +45,17 @@ const QuestionsScreen = ({
   const total = useMemo(() => mbiData?.questions?.length ?? 0, [mbiData]);
   const isFirst = currentQuestionIndex === 0;
   const isLast = total > 0 && currentQuestionIndex === total - 1;
-
-  // синхронизируем выбранный вариант при переключении вопроса
-  useEffect(() => {
-    setSelected(answerIndices[currentQuestionIndex] ?? null);
-  }, [currentQuestionIndex, answerIndices]);
-
   const currentAnswer = answerIndices[currentQuestionIndex];
-  const hasCurrentAnswer = currentAnswer !== undefined && currentAnswer !== null;
+  const hasCurrentAnswer = currentAnswer !== null && currentAnswer !== undefined;
 
-  // Процент именно "по отвеченным", чтобы на вопросе 1 из 22 показывалось (0%), пока не ответили
   const progressPercent = useMemo(() => {
     if (!total) return 0;
-    const answered = answerIndices.filter((x) => x !== undefined && x !== null).length;
+    const answered = answerIndices.filter((x) => x !== null && x !== undefined).length;
     return Math.round((answered / total) * 100);
   }, [answerIndices, total]);
 
   const handleSelect = useCallback(
     (optionIndex) => {
-      setSelected(optionIndex);
       setAnswerIndices((prev) => {
         const next = [...prev];
         next[currentQuestionIndex] = optionIndex;
@@ -90,22 +77,25 @@ const QuestionsScreen = ({
       return;
     }
 
-    if (onComplete) onComplete({ answerIndices, fullName, timeDisplay });
+    onComplete?.({
+      answerIndices: answerIndices.filter((x) => x !== null && x !== undefined),
+      fullName,
+      timeDisplay,
+    });
   }, [answerIndices, fullName, hasCurrentAnswer, isLast, onComplete, timeDisplay]);
 
-  // Клавиатура: ← назад, →/Enter вперёд, 1..6 выбрать вариант
   useEffect(() => {
     const onKeyDown = (e) => {
       const tag = e.target?.tagName?.toLowerCase();
-      if (tag === 'input' || tag === 'textarea') return;
+      if (tag === "input" || tag === "textarea" || tag === "select" || e.altKey || e.ctrlKey || e.metaKey) return;
 
-      if (e.key === 'ArrowLeft') {
+      if (e.key === "ArrowLeft") {
         e.preventDefault();
         goPrev();
         return;
       }
 
-      if (e.key === 'ArrowRight' || e.key === 'Enter') {
+      if (e.key === "ArrowRight" || e.key === "Enter") {
         e.preventDefault();
         goNext();
         return;
@@ -121,41 +111,31 @@ const QuestionsScreen = ({
       }
     };
 
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
   }, [goPrev, goNext, handleSelect, mbiData]);
 
   const handleReload = () => {
     setMbiData(null);
     setLoading(true);
-    setError('');
+    setError("");
     setCurrentQuestionIndex(0);
     setAnswerIndices([]);
-    setSelected(null);
   };
 
   const handleFillTestAnswers = () => {
     if (!mbiData) return;
     const autoIndices = mbiData.questions.map((_, i) => i % 6);
-
-    if (onComplete) onComplete({ answerIndices: autoIndices, fullName, timeDisplay });
+    onComplete?.({ answerIndices: autoIndices, fullName, timeDisplay });
   };
 
   if (loading) {
     return (
-      <div className="question-test" style={{ display: 'block' }}>
+      <div className="question-test">
         <div className="question-test__container">
-          <div className="question-header">
-            <div id="fio-display">
-              ФИО: <span>{fullName}</span>
-            </div>
-            <div id="time-display">
-              Дата: <span>{timeDisplay}</span>
-            </div>
-          </div>
           <div className="question-test__content">
-            <div className="question__loader-test" style={{ display: 'block', textAlign: 'center' }}>
-              <span></span>
+            <div className="question-test__loader" aria-live="polite">
+              <div className="question-test__loader-dot" />
               <div>Загрузка вопросов...</div>
             </div>
           </div>
@@ -166,13 +146,13 @@ const QuestionsScreen = ({
 
   if (error) {
     return (
-      <div className="question-test" style={{ display: 'block' }}>
+      <div className="question-test">
         <div className="question-test__container">
           <div className="question-test__content">
-            <div className="error-message" style={{ color: '#dc2626', marginTop: 10 }}>
+            <div className="question-test__error" role="alert">
               {error}
             </div>
-            <button className="question-test__button" onClick={handleReload}>
+            <button className="question-test__button" onClick={handleReload} type="button">
               Повторить попытку
             </button>
           </div>
@@ -184,37 +164,33 @@ const QuestionsScreen = ({
   if (!mbiData) return null;
 
   const question = mbiData.questions[currentQuestionIndex];
-  if (!question) return null;
-
   const answerOptions = mbiData.answerOptions || [];
 
   return (
-    <div className="question-test">
+    <section className="question-test" aria-labelledby="question-test-title">
       <div className="question-test__container">
         <div className="question-test__content">
           <div className="question-test__info">
-            <div id="fio-display" className="question-block__item">
+            <div className="question-block__item">
               ФИО: <span>{fullName}</span>
             </div>
-            <div id="time-display" className="question-block__item">
+            <div className="question-block__item">
               Дата: <span>{timeDisplay}</span>
             </div>
           </div>
 
-          {/* Единственная строка статуса: "Вопрос 1 из 22 (0%)" */}
-          <div className="question-test__progress" aria-label="Прогресс теста">
+          <div className="question-test__progress">
             <div className="question-test__progress-top">
-              <div className="question-test__progress-text">
+              <div className="question-test__progress-text" id="question-test-title">
                 Вопрос {currentQuestionIndex + 1} из {total}
               </div>
-              <div className="question-test__progress-percent">
-                {progressPercent}%
-              </div>
+              <div className="question-test__progress-percent">{progressPercent}%</div>
             </div>
 
             <div
               className="question-test__progress-bar"
               role="progressbar"
+              aria-label="Прогресс прохождения теста"
               aria-valuemin={0}
               aria-valuemax={100}
               aria-valuenow={progressPercent}
@@ -224,35 +200,27 @@ const QuestionsScreen = ({
           </div>
 
           <div className="question-test__block">
-            <div className="question-test__question">
-              <div className="question-test__question-text">
-                {question.text}
+            <fieldset className="question-test__question-group">
+              <legend className="question-test__question-text">{question.text}</legend>
+
+              <div className="question-test__options" role="radiogroup" aria-label="Варианты ответа">
+                {answerOptions.map((option, i) => (
+                  <label className="question-test__option" key={i}>
+                    <input
+                      type="radio"
+                      name={`answer_${currentQuestionIndex}`}
+                      value={i}
+                      checked={currentAnswer === i}
+                      onChange={() => handleSelect(i)}
+                    />
+                    <span className="question-test__radio-label">{option}</span>
+                  </label>
+                ))}
               </div>
-            </div>
-            <div className="question-test__options">
-              {answerOptions.map((option, i) => (
-                <label className="question-test__option" key={i}>
-                  <input
-                    type="radio"
-                    name={`answer_${currentQuestionIndex}`}
-                    value={i}
-                    checked={selected === i}
-                    onChange={() => handleSelect(i)}
-                  />
-                  <span className="question-test__radio-label">{option}</span>
-                </label>
-              ))}
-            </div>
+            </fieldset>
 
             <div className="question-test__navigation">
-              <button
-                className="question-test__button"
-                type="button"
-                onClick={goPrev}
-                disabled={isFirst}
-                aria-disabled={isFirst}
-                title={isFirst ? 'Это первый вопрос' : undefined}
-              >
+              <button className="question-test__button" type="button" onClick={goPrev} disabled={isFirst}>
                 🠐 Назад
               </button>
 
@@ -261,10 +229,8 @@ const QuestionsScreen = ({
                 type="button"
                 onClick={goNext}
                 disabled={!hasCurrentAnswer}
-                aria-disabled={!hasCurrentAnswer}
-                title={!hasCurrentAnswer ? 'Сначала выберите вариант ответа' : undefined}
               >
-                {isLast ? 'Завершить ✓' : 'Вперёд 🠖'}
+                {isLast ? "Завершить ✓" : "Вперёд 🠖"}
               </button>
             </div>
           </div>
@@ -273,15 +239,15 @@ const QuestionsScreen = ({
             <button
               className="question-test__button"
               type="button"
-              style={{ margin: '20px auto', display: 'block' }}
               onClick={handleFillTestAnswers}
+              style={{ margin: "20px auto", width: "50%", }}
             >
               Заполнить тестовые ответы
             </button>
           )}
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 

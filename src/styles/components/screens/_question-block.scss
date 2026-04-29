@@ -8,16 +8,24 @@
     padding: 25px 0;
   }
 
-  //.question-test__container
   &__container {
     max-width: 800px;
     margin: 0 auto;
+
+    @include respond-to($breakpoint-sm) {
+      padding: 0 15px;
+    }
   }
 
-  //.question-test__info
+  &__content {
+    display: flex;
+    flex-direction: column;
+  }
+
   &__info {
     display: flex;
     justify-content: space-between;
+    gap: 12px;
     margin-bottom: 30px;
     color: $color-text-dark;
 
@@ -27,13 +35,11 @@
     }
   }
 
-  //.question-test__progress
   &__progress {
     margin-bottom: 30px;
     font-weight: 600;
   }
 
-  //.question-test__progress-top
   &__progress-top {
     display: flex;
     align-items: baseline;
@@ -44,7 +50,11 @@
     font-size: 16px;
   }
 
-  //.question-test__progress-bar
+  &__progress-text,
+  &__progress-percent {
+    line-height: 1.2;
+  }
+
   &__progress-bar {
     width: 100%;
     height: 10px;
@@ -53,40 +63,44 @@
     overflow: hidden;
   }
 
-  //.question-test__progress-fill
   &__progress-fill {
     height: 100%;
-    border-radius: 999px;
+    border-radius: inherit;
     background: $color-primary;
     transition: width 0.2s ease;
   }
 
-  //.question-test__question
-  &__question {
-    background: $color-bg-white;
-    border-radius: 18px;
-    padding: 18px;
-    margin-bottom: 30px;
-    border: 1px solid #ff018a;
-    height: 100px;
+  &__block {
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
+  }
 
-    @media (max-width: $breakpoint-sm) {
-      height: 140px;
-
-    }
+  &__question-group {
+    border: 0;
+    padding: 0;
+    margin: 0 0 30px 0;
+    min-width: 0;
   }
 
   &__question-text {
+    background: $color-bg-white;
+    border-radius: 18px;
+    padding: 18px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255, 1, 138, 0.9);
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
     font-weight: 600;
     font-size: 20px;
     line-height: 1.45;
     color: $color-text-dark;
-    text-align: center;
+    width: 100%;
 
     @media (max-width: $breakpoint-sm) {
+      min-height: 140px;
       font-size: 18px;
       line-height: 1.35;
     }
@@ -96,7 +110,6 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 12px 16px;
-    margin-bottom: 30px;
 
     @media (max-width: $breakpoint-sm) {
       grid-template-columns: 1fr;
@@ -104,23 +117,21 @@
   }
 
   &__option {
+    position: relative;
     display: flex;
     align-items: center;
     padding: 16px 18px;
     min-height: 56px;
-
     border: none;
     border-radius: 18px;
     background: $color-bg-gray;
-
     font-size: 18px;
     font-weight: 500;
-    line-height: 120%;
+    line-height: 1.2;
     cursor: pointer;
     user-select: none;
     color: $color-text-dark;
-
-    transition: background 0.2s ease, color 0.2s ease;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.05s ease;
 
     @media (max-width: $breakpoint-xs) {
       font-size: 16px;
@@ -131,28 +142,46 @@
       background: $color-bg-light;
     }
 
-    &:has(input[type="radio"]:checked) {
+    &:active {
+      transform: translateY(1px);
+    }
+
+    &:has(input[type='radio']:checked) {
       background: $color-primary;
       color: #fff;
     }
+
+    &:has(input[type='radio']:focus-visible) {
+      box-shadow: 0 0 0 3px rgba($color-accent, 0.22);
+    }
+  }
+
+  &__option input[type='radio'] {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
   }
 
   &__radio-label {
-    padding-left: 0;
-  }
-
-  &__radio-label::before {
-    display: none;
+    position: relative;
+    z-index: 1;
   }
 
   &__navigation {
     display: flex;
     justify-content: space-between;
     gap: 12px;
+    margin-top: 30px;
 
     @media (max-width: $breakpoint-sm) {
       flex-direction: column-reverse;
       align-items: stretch;
+      margin-top: 0px;
+
     }
   }
 
@@ -161,19 +190,15 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
-
     min-width: 150px;
     min-height: 56px;
     padding: 16px 18px;
-
     font-family: "Montserrat", sans-serif;
     font-weight: 600;
     font-size: 16px;
     line-height: 1.2;
-
     cursor: pointer;
     transition: background-color 0.2s ease, color 0.2s ease, transform 0.05s ease, opacity 0.2s ease;
-
     background-color: #fff;
     border-radius: 18px;
     border: 2px solid $color-accent;
@@ -197,7 +222,6 @@
       opacity: 0.45;
       cursor: not-allowed;
       transform: none;
-
       background: rgba(0, 0, 0, 0.03);
       border-color: rgba($color-accent, 0.35);
       color: rgba($color-accent, 0.6);
@@ -217,36 +241,45 @@
       color: rgba($color-accent, 0.65);
     }
   }
-}
 
-/* Скрываем реальный radio */
-input[type="radio"] {
-  display: none;
-}
+  &__loader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    text-align: center;
+    padding: 20px;
+  }
 
-/* Лоадер */
-.question__loader-test {
-  display: none;
-  text-align: center;
-  padding: 20px;
-
-  & span {
-    display: inline-block;
+  &__loader-dot {
     width: 40px;
     height: 40px;
     border: 4px solid #ccc;
     border-top-color: #007bff;
     border-radius: 50%;
-    animation: spin 1s ease infinite;
+    animation: spin 1s linear infinite;
+  }
+
+  &__error {
+    color: #dc2626;
+    margin-top: 10px;
+    font-weight: 600;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .question-test__progress-fill,
+  .question-test__loader-dot,
+  .question-test__option,
+  .question-test__button {
+    transition: none;
+    animation: none;
   }
 }
 
 @keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
+  to {
     transform: rotate(360deg);
   }
 }

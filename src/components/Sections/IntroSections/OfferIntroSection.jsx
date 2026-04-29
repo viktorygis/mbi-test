@@ -1,5 +1,34 @@
 import React from "react";
 
+const bullets = [
+  {
+    id: "exhaustion",
+    num: "01",
+    title: "Эмоциональное истощение",
+    text: "насколько вы чувствуете нехватку ресурса",
+    icon: "img/mbi-test/emotional-exhaustion.svg",
+    modifier: "exhaustion",
+  },
+  {
+    id: "depersonalization",
+    num: "02",
+    title: "Деперсонализация",
+    text: "не стало ли общение холоднее и формальнее",
+    icon: "img/mbi-test/depersonalization.svg",
+    modifier: "depersonalization",
+  },
+  {
+    id: "reduction",
+    num: "03",
+    title: "Редукция достижений",
+    text: "ощущаете ли вы, что ваши усилия дают результат",
+    icon: "img/mbi-test/reduced-achievement.svg",
+    modifier: "reduction",
+  },
+];
+
+const trustFacts = ["22 вопроса", "3 шкалы", "международная методика"];
+
 const OfferIntroSection = () => {
   return (
     <section className="offer-test" aria-labelledby="offer-test-title">
@@ -7,59 +36,43 @@ const OfferIntroSection = () => {
         <div className="offer-test__body">
           <div className="offer-test__content">
             <div className="offer-test__overhead overhead">
-              Опросник для оценки признаков профессионального выгорания
+              Тест для оценки признаков профессионального выгорания
             </div>
 
             <h1 className="offer-test__title" id="offer-test-title">
-              Тест MBI
+              MBI Test
             </h1>
 
             <div className="offer-test__subtitle">
-              <span>на определение уровня психического выгорания Маслач</span>
+              <span>Тест на определение уровня психического выгорания</span>
             </div>
 
             <p className="offer-test__lead">
-              За 5 минут ты поймёшь не «что-то не так», а конкретно — что именно и насколько.
+              За 5 минут вы поймёте, какие именно признаки выгорания выражены сильнее всего.
             </p>
 
-            <div className="offer-test__bullets" role="list">
-              <div className="offer-test__bullet offer-test__bullet--exhaustion" role="listitem">
-                <div className="offer-test__bullet-icon">
-                  <img src="img/mbi-test/emotional-exhaustion.svg" alt="" />
+            <div className="offer-test__bullets" role="list" aria-label="Шкалы теста MBI">
+              {bullets.map((item) => (
+                <div
+                  key={item.id}
+                  className={`offer-test__bullet offer-test__bullet--${item.modifier}`}
+                  role="listitem"
+                >
+                  <div className="offer-test__bullet-icon" aria-hidden="true">
+                    <img src={item.icon} alt="" />
+                  </div>
+                  <div className="offer-test__bullet-body">
+                    <span className="offer-test__bullet-num">{item.num}</span>
+                    <div className="offer-test__bullet-title">{item.title}</div>
+                    <div className="offer-test__bullet-text">{item.text}</div>
+                  </div>
                 </div>
-                <div className="offer-test__bullet-body">
-                  <span className="offer-test__bullet-num">01</span>
-                  <div className="offer-test__bullet-title">Эмоциональное истощение</div>
-                  <div className="offer-test__bullet-text">насколько ты эмоционально истощён</div>
-                </div>
-              </div>
-
-              <div className="offer-test__bullet offer-test__bullet--depersonalization" role="listitem">
-                <div className="offer-test__bullet-icon">
-                  <img src="img/mbi-test/depersonalization.svg" alt="" />
-                </div>
-                <div className="offer-test__bullet-body">
-                  <span className="offer-test__bullet-num">02</span>
-                  <div className="offer-test__bullet-title">Деперсонализация</div>
-                  <div className="offer-test__bullet-text">не стал ли ты относиться к людям и работе холоднее, чем раньше</div>
-                </div>
-              </div>
-
-              <div className="offer-test__bullet offer-test__bullet--reduction" role="listitem">
-                <div className="offer-test__bullet-icon">
-                  <img src="img/mbi-test/reduced-achievement.svg" alt="" />
-                </div>
-                <div className="offer-test__bullet-body">
-                  <span className="offer-test__bullet-num">03</span>
-                  <div className="offer-test__bullet-title">Редукция достижений</div>
-                  <div className="offer-test__bullet-text">ощущаешь ли ты, что твои усилия дают результат</div>
-                </div>
-              </div>
+              ))}
             </div>
 
             <p className="offer-test__text">
-              Тест MBI разработан профессором К. Маслач из Стэнфорда — сегодня это золотой стандарт диагностики,
-              который используется в корпоративной и клинической практике по всему миру.
+              MBI — один из самых известных опросников для оценки эмоционального истощения,
+              деперсонализации и снижения ощущения эффективности.
             </p>
 
             <div className="offer-test__bottom">
@@ -71,11 +84,15 @@ const OfferIntroSection = () => {
                 <div className="offer-test__clarification">≈ 5 минут</div>
               </div>
             </div>
-            <div className="offer-test__trust-list" aria-label="Короткие факты о тесте">
-              <div className="offer-test__trust-item">✓ 22 вопроса</div>
-              <div className="offer-test__trust-item">✓ 3 шкалы</div>
-              <div className="offer-test__trust-item">✓ международный стандарт</div>
-            </div>
+
+            <ul className="offer-test__trust-list" aria-label="Короткие факты о тесте">
+              {trustFacts.map((fact) => (
+                <li key={fact} className="offer-test__trust-item">
+                  ✓ {fact}
+                </li>
+              ))}
+            </ul>
+
             <p className="offer-test__note">
               Тест носит информационный характер и не заменяет консультацию специалиста.
             </p>

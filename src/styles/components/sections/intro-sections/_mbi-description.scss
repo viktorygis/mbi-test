@@ -12,6 +12,7 @@
 
   &__container {
     max-width: $container-max-width;
+    margin: 0 auto;
 
     @include respond-to($breakpoint-sm) {
       padding: 0 15px;
@@ -34,6 +35,10 @@
     line-height: 150%;
     margin: 0 0 28px 0;
     max-width: 820px;
+
+    p {
+      margin: 0;
+    }
   }
 
   &__grid {
@@ -53,7 +58,6 @@
     border-radius: 14px;
     padding: 16px 16px 14px 16px;
     box-shadow: 0 8px 22px rgba(0, 0, 0, 0.06);
-
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -62,7 +66,7 @@
   &__card--total {
     border-color: $color-accent;
 
-    & .mbi-description__badge {
+    .mbi-description__badge {
       color: $color-accent;
     }
   }
@@ -118,26 +122,11 @@
     color: $color-primary;
   }
 
-
-  &__meta-row {
-    font-size: 13px;
-    line-height: 140%;
-    opacity: 0.75;
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
-
-  &__dot {
-    opacity: 0.5;
-  }
-
   &__meta-line {
     display: flex;
     align-items: center;
     gap: 10px;
-    flex-wrap: wrap; // на мобилке красиво перенесётся
+    flex-wrap: wrap;
   }
 
   &__meta {
@@ -163,13 +152,13 @@
   }
 
   &__chip--warning {
-    background: rgba(255, 193, 7, 0.20);
+    background: rgba(255, 193, 7, 0.2);
     border-color: rgba(255, 193, 7, 0.35);
   }
 
   &__chip--info {
     background: rgba(33, 150, 243, 0.16);
-    border-color: rgba(33, 150, 243, 0.30);
+    border-color: rgba(33, 150, 243, 0.3);
   }
 
   &__card-body {

@@ -51,7 +51,7 @@ export function combinedInterpretation(scores) {
 
   const exhausted = exhaustion >= 31;
   const depersonal = depersonalization >= 18;
-  const reduced = reduction <= 18; // обратная шкала: чем ниже, тем лучше
+  const reduced = reduction <= 18;
 
   const messages = [];
 
