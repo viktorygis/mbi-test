@@ -94,5 +94,7 @@ export function recommendationsBlock(mbiResults) {
         ]
       : []),
     { text: "", margin: [0, 0, 0, 6] },
+    { text: "", pageBreak: "after" },
   ];
+
 }

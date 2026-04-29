@@ -1,7 +1,7 @@
 import { headerBlock } from "./blocks/headerBlock";
 import { resultsBlock } from "./blocks/resultsBlock";
 import { recommendationsBlock } from "./blocks/recommendationsBlock";
-import { interpretationBlock } from "./blocks/interpretationBlock";
+import { informationBlock } from "./blocks/informationBlock";
 import { contactsBlock } from "./blocks/contactsBlock";
 import { docStyles } from "./pdfStyles";
 
@@ -39,7 +39,7 @@ export async function downloadMbiPDF(mbiResults, userData, timeDisplay) {
       ...headerBlock(userData, timeDisplay),
       ...resultsBlock(mbiResults),
       ...recommendationsBlock(mbiResults),
-      ...interpretationBlock(mbiResults),
+      ...informationBlock(mbiResults),
       ...contactsBlock(),
     ],
     styles: docStyles,

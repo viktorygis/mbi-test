@@ -21,7 +21,7 @@
 - **ResultsScreen** — контейнерный компонент для блока результатов.
 - **MbiScalesSection** — визуализация основных шкал и общего индекса.
 - **MbiRecommendationsSection** — рекомендации и профилактика по шкалам.
-- **MbiInterpretationSection** — подробная интерпретация по каждому показателю.
+- **MbiInformationSection** — подробная интерпретация по каждому показателю.
 - Генерация PDF — `src/utils/pdf/mbiPdfGenerator.js`, `blocks/resultsBlock.js`, `recommendationsBlock.js`.
 
 Вся логика расчетов находится в `src/utils/mbiHelpers.js`, `src/utils/mbiNorms.js`.
@@ -100,7 +100,7 @@
 ```
 1. Ввод ответов (QuestionsScreen) или загрузка из localStorage/API
 2. → Калькуляция результатов (createMbiResults)
-3. → Вывод: MbiResultPage → ResultsScreen → MbiScalesSection, MbiRecommendationsSection, MbiInterpretationSection
+3. → Вывод: MbiResultPage → ResultsScreen → MbiScalesSection, MbiRecommendationsSection, MbiInformationSection
 4. → (по желанию) — экспорт PDF через кнопку "Скачать PDF"
 ```
 
