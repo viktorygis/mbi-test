@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useContext, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import ResultsScreen from "../Screens/ResultsScreen";
-import { createMbiResults } from "../../utils/mbiHelpers";
+import { createMbiResults } from "../../utils/mbi/mbiResults";
 import { MbiDataContext } from "../../context/MbiDataContext";
 
 // Универсальный нормализатор массива ответов
