@@ -135,8 +135,8 @@ export default function MbiResultPage() {
         displayedResultData.date ||
         new Date().toLocaleDateString("ru-RU")
       }
-      answerIndices={answerIndices}             // ✅
-      questions={questions}                     // ✅
+      answerIndices={answerIndices}
+      questions={questions}
       answerOptions={scores}
     />
   );

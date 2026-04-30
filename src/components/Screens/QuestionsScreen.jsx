@@ -9,72 +9,68 @@ const QuestionsScreen = ({
 }) => {
   const fullName = userData?.fullName || "";
 
-  const [mbiData, setMbiData] = useState(null);
+  const [testData, setTestData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answerIndices, setAnswerIndices] = useState([]);
 
-  // Предварительные вопросы (статические, перед MBI)
-  const preliminaryQuestions = [
-    {
-      id: "age",
-      text: "Сколько вам лет?",
-      options: ["до 25 лет", "25-35", "35-45", "45+"]
-    },
-    {
-      id: "occupation",
-      text: "Чем вы занимаетесь?",
-      options: ["Топ-менеджер", "Предприниматель", "Студент", "Наемный работник", "В поиске", "Домохозяйка", "Другое"]
-    },
-    {
-      id: "priority",
-      text: "Что сейчас самое важное для вас?",
-      options: ["Карьера", "Отношения", "Здоровье", "Деньги", "Смысл", "Другое"]
-    }
-  ];
+  const loadQuestions = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError("");
 
-  useEffect(() => {
-    const loadQuestions = async () => {
-      try {
-        setLoading(true);
-        setError("");
+      const response = await fetch(questionsUrl);
+      if (!response.ok) throw new Error(`Ошибка загрузки: ${response.status}`);
 
-        const response = await fetch(questionsUrl);
-        if (!response.ok) throw new Error(`Ошибка загрузки: ${response.status}`);
+      const data = await response.json();
 
-        const data = await response.json();
-        if (!Array.isArray(data.questions) || data.questions.length === 0) {
-          throw new Error("Данные вопросов не найдены.");
-        }
-
-        setMbiData(data);
-        const totalQuestions = preliminaryQuestions.length + data.questions.length;
-        setAnswerIndices(Array(totalQuestions).fill(null));
-        setCurrentQuestionIndex(0);
-      } catch (err) {
-        setError(err.message || "Ошибка загрузки вопросов");
-      } finally {
-        setLoading(false);
+      if (!Array.isArray(data.questions) || data.questions.length === 0) {
+        throw new Error("Данные вопросов не найдены.");
       }
-    };
 
-    loadQuestions();
+      const prelim = Array.isArray(data.preliminaryQuestions) ? data.preliminaryQuestions : [];
+      const totalQuestions = prelim.length + data.questions.length;
+
+      setTestData({
+        preliminaryQuestions: prelim,
+        questions: data.questions,
+        answerOptions: data.answerOptions || [],
+        scores: data.scores || [],
+      });
+      setAnswerIndices(Array(totalQuestions).fill(null));
+      setCurrentQuestionIndex(0);
+    } catch (err) {
+      setError(err.message || "Ошибка загрузки вопросов");
+    } finally {
+      setLoading(false);
+    }
   }, [questionsUrl]);
 
-  const prelimCount = preliminaryQuestions.length;
-  const mbiCount = mbiData?.questions?.length ?? 0;
+  useEffect(() => {
+    loadQuestions();
+  }, [loadQuestions]);
+
+  const preliminaryList = testData.preliminaryQuestions;
+  const mbiQuestions = testData.questions;
+  const answerOptions = testData?.answerOptions || [];
+
+  const prelimCount = preliminaryList.length;
+  const mbiCount = mbiQuestions.length;
   const total = prelimCount + mbiCount;
+
+  const effectiveQuestions = useMemo(
+    () => [...preliminaryList, ...mbiQuestions],
+    [preliminaryList, mbiQuestions]
+  );
+
   const isPreliminary = currentQuestionIndex < prelimCount;
   const isFirst = currentQuestionIndex === 0;
   const isLast = total > 0 && currentQuestionIndex === total - 1;
+
+  const currentQuestion = effectiveQuestions[currentQuestionIndex];
   const currentAnswer = answerIndices[currentQuestionIndex];
   const hasCurrentAnswer = currentAnswer !== null && currentAnswer !== undefined;
-
-  const effectiveQuestions = useMemo(() => {
-    if (!mbiData?.questions) return [];
-    return [...preliminaryQuestions, ...mbiData.questions];
-  }, [mbiData]);
 
   const progressPercent = useMemo(() => {
     if (!total) return 0;
@@ -105,24 +101,32 @@ const QuestionsScreen = ({
       return;
     }
 
-    // Подготовка результатов: preliminary отдельно + MBI
     const preliminaryAnswers = {};
-    preliminaryQuestions.forEach((q, idx) => {
+    preliminaryList.forEach((q, idx) => {
       const ansIdx = answerIndices[idx];
       if (ansIdx !== null && ansIdx !== undefined) {
-        preliminaryAnswers[q.id] = q.options[ansIdx];
+        preliminaryAnswers[q.id] = q.options?.[ansIdx] ?? "";
       }
     });
 
-    const mbiAnswerIndices = answerIndices.slice(prelimCount).filter((x) => x !== null && x !== undefined);
+    const mbiAnswerIndices = answerIndices.slice(prelimCount);
 
     onComplete?.({
-      preliminaryAnswers,  // Новый: {age: "25-35", occupation: "...", priority: "..."}
-      mbiAnswerIndices,    // Старый: только 22 ответа MBI
+      preliminaryAnswers,
+      mbiAnswerIndices,
       fullName,
       timeDisplay,
     });
-  }, [answerIndices, fullName, hasCurrentAnswer, isLast, onComplete, timeDisplay, prelimCount, preliminaryQuestions]);
+  }, [
+    hasCurrentAnswer,
+    isLast,
+    preliminaryList,
+    answerIndices,
+    prelimCount,
+    onComplete,
+    fullName,
+    timeDisplay,
+  ]);
 
   useEffect(() => {
     const onKeyDown = (e) => {
@@ -143,7 +147,7 @@ const QuestionsScreen = ({
 
       if (/^[1-6]$/.test(e.key)) {
         const idx = Number(e.key) - 1;
-        const optionsCount = effectiveQuestions[currentQuestionIndex]?.options?.length ?? mbiData?.answerOptions?.length ?? 0;
+        const optionsCount = currentQuestion?.options?.length ?? answerOptions.length ?? 0;
         if (idx >= 0 && idx < optionsCount) {
           e.preventDefault();
           handleSelect(idx);
@@ -153,27 +157,32 @@ const QuestionsScreen = ({
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [goPrev, goNext, handleSelect, effectiveQuestions, mbiData, currentQuestionIndex]);
+  }, [goPrev, goNext, handleSelect, currentQuestion, answerOptions.length]);
 
   const handleReload = () => {
-    setMbiData(null);
-    setLoading(true);
-    setError("");
-    setCurrentQuestionIndex(0);
-    setAnswerIndices([]);
+    loadQuestions();
   };
 
   const handleFillTestAnswers = () => {
-    if (!mbiData) return;
+    if (!testData) return;
+
     const totalQuestions = prelimCount + mbiCount;
-    const autoIndices = Array.from({ length: totalQuestions }, (_, i) => i % 6);
-    // Симулируем завершение
+    const optionsCount = answerOptions.length || 6;
+    const autoIndices = Array.from({ length: totalQuestions }, (_, i) => i % optionsCount);
+
     const preliminaryAnswers = {};
-    preliminaryQuestions.forEach((q, idx) => {
-      preliminaryAnswers[q.id] = q.options[autoIndices[idx]];
+    preliminaryList.forEach((q, idx) => {
+      preliminaryAnswers[q.id] = q.options?.[autoIndices[idx] % q.options.length] ?? "";
     });
+
     const mbiAnswerIndices = autoIndices.slice(prelimCount);
-    onComplete?.({ preliminaryAnswers, mbiAnswerIndices, fullName, timeDisplay });
+
+    onComplete?.({
+      preliminaryAnswers,
+      mbiAnswerIndices,
+      fullName,
+      timeDisplay,
+    });
   };
 
   if (loading) {
@@ -208,10 +217,7 @@ const QuestionsScreen = ({
     );
   }
 
-  if (!mbiData || effectiveQuestions.length === 0) return null;
-
-  const question = effectiveQuestions[currentQuestionIndex];
-  const answerOptions = question.options || mbiData.answerOptions || [];  // Для prelim — свои опции, для MBI — шкала 0-6
+  if (!testData || effectiveQuestions.length === 0 || !currentQuestion) return null;
 
   return (
     <section className="question-test" aria-labelledby="question-test-title">
@@ -229,7 +235,9 @@ const QuestionsScreen = ({
           <div className="question-test__progress">
             <div className="question-test__progress-top">
               <div className="question-test__progress-text" id="question-test-title">
-                {isPreliminary ? `Предварительный вопрос ${currentQuestionIndex + 1}` : `Вопрос ${currentQuestionIndex - prelimCount + 1} из ${mbiCount}`} из {total}
+                {isPreliminary
+                  ? `Предварительный вопрос ${currentQuestionIndex + 1} из ${prelimCount}`
+                  : `Вопрос ${currentQuestionIndex - prelimCount + 1} из ${mbiCount} (всего ${total})`}
               </div>
               <div className="question-test__progress-percent">{progressPercent}%</div>
             </div>
@@ -248,10 +256,10 @@ const QuestionsScreen = ({
 
           <div className="question-test__block">
             <fieldset className="question-test__question-group">
-              <legend className="question-test__question-text">{question.text}</legend>
+              <legend className="question-test__question-text">{currentQuestion.text}</legend>
 
               <div className="question-test__options" role="radiogroup" aria-label="Варианты ответа">
-                {answerOptions.map((option, i) => (
+                {(currentQuestion.options || answerOptions).map((option, i) => (
                   <label className="question-test__option" key={i}>
                     <input
                       type="radio"
