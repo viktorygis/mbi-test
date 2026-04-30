@@ -91,7 +91,9 @@ export default function MbiResultPage() {
     displayedResultData?.answerIndices,
     Array.isArray(questions) ? questions.length : 22
   );
-
+  // ✅ Извлекаем preliminaryAnswers
+  const preliminaryAnswers = displayedResultData?.preliminaryAnswers ||
+    displayedResultData?.user?.preliminaryAnswers || {};
   // Корректный useMemo — только вычисления, никаких setState!
   const mbiResults = useMemo(() => {
     if (
@@ -127,13 +129,14 @@ export default function MbiResultPage() {
     <ResultsScreen
       mbiResults={mbiResults}
       userData={displayedResultData.user}
+      preliminaryAnswers={preliminaryAnswers}
       timeDisplay={
         displayedResultData.testDate ||
         displayedResultData.date ||
         new Date().toLocaleDateString("ru-RU")
       }
-      answerIndices={answerIndices}
-      questions={questions}
+      answerIndices={answerIndices}             // ✅
+      questions={questions}                     // ✅
       answerOptions={scores}
     />
   );

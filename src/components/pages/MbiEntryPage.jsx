@@ -24,43 +24,52 @@ const MbiEntryPage = () => {
   const [timeDisplay, setTimeDisplay] = useState("");
 
   // Функция отправки результатов на сервер и обработка ответа
-  function sendResults({ userData, answerIndices, date }) {
+  function sendResults({ userData, answerIndices, date, preliminaryAnswers = {} }) {
     setError("");
     setResultId(null);
 
     const { hostname } = window.location;
     const isGitHubPages = hostname === "github.io" || hostname.endsWith(".github.io");
 
-    // Выравниваем массив ответов под количество вопросов!
     const normalizedIndices = normalizeAnswers(answerIndices, questions.length);
 
     if (isGitHubPages) {
-      // Сохраняем результат в localStorage (для github-pages)
       const fakeId = "test-" + Math.floor(Math.random() * 100000);
-      localStorage.setItem(
-        `test-result-${fakeId}`,
-        JSON.stringify({ user: userData, answerIndices: normalizedIndices, date })
-      );
+      const fullResult = {
+        user: userData,
+        preliminaryAnswers,  // ✅ Добавляем preliminary
+        answerIndices: normalizedIndices,
+        date
+      };
+      localStorage.setItem(`test-result-${fakeId}`, JSON.stringify(fullResult));
       setResultId(fakeId);
       setStep("resultLink");
       return;
     }
 
-    // На localhost/127.0.0.1 отправляем на сервер
+    // Отправка на сервер (добавляем preliminary в user или отдельно)
     fetch("/api/mbi-test/submit", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ user: userData, answerIndices: normalizedIndices, date })
+      body: JSON.stringify({
+        user: { ...userData, preliminaryAnswers },  // Встраиваем в userData
+        answerIndices: normalizedIndices,
+        date
+      })
     })
       .then(async (res) => {
         if (!res.ok) throw new Error("Ошибка сервера");
         const data = await res.json();
         if (!data.id) throw new Error("Не получен ID результата");
 
-        localStorage.setItem(
-          `test-result-${data.id}`,
-          JSON.stringify({ user: userData, answerIndices: normalizedIndices, date })
-        );
+        // ✅ Сохраняем ПОЛНЫЙ результат в localStorage
+        const fullResult = {
+          user: userData,
+          preliminaryAnswers: preliminaryAnswers || data.user?.preliminaryAnswers || {},
+          answerIndices: normalizedIndices,
+          date
+        };
+        localStorage.setItem(`test-result-${data.id}`, JSON.stringify(fullResult));
 
         setResultId(data.id);
         setStep("resultLink");
@@ -105,9 +114,14 @@ const MbiEntryPage = () => {
         answerOptions={answerOptions}
         questions={questions}
         // По завершении — вызывать sendResults!
-        onComplete={({ answerIndices }) => {
+        onComplete={(data) => {
           setStep("loading");
-          sendResults({ userData, answerIndices, date: timeDisplay });
+          sendResults({
+            userData,
+            answerIndices: data.mbiAnswerIndices,  // Только MBI!
+            date: timeDisplay,
+            preliminaryAnswers: data.preliminaryAnswers  // ✅ Передаем отдельно
+          });
         }}
         onBack={() => setStep("form")}
       />

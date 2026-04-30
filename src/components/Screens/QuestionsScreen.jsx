@@ -15,6 +15,25 @@ const QuestionsScreen = ({
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answerIndices, setAnswerIndices] = useState([]);
 
+  // Предварительные вопросы (статические, перед MBI)
+  const preliminaryQuestions = [
+    {
+      id: "age",
+      text: "Сколько вам лет?",
+      options: ["до 25 лет", "25-35", "35-45", "45+"]
+    },
+    {
+      id: "occupation",
+      text: "Чем вы занимаетесь?",
+      options: ["Топ-менеджер", "Предприниматель", "Студент", "Наемный работник", "В поиске", "Домохозяйка", "Другое"]
+    },
+    {
+      id: "priority",
+      text: "Что сейчас самое важное для вас?",
+      options: ["Карьера", "Отношения", "Здоровье", "Деньги", "Смысл", "Другое"]
+    }
+  ];
+
   useEffect(() => {
     const loadQuestions = async () => {
       try {
@@ -30,7 +49,8 @@ const QuestionsScreen = ({
         }
 
         setMbiData(data);
-        setAnswerIndices(Array(data.questions.length).fill(null));
+        const totalQuestions = preliminaryQuestions.length + data.questions.length;
+        setAnswerIndices(Array(totalQuestions).fill(null));
         setCurrentQuestionIndex(0);
       } catch (err) {
         setError(err.message || "Ошибка загрузки вопросов");
@@ -42,11 +62,19 @@ const QuestionsScreen = ({
     loadQuestions();
   }, [questionsUrl]);
 
-  const total = useMemo(() => mbiData?.questions?.length ?? 0, [mbiData]);
+  const prelimCount = preliminaryQuestions.length;
+  const mbiCount = mbiData?.questions?.length ?? 0;
+  const total = prelimCount + mbiCount;
+  const isPreliminary = currentQuestionIndex < prelimCount;
   const isFirst = currentQuestionIndex === 0;
   const isLast = total > 0 && currentQuestionIndex === total - 1;
   const currentAnswer = answerIndices[currentQuestionIndex];
   const hasCurrentAnswer = currentAnswer !== null && currentAnswer !== undefined;
+
+  const effectiveQuestions = useMemo(() => {
+    if (!mbiData?.questions) return [];
+    return [...preliminaryQuestions, ...mbiData.questions];
+  }, [mbiData]);
 
   const progressPercent = useMemo(() => {
     if (!total) return 0;
@@ -77,12 +105,24 @@ const QuestionsScreen = ({
       return;
     }
 
+    // Подготовка результатов: preliminary отдельно + MBI
+    const preliminaryAnswers = {};
+    preliminaryQuestions.forEach((q, idx) => {
+      const ansIdx = answerIndices[idx];
+      if (ansIdx !== null && ansIdx !== undefined) {
+        preliminaryAnswers[q.id] = q.options[ansIdx];
+      }
+    });
+
+    const mbiAnswerIndices = answerIndices.slice(prelimCount).filter((x) => x !== null && x !== undefined);
+
     onComplete?.({
-      answerIndices: answerIndices.filter((x) => x !== null && x !== undefined),
+      preliminaryAnswers,  // Новый: {age: "25-35", occupation: "...", priority: "..."}
+      mbiAnswerIndices,    // Старый: только 22 ответа MBI
       fullName,
       timeDisplay,
     });
-  }, [answerIndices, fullName, hasCurrentAnswer, isLast, onComplete, timeDisplay]);
+  }, [answerIndices, fullName, hasCurrentAnswer, isLast, onComplete, timeDisplay, prelimCount, preliminaryQuestions]);
 
   useEffect(() => {
     const onKeyDown = (e) => {
@@ -103,7 +143,7 @@ const QuestionsScreen = ({
 
       if (/^[1-6]$/.test(e.key)) {
         const idx = Number(e.key) - 1;
-        const optionsCount = mbiData?.answerOptions?.length ?? 0;
+        const optionsCount = effectiveQuestions[currentQuestionIndex]?.options?.length ?? mbiData?.answerOptions?.length ?? 0;
         if (idx >= 0 && idx < optionsCount) {
           e.preventDefault();
           handleSelect(idx);
@@ -113,7 +153,7 @@ const QuestionsScreen = ({
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [goPrev, goNext, handleSelect, mbiData]);
+  }, [goPrev, goNext, handleSelect, effectiveQuestions, mbiData, currentQuestionIndex]);
 
   const handleReload = () => {
     setMbiData(null);
@@ -125,8 +165,15 @@ const QuestionsScreen = ({
 
   const handleFillTestAnswers = () => {
     if (!mbiData) return;
-    const autoIndices = mbiData.questions.map((_, i) => i % 6);
-    onComplete?.({ answerIndices: autoIndices, fullName, timeDisplay });
+    const totalQuestions = prelimCount + mbiCount;
+    const autoIndices = Array.from({ length: totalQuestions }, (_, i) => i % 6);
+    // Симулируем завершение
+    const preliminaryAnswers = {};
+    preliminaryQuestions.forEach((q, idx) => {
+      preliminaryAnswers[q.id] = q.options[autoIndices[idx]];
+    });
+    const mbiAnswerIndices = autoIndices.slice(prelimCount);
+    onComplete?.({ preliminaryAnswers, mbiAnswerIndices, fullName, timeDisplay });
   };
 
   if (loading) {
@@ -161,10 +208,10 @@ const QuestionsScreen = ({
     );
   }
 
-  if (!mbiData) return null;
+  if (!mbiData || effectiveQuestions.length === 0) return null;
 
-  const question = mbiData.questions[currentQuestionIndex];
-  const answerOptions = mbiData.answerOptions || [];
+  const question = effectiveQuestions[currentQuestionIndex];
+  const answerOptions = question.options || mbiData.answerOptions || [];  // Для prelim — свои опции, для MBI — шкала 0-6
 
   return (
     <section className="question-test" aria-labelledby="question-test-title">
@@ -182,7 +229,7 @@ const QuestionsScreen = ({
           <div className="question-test__progress">
             <div className="question-test__progress-top">
               <div className="question-test__progress-text" id="question-test-title">
-                Вопрос {currentQuestionIndex + 1} из {total}
+                {isPreliminary ? `Предварительный вопрос ${currentQuestionIndex + 1}` : `Вопрос ${currentQuestionIndex - prelimCount + 1} из ${mbiCount}`} из {total}
               </div>
               <div className="question-test__progress-percent">{progressPercent}%</div>
             </div>
@@ -240,7 +287,7 @@ const QuestionsScreen = ({
               className="question-test__button"
               type="button"
               onClick={handleFillTestAnswers}
-              style={{ margin: "20px auto", width: "50%", }}
+              style={{ margin: "20px auto", width: "50%" }}
             >
               Заполнить тестовые ответы
             </button>
