@@ -84,12 +84,7 @@ function scoreRow(value, maxScore, level, color) {
 
 function scaleBlock(title, value, maxScore, level, recommendation, iconBase64) {
   const color = getLevelColor(level);
-  return [
-    scaleHeader(title, iconBase64),
-    ...scoreRow(value, maxScore, level, color),
-    ...recoToPdf(recommendation),
-    { text: "", margin: [0, 0, 0, 10] },
-  ];
+  return [scaleHeader(title, iconBase64), ...scoreRow(value, maxScore, level, color), ...recoToPdf(recommendation), { text: "", margin: [0, 0, 0, 10] }];
 }
 
 function getProblemPriority(level, isReduction = false) {
@@ -133,17 +128,19 @@ function mainScaleBadge(color) {
   return {
     table: {
       widths: ["auto"],
-      body: [[
-        {
-          text: "★  Главная зона внимания",
-          fontSize: 9,
-          bold: true,
-          color: "#ffffff",
-          fillColor: color,
-          border: [false, false, false, false],
-          margin: [6, 3, 6, 3],
-        },
-      ]],
+      body: [
+        [
+          {
+            text: "★  Главная зона внимания",
+            fontSize: 9,
+            bold: true,
+            color: "#ffffff",
+            fillColor: color,
+            border: [false, false, false, false],
+            margin: [6, 3, 6, 3],
+          },
+        ],
+      ],
     },
     layout: { defaultBorder: false },
     margin: [0, 2, 0, 6],
@@ -154,30 +151,24 @@ function mainScaleBadge(color) {
 function highlightedMainScaleBlock(title, value, maxScore, level, recommendation, iconBase64) {
   const color = getLevelColor(level);
 
-  const content = [
-    mainScaleBadge(color),
-    scaleHeader(title, iconBase64),
-    ...scoreRow(value, maxScore, level, color),
-    ...recoToPdf(recommendation),
-  ];
+  const content = [mainScaleBadge(color), scaleHeader(title, iconBase64), ...scoreRow(value, maxScore, level, color), ...recoToPdf(recommendation)];
 
   return {
     table: {
       widths: ["*"],
-      // ← исправлено: одинарный массив [{ stack }], не двойной [[{ stack }]]
-      body: content.map((item) => [{ stack: [item], border: [false, false, false, false] }]),
+      body: [
+        [
+          {
+            stack: content,
+            border: [true, true, true, true], // ← все четыре стороны
+            borderColor: [color, color, color, color],
+            borderWidth: [1, 1, 1, 1],
+            padding: [3, 12, 3, 12], // [top, right, bottom, left]
+          },
+        ],
+      ],
     },
-    layout: {
-      defaultBorder: false,
-      hLineWidth: (i, node) => (i === 0 || i === node.table.body.length ? 1 : 0),
-      vLineWidth: (i) => (i === 0 || i === 1 ? 1 : 0),
-      hLineColor: () => color,
-      vLineColor: () => color,
-      paddingLeft: () => 12,
-      paddingRight: () => 12,
-      paddingTop: () => 3,
-      paddingBottom: () => 3,
-    },
+    layout: { defaultBorder: false }, // можно убрать, если мешает
     margin: [0, 0, 0, 14],
   };
 }
@@ -225,13 +216,8 @@ export function resultsBlock(mbiResults) {
   // ← полоска burnout теперь тоже цвета его уровня, а не фиксированный PINK
   const burnoutColor = getLevelColor(levelBurnout);
 
-  const burnoutBlockHeader = [
-    scaleHeader(scales.burnoutIndex?.title || "Общий индекс психического выгорания", ICONS.burnoutIndex),
-  ];
-  const burnoutBlockBody = [
-    ...scoreRow(burnoutIndex, burnoutConfig.maxScore, levelBurnout, burnoutColor),
-    ...recoToPdf(recBurnout),
-  ];
+  const burnoutBlockHeader = [scaleHeader(scales.burnoutIndex?.title || "Общий индекс психического выгорания", ICONS.burnoutIndex)];
+  const burnoutBlockBody = [...scoreRow(burnoutIndex, burnoutConfig.maxScore, levelBurnout, burnoutColor), ...recoToPdf(recBurnout)];
 
   const [first, ...rest] = blocksConfig;
 
@@ -240,9 +226,7 @@ export function resultsBlock(mbiResults) {
 
     highlightedMainScaleBlock(first.title, first.score, first.maxScore, first.level, first.rec, first.icon),
 
-    ...rest.flatMap(({ title, score, maxScore, level, rec, icon }) =>
-      scaleBlock(title, score, maxScore, level, rec, icon)
-    ),
+    ...rest.flatMap(({ title, score, maxScore, level, rec, icon }) => scaleBlock(title, score, maxScore, level, rec, icon)),
 
     { text: "", pageBreak: "after" },
   ];
