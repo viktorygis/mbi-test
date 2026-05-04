@@ -141,19 +141,6 @@ function interpretationBox(text) {
   };
 }
 
-// ─── Интерпретация общего уровня ──────────────────────────────────────────────
-
-function interpretBurnoutLevel(level) {
-  switch (getLevelKey(level)) {
-    case "veryHigh": return "Состояние сейчас тяжёлое — важно как можно скорее снизить темп и восстановиться.";
-    case "high":     return "Есть заметные признаки выгорания. Сейчас хорошее время пересмотреть нагрузку.";
-    case "mid":      return "Сейчас есть заметное напряжение, но ситуация ещё управляемая.";
-    case "low":      return "Серьёзных признаков выгорания нет. Продолжайте поддерживать текущий баланс.";
-    case "veryLow":  return "Всё в порядке. Уделяйте внимание профилактике и восстановлению.";
-    default:         return "";
-  }
-}
-
 // ─── Вспомогательные функции ──────────────────────────────────────────────────
 
 function recoToPdf(reco) {
@@ -220,8 +207,8 @@ function getProblemPriority(level) {
 
 // ─── Профиль выгорания ────────────────────────────────────────────────────────
 
-function profileSummaryBlock(scores) {
-  const messages = combinedInterpretation(scores);
+function profileSummaryBlock(scores, scalesData) {
+  const messages = combinedInterpretation(scores, scalesData);
   const hasMessages = Array.isArray(messages) && messages.length > 0;
 
   const items = hasMessages
@@ -295,7 +282,7 @@ function seekHelpBlock() {
 // ─── Главная функция ──────────────────────────────────────────────────────────
 
 export function resultsBlock(mbiResults) {
-  const { scores, burnoutIndex, scales, burnoutConfig } = mbiResults;
+  const { scores, burnoutIndex, scales, burnoutConfig, scalesData } = mbiResults;
 
   const scalesConfig = [
     {
@@ -333,10 +320,11 @@ export function resultsBlock(mbiResults) {
   scalesConfig.sort((a, b) => getProblemPriority(b.level) - getProblemPriority(a.level));
 
   const burnoutLevel    = getLevelForScore({ burnoutIndex: burnoutConfig }, "burnoutIndex", burnoutIndex);
+  const burnoutRec      = getRecommendation({ burnoutIndex: burnoutConfig }, "burnoutIndex", burnoutIndex);
   const burnoutColor    = getLevelColor(burnoutLevel);
   const burnoutTitle    = scales.burnoutIndex?.title ?? "Общий индекс психического выгорания";
   const burnoutSegments = extractSegments(burnoutConfig);
-  const meaning         = interpretBurnoutLevel(burnoutLevel);
+  const meaning         = burnoutRec?.short ?? "";
 
   return [
     // ── Страница 1 ────────────────────────────────────────────────────────────
@@ -368,7 +356,7 @@ export function resultsBlock(mbiResults) {
     ...(meaning ? [interpretationBox(meaning)] : []),
 
     // Профиль выгорания
-    profileSummaryBlock(scores),
+    profileSummaryBlock(scores, scalesData ?? null),
 
     // ── Страница 2: Расшифровка ───────────────────────────────────────────────
     { text: "", pageBreak: "after" },
