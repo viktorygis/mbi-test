@@ -4,13 +4,175 @@
 
 **MBI Test (Maslach Burnout Inventory)** — это опросник для оценки признаков профессионального выгорания. Он помогает определить выраженность трех основных компонентов выгорания: эмоционального истощения, деперсонализации и редукции профессиональных достижений. Тест носит информационный характер и не заменяет консультацию специалиста.
 
-Он помогает определить выраженность трех основных компонентов выгорания:
-
 1. Эмоциональное истощение (_exhaustion_)
 2. Деперсонализация (_depersonalization_)
 3. Редукция личных достижений (_reduction_)
 
 > ⚠️ Тест не заменяет консультацию специалиста и носит информационный характер.
+
+---
+
+## Технический стек
+
+- **Фреймворк:** React 18 (JSX)
+- **Сборщик:** Vite
+- **Роутинг:** React Router v6 (`BrowserRouter`)
+- **Стили:** SCSS + CSS
+- **Сервер (продакшн):** Node.js (`server.js`)
+- **Окружение GitHub Pages:** без сервера, данные хранятся в `localStorage`
+
+---
+
+## Архитектура проекта
+
+```
+├── public/
+│   └── data/
+│       ├── questions.json     # вопросы, answerOptions, scores, preliminaryQuestions
+│       └── scales.json        # нормы, интерпретации по шкалам + burnoutIndex
+├── src/
+│   ├── App.jsx                # роуты: /, /mbi-result/:id, /results/:id (редирект)
+│   ├── context/
+│   │   └── MbiDataContext.js  # React-контекст для данных MBI
+│   ├── hooks/
+│   │   ├── useMbiData.js      # загрузка questions.json и scales.json
+│   │   └── useScales.js
+│   ├── components/
+│   │   ├── pages/
+│   │   │   ├── MbiEntryPage.jsx   # главная страница теста (шаги)
+│   │   │   └── MbiResultPage.jsx  # страница результата по id
+│   │   ├── Screens/
+│   │   │   ├── IntroScreen.jsx
+│   │   │   ├── FormScreen.jsx
+│   │   │   ├── QuestionsScreen.jsx
+│   │   │   └── ResultsScreen.jsx
+│   │   └── Sections/
+│   │       ├── IntroSections/
+│   │       └── ResultsSections/
+│   └── utils/
+│       ├── mbi/
+│       │   ├── mbiScores.js    # расчёт баллов по шкалам
+│       │   ├── mbiNorms.js     # определение уровней, интерпретации, combinedInterpretation
+│       │   ├── mbiResults.js   # формирование полного объекта результата
+│       │   └── mbiHelpers.js   # цвета уровней, PDF-хелперы
+│       └── pdf/
+```
+
+---
+
+## Маршруты приложения
+
+| Путь | Компонент | Описание |
+|------|-----------|----------|
+| `/` | `MbiEntryPage` | Главная страница: интро → форма → вопросы → ссылка на результат |
+| `/mbi-result/:id` | `MbiResultPage` | Просмотр результата по уникальному id |
+| `/results/:id` | `ResultsRedirect` | Редирект для обратной совместимости |
+| `*` | `Navigate to /` | Любой неизвестный путь → на старт |
+
+---
+
+## Поток экранов (MbiEntryPage)
+
+```
+"intro" → "form" → "questions" → "loading" → "resultLink"
+```
+
+- **intro** — `IntroScreen`, кнопка «Начать»
+- **form** — `FormScreen`, сбор контактных данных
+- **questions** — `QuestionsScreen`, предварительные вопросы + 22 MBI-вопроса
+- **loading** — промежуточный экран «Сохраняем результаты»
+- **resultLink** — ссылка на `/mbi-result/:id`
+
+---
+
+## Данные формы (FormScreen)
+
+`FormScreen` собирает **контактные данные** пользователя (объект `userData`):
+
+| Поле | Тип | Обязательное | Описание |
+|------|-----|:---:|---------|
+| `fullName` | string | ✅ | ФИО (мин. 3 символа) |
+| `phone` | string | ✅ | Телефон: `+7 (XXX) XXX-XX-XX` (imask) |
+| `email` | string | ✅ | Email |
+| `telegram` | string | — | Ник в Telegram (опционально) |
+| `agreePolicy` | boolean | ✅ | Согласие с политикой |
+| `agreeData` | boolean | ✅ | Согласие на обработку данных |
+| `agreeAds` | boolean | — | Согласие на рекламу (опционально) |
+
+> `userData` — отдельно от `preliminaryAnswers` (age/occupation/priority). Оба объекта передаются в `sendResults()` и сохраняются в localStorage.
+
+---
+
+## Структура JSON-данных
+
+### `public/data/questions.json`
+
+```json
+{
+  "preliminaryQuestions": [ { "id": "age", "text": "...", "options": [...] }, ... ],
+  "questions": [ { "id": 1, "text": "..." }, ... ],
+  "answerOptions": ["Никогда", "Очень редко", "Иногда", "Часто", "Очень часто", "Каждый день"],
+  "scores": [0, 1, 3, 4, 5, 6]
+}
+```
+
+- `preliminaryQuestions` — 3 вопроса: `age`, `occupation`, `priority`
+- `questions` — 22 вопроса MBI (id: 1–22)
+- `scores` — ScoreMap, используется в `computeScaleScore`
+
+### `public/data/scales.json`
+
+```json
+{
+  "scales": {
+    "exhaustion":        { "items": [...], "maxScore": 54, "norms": [...], "interpretations": {...} },
+    "depersonalization": { "items": [...], "maxScore": 30, "norms": [...], "interpretations": {...} },
+    "reduction":         { "items": [...], "maxScore": 48, "invertedForIndex": true, "norms": [...], "interpretations": {...} }
+  },
+  "burnoutIndex": { "maxScore": 132, "norms": [...], "interpretations": {...} }
+}
+```
+
+- `scales.reduction.invertedForIndex: true` — флаг, что шкала инвертирована
+- Нормы и интерпретации (`veryLow`, `low`, `mid`, `high`, `veryHigh`) хранятся в JSON, а не в JS-коде
+
+---
+
+## Ключевые утилиты (`src/utils/mbi/`)
+
+### `mbiScores.js`
+
+- `computeScaleScore(answerIndices, itemIds, scoreMap, invert)` — балл по одной шкале
+  - `invert = true` для reduction: `score = scoreMap[last] - score` (т.е. `6 - baseScore`)
+- `computeMbiScores(answerIndices, scalesConfig, scoreMap)` → `{ exhaustion, depersonalization, reduction }`
+- `computeBurnoutIndex(exhaustion, depersonalization, reduction)` → сумма
+
+### `mbiNorms.js`
+
+- `getLevelForScore(scales, scaleKey, score)` — найти метку уровня по диапазону из JSON
+- `getLevelKey(label)` — перевести русский текст уровня в ключ (`veryLow`/`low`/`mid`/`high`/`veryHigh`)
+- `getRecommendation(scales, scaleKey, score)` — получить интерпретацию уровня
+- `combinedInterpretation(scores)` — тревожные комбинации по профилю выгорания
+
+### `mbiResults.js`
+
+- `createMbiResults(answerIndices, mbiData)` → полный объект результата:
+  ```js
+  {
+    scores: { exhaustion, depersonalization, reduction },
+    levels: { exhaustion, depersonalization, reduction },
+    burnoutIndex,
+    burnoutLevel,
+    scales,
+    burnoutConfig
+  }
+  ```
+
+### `mbiHelpers.js`
+
+- Цвета уровней (`LEVEL_COLORS`) и шкал (`SCALE_BAR_COLORS`)
+- `getLevelColor(label)` — цвет по текстовому уровню
+- `centerLine(...)` — helper для PDF
 
 ---
 
@@ -25,7 +187,7 @@
 Эти ответы:
 
 - не участвуют в расчётах,
-- сохраняются отдельно,
+- сохраняются в объекте `preliminaryAnswers`,
 - могут использоваться для персонализации рекомендаций.
 
 ---
@@ -39,12 +201,12 @@
 
 | Индекс | Ответ       | Балл |
 | ------ | ----------- | ---- |
-| 0      | никогда     | 0    |
-| 1      | очень редко | 1    |
-| 2      | иногда      | 3    |
-| 3      | часто       | 4    |
-| 4      | очень часто | 5    |
-| 5      | каждый день | 6    |
+| 0      | Никогда     | 0    |
+| 1      | Очень редко | 1    |
+| 2      | Иногда      | 3    |
+| 3      | Часто       | 4    |
+| 4      | Очень часто | 5    |
+| 5      | Каждый день | 6    |
 
 ---
 
@@ -106,11 +268,11 @@
 
 ### Деперсонализация (depersonalization)
 
-- 0–5 — крайне низкое
-- 6–11 — низкое
-- 12–17 — среднее
-- 18–23 — высокое
-- 24–30 — крайне высокое
+- 0–5 — крайне низкая
+- 6–11 — низкая
+- 12–17 — средняя
+- 18–23 — высокая
+- 24–30 — крайне высокая
 
 ### Редукция личных достижений (reduction) — уже ИНВЕРТИРОВАНО!
 
@@ -184,11 +346,36 @@
 
 ## Критические комбинации ("тревожные" формулы)
 
+Реализованы в `combinedInterpretation()` (`mbiNorms.js`):
+
+| Условие | Порог | Значение |
+| ------- | ----- | -------- |
+| `exhaustion >= 31` | высокое истощение | дефицит ресурсов |
+| `depersonalization >= 18` | высокая деперсонализация | эмоциональное отстранение |
+| `reduction >= 29` | высокая редукция | потеря мотивации/самооценки |
+
 | Комбинация                     | Значение                     |
 | ------------------------------ | ---------------------------- |
 | истощение + деперсонализация ↑ | активная фаза выгорания      |
 | истощение + высокая редукция   | потеря мотивации             |
 | все шкалы высокие              | выраженный синдром выгорания |
+
+---
+
+## Хранение данных
+
+- **GitHub Pages:** результат сохраняется в `localStorage` под ключом `test-result-{id}` (id генерируется случайно: `"test-" + random`)
+- **Продакшн (сервер):** результат отправляется на `POST /api/mbi-test/submit`, затем дублируется в `localStorage` по серверному `id`
+
+Структура сохраняемого объекта:
+```js
+{
+  user: { fullName, phone, email, telegram, agreePolicy, agreeData, agreeAds },
+  preliminaryAnswers: { age: "...", occupation: "...", priority: "..." },
+  answerIndices: [0..5, ...],  // 22 индекса MBI-ответов
+  date: "DD.MM.YYYY"
+}
+```
 
 ---
 
