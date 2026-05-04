@@ -13,7 +13,7 @@ const ICONS = {
 const TITLES = {
   exhaustion: "Эмоциональное истощение",
   depersonalization: "Деперсонализация",
-  reduction: "Редукция профессиональных достижений",
+  reduction: "Редукция личных достижений",
 };
 
 const MbiRecommendationsSection = ({ mbiResults, scales }) => {

@@ -56,7 +56,7 @@ export function recommendationsBlock(mbiResults) {
     },
     {
       key: "reduction",
-      label: "Редукция профессиональных достижений",
+      label: "Редукция личных достижений",
       level: getLevelForScore(mbiResults.scales, "reduction", scores.reduction),
       reco: getRecommendation(mbiResults.scales, "reduction", scores.reduction),
     },

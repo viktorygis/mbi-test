@@ -65,7 +65,7 @@ const MbiIntroSection = () => {
         <div className="mbi-description__grid">
           <MbiItem
             icon="emotional-exhaustion.svg"
-            title="Психоэмоциональное истощение"
+            title="Эмоциональное истощение"
             questions={9}
             maxScore={54}
             description="Исчерпание эмоциональных, физических и энергетических ресурсов. Проявляется в хроническом утомлении, равнодушии и раздражительности."

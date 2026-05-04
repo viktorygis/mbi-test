@@ -20,7 +20,7 @@ const bullets = [
   {
     id: "reduction",
     num: "03",
-    title: "Редукция достижений",
+    title: "Редукция личных достижений",
     text: "ощущаете ли вы, что ваши усилия дают результат",
     icon: "img/mbi-test/reduced-achievement.svg",
     modifier: "reduction",

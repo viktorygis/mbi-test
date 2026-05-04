@@ -130,7 +130,7 @@ const MbiInformationSection = () => {
             <ul className="mbi-interpretation__list">
               <li><b>Истощение</b> — про «нет сил».</li>
               <li><b>Деперсонализация</b> — про «отстраняюсь от людей».</li>
-              <li><b>Редукция достижений</b> — про «я не справляюсь».</li>
+              <li><b>Редукция личных достижений</b> — про «я не справляюсь».</li>
             </ul>
 
             <div className="mbi-interpretation__text">
