@@ -54,9 +54,7 @@
     gap: 24px;
     margin-bottom: 32px;
 
-    @media (min-width: 1024px) {
-      grid-template-columns: repeat(3, 1fr);
-    }
+
   }
 
   //.mbi-scales-section__norms-------------------------------
@@ -178,13 +176,13 @@
 
   //mbi-scale__recommendation
   &__recommendation {
-       font-size: 14px;
+    font-size: 14px;
     line-height: 1.5;
     margin: 9px 0 3px 0;
     font-weight: 500;
   }
 
- //mbi-recommendations__list
+  //mbi-scale__list
   &__list {
     margin: 0;
     display: grid;
@@ -228,8 +226,7 @@
   box-shadow: $shadow-block;
   border-left: 4px solid $color-accent;
 
-  //mbi-scale__header
-
+  //.mbi-burnout-index__header
   &__header {
     display: flex;
     align-items: center;
@@ -237,7 +234,7 @@
     margin-bottom: 10px;
   }
 
-  //mbi-scale__icon-wrap
+  //.mbi-burnout-index__icon-wrap
   &__icon-wrap {
     width: 42px;
     height: 42px;
@@ -249,13 +246,13 @@
     flex: 0 0 42px;
   }
 
-  //mbi-scale__icon
+  //.mbi-burnout-index__icon
   &__icon {
     width: 24px;
     height: 24px;
   }
 
-  //mbi-burnout-index__title--------------------------------
+  //.mbi-burnout-index__title--------------------------------
   &__title {
     font-size: 17px;
     font-weight: 700;
@@ -264,6 +261,7 @@
   }
 
   //======= уровень над полосой =========
+  //.mbi-burnout-index__level-label
   &__level-label {
     font-size: 14px;
     font-weight: 600;
@@ -272,7 +270,7 @@
     line-height: 1.2;
   }
 
-  //mbi-burnout-index__score-line--------------------------------
+  //.mbi-burnout-index__score-line--------------------------------
   &__score-line {
     display: flex;
     justify-content: space-between;
@@ -282,17 +280,20 @@
     flex-wrap: wrap;
   }
 
+  //.mbi-burnout-index__score-row
   &__score-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
   }
 
+  //.mbi-burnout-index__score
   &__score {
     font-weight: 700;
     color: $color-text-dark;
   }
 
+  //.mbi-burnout-index__max
   &__max {
     font-size: 16px;
     color: $color-counter;
@@ -330,7 +331,8 @@
     margin: 9px 0 3px 0;
     font-weight: 500;
   }
- //mbi-recommendations__list
+
+  //.mbi-burnout-index__list
   &__list {
     margin: 0;
     display: grid;
@@ -364,7 +366,7 @@
   &__pin-row {
     position: relative;
     height: 20px;
-    margin-bottom: 2px;
+    margin-bottom: 6px;
   }
 
   &__score-pin {
@@ -470,9 +472,8 @@
 
 // Блок обращения за поддержкой
 .mbi-seek-help {
-  background: #fafafa;
-  border-top: 1px solid #e5e7eb;
-  border-bottom: 1px solid #e5e7eb;
+  background: #fff;
+  border: 1px solid #e5e7eb;
   border-radius: $radius-block;
   padding: 16px 20px;
   margin-top: 24px;

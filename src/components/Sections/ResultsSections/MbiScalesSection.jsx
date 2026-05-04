@@ -132,7 +132,7 @@ const ScaleRow = ({ scaleKey, title, icon, score, maxScore, scaleConfig }) => {
         <div className="mbi-scale__recommendation">{rec.short}</div>
       )}
       {rec?.details && Array.isArray(rec.details) && rec.details.length > 0 && (
-        <ul className="mbi-scale__details-list">
+        <ul className="mbi-scale__list">
           {rec.details.map((item, i) => (
             <li key={i} className="mbi-scale__details-item">{item}</li>
           ))}
