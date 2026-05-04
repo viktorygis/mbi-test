@@ -1,4 +1,4 @@
-import { centerLine } from "../../mbiHelpers";
+import { centerLine } from "../../mbi/mbiHelpers";
 
 import mindBase64 from "../image/mind";
 import emotionalBase64 from "../image/emotional";

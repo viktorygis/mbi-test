@@ -1,6 +1,6 @@
 // src/utils/pdf/blocks/contactsBlock.js
 import { PINK, GRAY, BLUE } from '../pdfStyles';
-import { centerLine} from "../../mbiHelpers";
+import { centerLine} from "../../mbi/mbiHelpers";
 
 export function contactsBlock() {
   return [
