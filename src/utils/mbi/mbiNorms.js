@@ -44,36 +44,66 @@ export function getRecommendation(scales, scaleKey, score) {
 }
 
 /**
- * Общий итог по результату для профиля выгорания
+ * Общий итог по результату для профиля выгорания.
+ * Profiles are evaluated in JSON order. "all_high" is treated as the most
+ * severe combined pattern — when it matches, iteration stops immediately
+ * so that only one (the most specific) message is shown.
+ * The "no_risk" profile acts as a fallback shown when no other profile matched.
  */
-export function combinedInterpretation(scores) {
-  let exhaustion, depersonalization, reduction;
-  if (Array.isArray(scores)) {
-    exhaustion = scores[0];
-    depersonalization = scores[1];
-    reduction = scores[2];
-  } else if (scores && typeof scores === "object") {
-    exhaustion = scores.exhaustion;
-    depersonalization = scores.depersonalization;
-    reduction = scores.reduction;
-  }
-  if (typeof exhaustion !== "number" || typeof depersonalization !== "number" || typeof reduction !== "number") {
-    return [];
-  }
-  const exhausted = exhaustion >= 31;
-  const depersonal = depersonalization >= 18;
-  const reduced = reduction >= 29;
+export function combinedInterpretation(scores, scalesData) {
+  const profiles = scalesData?.combinedProfiles;
 
+  if (!Array.isArray(profiles) || profiles.length === 0) return [];
+
+  let exhaustion, depersonalization, reduction;
+  if (scores && typeof scores === "object" && !Array.isArray(scores)) {
+    exhaustion        = scores.exhaustion;
+    depersonalization = scores.depersonalization;
+    reduction         = scores.reduction;
+  } else if (Array.isArray(scores)) {
+    [exhaustion, depersonalization, reduction] = scores;
+  }
+
+  if (
+    typeof exhaustion        !== "number" ||
+    typeof depersonalization !== "number" ||
+    typeof reduction         !== "number"
+  ) return [];
+
+  const scalesObj = scalesData?.scales ?? {};
+  const levelKeys = {
+    exhaustion:        getLevelKey(getLevelForScore(scalesObj, "exhaustion",        exhaustion)),
+    depersonalization: getLevelKey(getLevelForScore(scalesObj, "depersonalization", depersonalization)),
+    reduction:         getLevelKey(getLevelForScore(scalesObj, "reduction",         reduction)),
+  };
+
+  const NO_RISK_ID = "no_risk";
+  const ALL_HIGH_ID = "all_high";
   const messages = [];
-  if (exhausted && depersonal && reduced) {
-    messages.push("По всем трём шкалам есть выраженные признаки выгорания: человек сильно истощён, эмоционально дистанцируется и чувствует снижение профессиональной эффективности.");
-  } else {
-    if (exhausted && depersonal) {
-      messages.push("Сочетание высокого истощения и выраженной дистанции в общении говорит о том, что ресурсы уже сильно снижены, а взаимодействие с людьми даётся с трудом.");
-    }
-    if (exhausted && reduced) {
-      messages.push("Сочетание высокого истощения и снижения ощущения профессиональной эффективности говорит о риске потери мотивации и уверенности в своей работе.");
+
+  for (const profile of profiles) {
+    if (profile.id === NO_RISK_ID) continue;
+
+    const when = profile.when ?? {};
+    const keys = Object.keys(when);
+    if (keys.length === 0) continue;
+
+    const matches = keys.every((scaleKey) =>
+      Array.isArray(when[scaleKey]) && when[scaleKey].includes(levelKeys[scaleKey])
+    );
+
+    if (matches) {
+      messages.push(profile.message);
+      // "all_high" is the most comprehensive pattern; stop here to avoid
+      // showing redundant sub-pattern messages alongside it.
+      if (profile.id === ALL_HIGH_ID) break;
     }
   }
+
+  if (messages.length === 0) {
+    const noRisk = profiles.find((p) => p.id === NO_RISK_ID);
+    if (noRisk) messages.push(noRisk.message);
+  }
+
   return messages;
 }

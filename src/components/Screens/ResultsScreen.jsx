@@ -18,7 +18,8 @@ const ResultsScreen = ({
   timeDisplay,
   preliminaryAnswers = {},  // ✅ Новый проп (fallback на {})
   answerIndices = [],       // ✅ Для PDF/отладки
-  questions = []            // ✅ Для PDF/отладки
+  questions = [],           // ✅ Для PDF/отладки
+  scalesData = null         // ✅ Полный объект scales.json
 }) => {
   const [showSuccess, setShowSuccess] = useState(false);
 
@@ -26,7 +27,8 @@ const ResultsScreen = ({
     downloadMbiPDF(mbiResults, userData, timeDisplay, {
       preliminaryAnswers,  // ✅ Передаем в PDF
       answerIndices,
-      questions
+      questions,
+      scalesData,
     }).catch((err) => {
       console.error('Ошибка создания PDF:', err);
       alert('Не удалось создать PDF. Попробуйте ещё раз.');

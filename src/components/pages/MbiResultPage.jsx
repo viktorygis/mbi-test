@@ -15,7 +15,7 @@ function normalizeAnswers(ans, n) {
 
 export default function MbiResultPage() {
   const { id } = useParams();
-  const { questions, scales, scores, burnoutIndex, loading: mbiLoading } = useContext(MbiDataContext);
+  const { questions, scales, scores, burnoutIndex, scalesData, loading: mbiLoading } = useContext(MbiDataContext);
 
   const [resultData, setResultData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -138,6 +138,7 @@ export default function MbiResultPage() {
       answerIndices={answerIndices}
       questions={questions}
       answerOptions={scores}
+      scalesData={scalesData}
     />
   );
 }

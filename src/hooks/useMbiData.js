@@ -8,7 +8,8 @@ export function useMbiData() {
     scores: null,
     answerOptions: null,
     burnoutIndex: null,
-    loading: true
+    scalesData: null,
+    loading: true,
   });
 
   useEffect(() => {
@@ -16,12 +17,13 @@ export function useMbiData() {
       const qRes = await fetch(import.meta.env.BASE_URL + "data/questions.json").then(r => r.json());
       const sRes = await fetch(import.meta.env.BASE_URL + "data/scales.json").then(r => r.json());
       setMbiData({
-        questions: qRes.questions,
+        questions:     qRes.questions,
         answerOptions: qRes.answerOptions,
-        scores: qRes.scores,          // <----- !!! ДЛЯ РЕЗУЛЬТАТОВ
-        scales: sRes.scales,
-        burnoutIndex: sRes.burnoutIndex,
-        loading: false
+        scores:        qRes.scores,
+        scales:        sRes.scales,
+        burnoutIndex:  sRes.burnoutIndex,
+        scalesData:    sRes,
+        loading:       false,
       });
     }
     fetchData();

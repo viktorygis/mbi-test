@@ -23,21 +23,29 @@ function getLastName(fullName) {
   return names[0];
 }
 
-export async function downloadMbiPDF(mbiResults, userData, timeDisplay) {
+export async function downloadMbiPDF(mbiResults, userData, timeDisplay, extra = {}) {
   if (!mbiResults) {
     alert("Нет данных для создания PDF!");
     return;
   }
+
+  const { scalesData } = extra;
+
   const [{ default: pdfMake }, { default: pdfFonts }] = await Promise.all([
     import("pdfmake/build/pdfmake"),
     import("pdfmake/build/vfs_fonts"),
   ]);
   pdfMake.addVirtualFileSystem(pdfFonts.pdfMake?.vfs ?? pdfFonts);
 
+  const mbiResultsWithScales = {
+    ...mbiResults,
+    scalesData: scalesData ?? null,
+  };
+
   const docDefinition = {
     content: [
       ...headerBlock(userData, timeDisplay),
-      ...resultsBlock(mbiResults),
+      ...resultsBlock(mbiResultsWithScales),
       //...recommendationsBlock(mbiResults),
       ...informationBlock(mbiResults),
       ...contactsBlock(),

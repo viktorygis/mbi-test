@@ -305,5 +305,37 @@
         ]
       }
     }
-  }
+  },
+  "combinedProfiles": [
+    {
+      "id": "all_high",
+      "when": {
+        "exhaustion": ["high", "veryHigh"],
+        "depersonalization": ["high", "veryHigh"],
+        "reduction": ["high", "veryHigh"]
+      },
+      "message": "По всем трём шкалам есть выраженные признаки выгорания: сильное истощение, эмоциональная дистанция и снижение ощущения профессиональной эффективности."
+    },
+    {
+      "id": "exhaustion_depersonalization",
+      "when": {
+        "exhaustion": ["high", "veryHigh"],
+        "depersonalization": ["high", "veryHigh"]
+      },
+      "message": "Сочетание высокого истощения и выраженной дистанции в общении — ресурсы уже сильно снижены, а взаимодействие с людьми даётся с трудом."
+    },
+    {
+      "id": "exhaustion_reduction",
+      "when": {
+        "exhaustion": ["high", "veryHigh"],
+        "reduction": ["high", "veryHigh"]
+      },
+      "message": "Сочетание высокого истощения и снижения ощущения эффективности говорит о риске потери мотивации и уверенности в своей работе."
+    },
+    {
+      "id": "no_risk",
+      "when": {},
+      "message": "Тревожных сочетаний по шкалам не выявлено. Поддерживайте текущий режим и следите за уровнем нагрузки."
+    }
+  ]
 }
