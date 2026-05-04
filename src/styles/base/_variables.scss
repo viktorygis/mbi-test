@@ -28,7 +28,6 @@ $colors: (
 	hist-clock: #ff9900,
 	hist-clock-light: #ffedd2,
 	hist-legend: #555,
-	hist-maximum: #03d666,
 	status: #e4e4e457,
 	tooltip: #575757,
 );
@@ -58,7 +57,6 @@ $color-hist-hands-light: map.get($colors, 'hist-hands-light');
 $color-hist-clock: map.get($colors, 'hist-clock');
 $color-hist-clock-light: map.get($colors, 'hist-clock-light');
 $color-hist-legend: map.get($colors, 'hist-legend');
-$color-hist-maximum: map.get($colors, 'hist-maximum');
 $color-status: map.get($colors, 'status');
 $color-tooltip: map.get($colors, 'tooltip');
 

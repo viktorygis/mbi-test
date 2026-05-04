@@ -1,22 +1,7 @@
 // src/utils/mbiHelpers.js
 import { PINK, GRAY, BLUE } from "../pdf/pdfStyles";
+import {SEG_COLORS} from "../../utils/mbi/mbiConstants";
 
-// Цвета для уровней шкал
-const LEVEL_COLORS = {
-  veryLow: "#22c55e",
-  low: "#86efac",
-  mid: "#facc15",
-  high: "#f97316",
-  veryHigh: "#ef4444",
-};
-
-// Цветы “линейки/бара” по показателю
-const SCALE_BAR_COLORS = {
-  exhaustion: "#ff9900",
-  depersonalization: "#06eadc",
-  reduction: "#fa00ff",
-  burnoutIndex: "#0386ff",
-};
 
 // Приводит строку уровня к ключу
 function normalizeLevelKey(label) {
@@ -33,7 +18,7 @@ function normalizeLevelKey(label) {
 
 // Получить цвет для уровня по его текстовому обозначению
 function getLevelColor(label) {
-  return LEVEL_COLORS[normalizeLevelKey(label)] || "#555";
+  return SEG_COLORS[normalizeLevelKey(label)] || "#555";
 }
 function centerLine(widthPx = 300, thickness = 2) {
   const contentWidth = 515;
@@ -44,4 +29,4 @@ function centerLine(widthPx = 300, thickness = 2) {
   };
 }
 
-export { LEVEL_COLORS, SCALE_BAR_COLORS, getLevelColor, centerLine };
+export { SEG_COLORS, getLevelColor, centerLine };
