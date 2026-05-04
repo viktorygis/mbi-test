@@ -1,11 +1,12 @@
 import { getLevelForScore, getRecommendation, getLevelKey } from "../../mbi/mbiNorms";
 import { getLevelColor } from "../../mbi/mbiHelpers";
-import { GRAY } from "../pdfStyles";
 
 import emotionalBase64 from "../image/emotional";
 import depersonalizationBase64 from "../image/depersonalization";
 import reductionBase64 from "../image/reduction";
 import burnoutBase64 from "../image/burnout";
+
+// ─── Константы ────────────────────────────────────────────────────────────────
 
 const ICONS = {
   exhaustion: emotionalBase64,
@@ -22,39 +23,73 @@ const LEVEL_PRIORITY = {
   veryLow: 1,
 };
 
+const BAR = { width: 515, height: 5, radius: 3 };
+const BLOCK_GAP = 14;
+
+// ─── Вспомогательные функции ──────────────────────────────────────────────────
+
 function recoToPdf(reco) {
   if (!reco) return [];
   if (typeof reco === "string") {
-    return [{ text: reco, style: "recoTitle", margin: [0, 0, 0, 8] }];
+    return [{ text: reco, style: "recoTitle", margin: [0, 4, 0, 8] }];
   }
   const out = [];
-  if (reco.short) out.push({ text: reco.short, style: "recoTitle" });
+  if (reco.short) out.push({ text: reco.short, style: "recoTitle", margin: [0, 4, 0, 4] });
   if (Array.isArray(reco.details) && reco.details.length) {
-    out.push({ ul: reco.details, style: "recoText" });
+    out.push({ ul: reco.details, style: "recoText", margin: [0, 0, 0, 4] });
   }
   return out;
 }
 
 function barRow(score, maxScore, color) {
-  const barWidth = 515;
-  const barHeight = 5;
-  const radius = 3;
-  const filled = maxScore > 0 ? Math.max(0, Math.round((score / maxScore) * barWidth)) : 0;
-
-  const elements = [{ type: "rect", x: 0, y: 0, w: barWidth, h: barHeight, r: radius, color: "#e5e7eb" }];
+  const filled = maxScore > 0 ? Math.max(0, Math.round((score / maxScore) * BAR.width)) : 0;
+  const elements = [{ type: "rect", x: 0, y: 0, w: BAR.width, h: BAR.height, r: BAR.radius, color: "#e5e7eb" }];
   if (filled > 0) {
-    elements.push({ type: "rect", x: 0, y: 0, w: filled, h: barHeight, r: radius, color });
+    elements.push({ type: "rect", x: 0, y: 0, w: filled, h: BAR.height, r: BAR.radius, color });
   }
-  return { canvas: elements, margin: [0, 4, 0, 8] };
+  return { canvas: elements, margin: [0, 2, 0, 2] };
 }
 
 function scaleHeader(title, iconBase64) {
   return {
     columns: [
-      { image: iconBase64, width: 16, height: 16, margin: [0, 0, 8, 0] },
+      { image: iconBase64, width: 16, height: 16 },
       { text: title, style: "scaleTitle" },
     ],
     columnGap: 8,
+    margin: [0, 0, 0, 4],
+  };
+}
+
+function barPercent(value, maxScore) {
+  const percent = maxScore > 0 ? Math.round((value / maxScore) * 100) : 0;
+  const tickX = maxScore > 0 ? Math.max(0, Math.round((value / maxScore) * BAR.width)) : 0;
+
+  const leftW = 20;
+  const rightW = 30;
+  const labelW = 30;
+  const inner = BAR.width - leftW - rightW;
+
+  const labelLeft = Math.max(0, Math.min(tickX - leftW - labelW / 2, inner - labelW));
+  const labelRight = Math.max(0, inner - labelW - labelLeft);
+
+  return {
+    stack: [
+      {
+        canvas: [{ type: "line", x1: tickX, y1: 0, x2: tickX, y2: 7, lineWidth: 2, lineColor: "#374151" }],
+        margin: [0, 1, 0, 0],
+      },
+      {
+        columns: [
+          { text: "0%", style: "scalePercentLine", width: leftW },
+          { text: "", width: labelLeft },
+          { text: `${percent}%`, style: "scalePercentLine", bold: true, width: labelW, alignment: "center" },
+          { text: "", width: labelRight },
+          { text: "100%", style: "scalePercentLine", width: rightW, alignment: "right" },
+        ],
+        columnGap: 0,
+      },
+    ],
     margin: [0, 0, 0, 2],
   };
 }
@@ -65,49 +100,20 @@ function scoreRow(value, maxScore, level, color) {
     {
       columns: [
         { text: `${value} баллов из ${maxScore} (${percent}%)`, style: "scalePercent" },
-        { text: level, style: "scaleLabel", color },
+        { text: level, style: "scaleLabel", color, alignment: "right" },
       ],
-      margin: [0, 0, 0, 2],
+      margin: [0, 0, 0, 1],
     },
     barRow(value, maxScore, color),
-    {
-      columns: [
-        { text: "0%", style: "scalePercentLine", width: 35 },
-        { stack: [{ text: `${percent}%`, alignment: "center", style: "scalePercentLine" }], width: "*" },
-        { text: "100%", style: "scalePercentLine", alignment: "right", color: GRAY, width: 35 },
-      ],
-      margin: [0, -5, 0, 8],
-      columnGap: 0,
-    },
+    barPercent(value, maxScore),
   ];
 }
 
-function scaleBlock(title, value, maxScore, level, recommendation, iconBase64) {
-  const color = getLevelColor(level);
-  return [scaleHeader(title, iconBase64), ...scoreRow(value, maxScore, level, color), ...recoToPdf(recommendation), { text: "", margin: [0, 0, 0, 10] }];
-}
+function coloredBlock(header, body, color) {
+  const left = { text: "", fillColor: color, border: [false, false, false, false] };
+  const cell = (content) => ({ stack: [content], border: [false, false, false, false] });
 
-function getProblemPriority(level, isReduction = false) {
-  const key = typeof level === "string" ? getLevelKey(level) : "mid";
-  const base = LEVEL_PRIORITY[key] || 3;
-  return isReduction ? 6 - base : base;
-}
-
-// Блок с вертикальной полосой слева — цвет полоски = color
-function highlightedBlock(headerRows, blockContent, color) {
-  const leftCell = { text: "", fillColor: color, border: [false, false, false, false] };
-
-  const rows = [];
-  for (const row of headerRows) {
-    rows.push([leftCell, { stack: [row], border: [false, false, false, false] }]);
-  }
-  for (const c of blockContent) {
-    if (Array.isArray(c)) {
-      for (const sub of c) rows.push([leftCell, { stack: [sub], border: [false, false, false, false] }]);
-    } else {
-      rows.push([leftCell, { stack: [c], border: [false, false, false, false] }]);
-    }
-  }
+  const rows = [...header.map((row) => [left, cell(row)]), ...body.flat().map((row) => [left, cell(row)])];
 
   return {
     table: { widths: [3, "*"], body: rows },
@@ -120,63 +126,188 @@ function highlightedBlock(headerRows, blockContent, color) {
       paddingTop: () => 2,
       paddingBottom: () => 2,
     },
-    margin: [0, 0, 0, 14],
+    margin: [0, 0, 0, BLOCK_GAP],
   };
 }
 
-function mainScaleBadge(color) {
+
+
+function getProblemPriority(level) {
+  const key = typeof level === "string" ? getLevelKey(level) : "mid";
+  return LEVEL_PRIORITY[key] ?? 3;
+}
+
+// ─── Сводный блок ─────────────────────────────────────────────────────────────
+
+function summaryBlock(burnoutTitle, burnoutLevel, burnoutColor, firstTitle, firstIcon, firstLevel, firstColor) {
+  const badge = (text, color) => ({
+    text,
+    style: "summaryLevel",
+    color: "#ffffff",
+    background: color,
+    borderRadius: 4,
+    padding: [6, 2, 6, 2],
+  });
+
   return {
-    table: {
-      widths: ["auto"],
-      body: [
-        [
-          {
-            text: "★  Главная зона внимания",
-            fontSize: 9,
-            bold: true,
-            color: "#ffffff",
-            fillColor: color,
-            border: [false, false, false, false],
-            margin: [6, 3, 6, 3],
-          },
-        ],
-      ],
-    },
-    layout: { defaultBorder: false },
-    margin: [0, 2, 0, 6],
+    stack: [
+      // ── Карточка 1: Общий индекс ──
+      {
+        table: {
+          widths: ["*"],
+          body: [[{
+            fillColor: "#f9fafb",
+            border: [true, true, true, true],
+            borderColor: ["#e5e7eb", "#e5e7eb", "#e5e7eb", "#e5e7eb"],
+            stack: [{
+              columns: [
+                { text: burnoutTitle, style: "summaryTitleGeneral", width: "*" },
+                badge(burnoutLevel, burnoutColor),
+              ],
+              columnGap: 10,
+            }],
+            margin: [12, 12, 12, 12],
+          }]],
+        },
+        layout: {
+          defaultBorder: false,
+          hLineWidth: () => 1,
+          vLineWidth: () => 1,
+          hLineColor: () => "#e5e7eb",
+          vLineColor: () => "#e5e7eb",
+        },
+        margin: [0, 0, 0, 12],
+      },
+
+      // ── Карточка 2: Требует внимания ──
+      {
+        table: {
+          widths: ["*"],
+          body: [[{
+            border: [true, true, true, true],
+            borderColor: [firstColor, firstColor, firstColor, firstColor],
+            fillColor: "#ffffff",
+            stack: [
+              {
+                text: "ТРЕБУЕТ ВНИМАНИЯ",
+                style: "summaryAttentionLabel",
+                color: firstColor,
+                margin: [0, 0, 0, 6],
+              },
+              {
+                columns: [
+                  { text: firstTitle, style: "summaryTitle", width: "*" },
+                  badge(firstLevel, firstColor),
+                ],
+                columnGap: 8,
+              },
+            ],
+            margin: [12, 12, 12, 12],
+          }]],
+        },
+        layout: {
+          defaultBorder: false,
+          hLineWidth: () => 1,
+          vLineWidth: () => 1,
+          hLineColor: () => firstColor,
+          vLineColor: () => firstColor,
+        },
+        margin: [0, 0, 0, 20],
+      },
+    ],
   };
 }
+// ─── Заголовок второй страницы ────────────────────────────────────────────────
+/**
+ * Блок с тонкой цветной полосой слева — для второй страницы.
+ * Без заливки фона, полоса тоньше чем в coloredBlock.
+ */
+function accentBlock(header, body, color) {
+  const left = {
+    text: "",
+    fillColor: color,
+    border: [false, false, false, false],
+  };
+  const cell = (content) => ({
+    stack: [content],
+    border: [false, false, false, false],
+  });
 
-// Блок главной шкалы: рамка цвета уровня со всех четырёх сторон
-function highlightedMainScaleBlock(title, value, maxScore, level, recommendation, iconBase64) {
-  const color = getLevelColor(level);
+  const rows = [...header.map((row) => [left, cell(row)]), ...body.flat().map((row) => [left, cell(row)])];
 
-  const content = [mainScaleBadge(color), scaleHeader(title, iconBase64), ...scoreRow(value, maxScore, level, color), ...recoToPdf(recommendation)];
-
+  return {
+    table: { widths: [2, "*"], body: rows }, // ← 2px вместо 3px — тоньше чем coloredBlock
+    layout: {
+      defaultBorder: false,
+      hLineWidth: () => 0,
+      vLineWidth: () => 0,
+      paddingLeft: (i) => (i === 1 ? 10 : 0),
+      paddingRight: () => 0,
+      paddingTop: () => 2,
+      paddingBottom: () => 2,
+    },
+    margin: [0, 0, 0, BLOCK_GAP],
+  };
+}
+function secondPageHeader() {
   return {
     table: {
       widths: ["*"],
       body: [
         [
           {
-            stack: content,
-            border: [true, true, true, true], // ← все четыре стороны
-            borderColor: [color, color, color, color],
-            borderWidth: [1, 1, 1, 1],
-            padding: [3, 12, 3, 12], // [top, right, bottom, left]
+            fillColor: "#f3f4f6",
+            border: [false, false, false, true], // только нижняя граница
+            borderColor: ["#d1d5db", "#d1d5db", "#d1d5db", "#d1d5db"],
+            stack: [
+              {
+                columns: [
+                  {
+                    canvas: [
+                      {
+                        type: "polyline",
+                        points: [
+                          { x: 0, y: 0 },
+                          { x: 8, y: 4 },
+                          { x: 0, y: 8 },
+                          { x: 3, y: 4 },
+                          { x: 0, y: 0 },
+                        ],
+                        color: "#6b7280",
+                        lineWidth: 1.5,
+                        closePath: true,
+                      },
+                    ],
+                    width: 12,
+                    height: 10,
+                    margin: [0, 4, 0, 0],
+                  },
+                  {
+                    stack: [
+                      { text: "Дополнительные показатели", style: "pageTitle", margin: [0, 0, 0, 2] },
+                      { text: "Шкалы с менее выраженными значениями на момент прохождения теста.", style: "pageSubtitle" },
+                    ],
+                  },
+                ],
+                columnGap: 8,
+              },
+            ],
+            margin: [12, 10, 12, 8],
           },
         ],
       ],
     },
-    layout: { defaultBorder: false }, // можно убрать, если мешает
-    margin: [0, 0, 0, 14],
+    layout: "noBorders",
+    margin: [0, 0, 0, 20],
   };
 }
+
+// ─── Главная функция ──────────────────────────────────────────────────────────
 
 export function resultsBlock(mbiResults) {
   const { scores, burnoutIndex, scales, burnoutConfig } = mbiResults;
 
-  const blocksConfig = [
+  const scalesConfig = [
     {
       key: "exhaustion",
       title: scales.exhaustion.title,
@@ -185,7 +316,6 @@ export function resultsBlock(mbiResults) {
       level: getLevelForScore(scales, "exhaustion", scores.exhaustion),
       rec: getRecommendation(scales, "exhaustion", scores.exhaustion),
       icon: ICONS.exhaustion,
-      isReduction: false,
     },
     {
       key: "depersonalization",
@@ -195,7 +325,6 @@ export function resultsBlock(mbiResults) {
       level: getLevelForScore(scales, "depersonalization", scores.depersonalization),
       rec: getRecommendation(scales, "depersonalization", scores.depersonalization),
       icon: ICONS.depersonalization,
-      isReduction: false,
     },
     {
       key: "reduction",
@@ -205,28 +334,41 @@ export function resultsBlock(mbiResults) {
       level: getLevelForScore(scales, "reduction", scores.reduction),
       rec: getRecommendation(scales, "reduction", scores.reduction),
       icon: ICONS.reduction,
-      isReduction: true,
     },
   ];
 
-  blocksConfig.sort((a, b) => getProblemPriority(b.level, b.isReduction) - getProblemPriority(a.level, a.isReduction));
+  scalesConfig.sort((a, b) => getProblemPriority(b.level) - getProblemPriority(a.level));
 
-  const levelBurnout = getLevelForScore({ burnoutIndex: burnoutConfig }, "burnoutIndex", burnoutIndex);
-  const recBurnout = getRecommendation({ burnoutIndex: burnoutConfig }, "burnoutIndex", burnoutIndex);
-  // ← полоска burnout теперь тоже цвета его уровня, а не фиксированный PINK
-  const burnoutColor = getLevelColor(levelBurnout);
+  const burnoutLevel = getLevelForScore({ burnoutIndex: burnoutConfig }, "burnoutIndex", burnoutIndex);
+  const burnoutRec = getRecommendation({ burnoutIndex: burnoutConfig }, "burnoutIndex", burnoutIndex);
+  const burnoutColor = getLevelColor(burnoutLevel);
+  const burnoutTitle = scales.burnoutIndex?.title ?? "Общий индекс психического выгорания";
 
-  const burnoutBlockHeader = [scaleHeader(scales.burnoutIndex?.title || "Общий индекс психического выгорания", ICONS.burnoutIndex)];
-  const burnoutBlockBody = [...scoreRow(burnoutIndex, burnoutConfig.maxScore, levelBurnout, burnoutColor), ...recoToPdf(recBurnout)];
-
-  const [first, ...rest] = blocksConfig;
+  const [first, ...rest] = scalesConfig;
+  const firstColor = getLevelColor(first.level);
 
   return [
-    highlightedBlock(burnoutBlockHeader, burnoutBlockBody, burnoutColor),
+    // ── Страница 1 ────────────────────────────────────────────────────────────
 
-    highlightedMainScaleBlock(first.title, first.score, first.maxScore, first.level, first.rec, first.icon),
+    summaryBlock(burnoutTitle, burnoutLevel, burnoutColor, first.title, first.icon, first.level, firstColor),
 
-    ...rest.flatMap(({ title, score, maxScore, level, rec, icon }) => scaleBlock(title, score, maxScore, level, rec, icon)),
+    coloredBlock([scaleHeader(burnoutTitle, ICONS.burnoutIndex)], [...scoreRow(burnoutIndex, burnoutConfig.maxScore, burnoutLevel, burnoutColor), ...recoToPdf(burnoutRec)], burnoutColor),
+
+    coloredBlock([scaleHeader(first.title, first.icon)], [...scoreRow(first.score, first.maxScore, first.level, firstColor), ...recoToPdf(first.rec)], firstColor),
+
+    // ── Страница 2 ────────────────────────────────────────────────────────────
+    { text: "", pageBreak: "after" },
+
+    ...(rest.length > 0 ? [secondPageHeader()] : []),
+
+    ...rest.map(({ title, score, maxScore, level, rec, icon }) => {
+  const color = getLevelColor(level);
+  return accentBlock(
+    [scaleHeader(title, icon)],
+    [...scoreRow(score, maxScore, level, color), ...recoToPdf(rec)],
+    color,
+  );
+}),
 
     { text: "", pageBreak: "after" },
   ];

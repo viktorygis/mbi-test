@@ -3,6 +3,7 @@ export const GRAY = "#71717a";
 export const BLUE = "#007BFF";
 
 export const docStyles = {
+  //--- headerBlock -----------------------------
   headerTitle: {
     fontSize: 12,
     bold: true,
@@ -14,7 +15,6 @@ export const docStyles = {
     fontSize: 10,
     color: GRAY,
   },
-
   mainTitle: {
     fontSize: 16,
     bold: true,
@@ -25,15 +25,48 @@ export const docStyles = {
     bold: true,
   },
 
-  //резюме для первой страницы с общим уровнем выгорания и главной зоной внимания
+  //--- resultsBlock ----------------------------
+
+  // Сводный блок (summaryBlock)
+  summaryTitleGeneral: {
+    fontSize: 14,
+    bold: true,
+    color: GRAY,
+    margin: [0, 0, 0, 2],
+  },
   summaryTitle: {
     fontSize: 14,
     bold: true,
     color: GRAY,
-    alignment: "center",
     margin: [0, 0, 0, 2],
   },
+  summaryLevel: {
+    fontSize: 11,
+    bold: true,
+    alignment: "right",
+  },
+  summaryNote: {
+    fontSize: 8,
+    italics: true,
+  },
+  summaryAttentionLabel: {
+    fontSize: 7,
+    bold: true,
+    characterSpacing: 0.8,
+  },
 
+  // Заголовок страницы 2
+  pageTitle: {
+    fontSize: 13,
+    bold: true,
+  },
+  pageSubtitle: {
+    fontSize: 9,
+    italics: true,
+    color: GRAY,
+  },
+
+  // Шкалы (coloredBlock / plainBlock)
   scaleTitle: {
     fontSize: 12,
     bold: true,
@@ -53,6 +86,7 @@ export const docStyles = {
     color: GRAY,
   },
 
+  // Рекомендации
   recoTitle: {
     fontSize: 11,
     margin: [0, 0, 0, 2],
@@ -65,6 +99,12 @@ export const docStyles = {
     color: GRAY,
   },
 
+  // Разделитель секций
+  sectionDivider: {
+    fontSize: 9,
+    italics: true,
+  },
+  //--- informationBlock ---------------------------
   //Справочная информация по шкалам и результатам
   sectionTitle: {
     fontSize: 14,
@@ -72,7 +112,6 @@ export const docStyles = {
     alignment: "center",
     margin: [0, 0, 0, 10],
   },
-
   //заголовок для метрики
   infoIconTitle: {
     fontSize: 13,
@@ -83,7 +122,6 @@ export const docStyles = {
   infoIconRow: {
     margin: [0, 2, 0, 4],
   },
-
   //введение к информации по шкалам, которое идет после иконки
   infoIntro: {
     fontSize: 11,
@@ -96,19 +134,16 @@ export const docStyles = {
     bold: true,
     margin: [0, 6, 0, 4],
   },
-
   infoBullet: {
     fontSize: 11,
     color: GRAY,
   },
-
   infoSmallText: {
     fontSize: 10,
     color: GRAY,
     lineHeight: 1.35,
     margin: [0, 0, 0, 4],
   },
-
   pages: {
     fontSize: 10,
     color: GRAY,
