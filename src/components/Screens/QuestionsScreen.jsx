@@ -51,18 +51,29 @@ const QuestionsScreen = ({
     loadQuestions();
   }, [loadQuestions]);
 
-  const preliminaryList = testData.preliminaryQuestions;
-  const mbiQuestions = testData.questions;
-  const answerOptions = testData?.answerOptions || [];
-
-  const prelimCount = preliminaryList.length;
-  const mbiCount = mbiQuestions.length;
-  const total = prelimCount + mbiCount;
-
-  const effectiveQuestions = useMemo(
-    () => [...preliminaryList, ...mbiQuestions],
-    [preliminaryList, mbiQuestions]
-  );
+  // 👇 Мемоизация вычисляемых данных из testData
+  const {
+    preliminaryList,
+    //mbiQuestions,
+    effectiveQuestions,
+    prelimCount,
+    mbiCount,
+    total,
+    answerOptions,
+  } = useMemo(() => {
+    const prelim = testData?.preliminaryQuestions ?? [];
+    const mbi = testData?.questions ?? [];
+    const answerOpts = testData?.answerOptions ?? [];
+    return {
+      preliminaryList: prelim,
+      mbiQuestions: mbi,
+      effectiveQuestions: [...prelim, ...mbi],
+      prelimCount: prelim.length,
+      mbiCount: mbi.length,
+      total: prelim.length + mbi.length,
+      answerOptions: answerOpts,
+    };
+  }, [testData]);
 
   const isPreliminary = currentQuestionIndex < prelimCount;
   const isFirst = currentQuestionIndex === 0;
@@ -101,6 +112,7 @@ const QuestionsScreen = ({
       return;
     }
 
+    // Формирование результатов теста
     const preliminaryAnswers = {};
     preliminaryList.forEach((q, idx) => {
       const ansIdx = answerIndices[idx];
@@ -131,7 +143,15 @@ const QuestionsScreen = ({
   useEffect(() => {
     const onKeyDown = (e) => {
       const tag = e.target?.tagName?.toLowerCase();
-      if (tag === "input" || tag === "textarea" || tag === "select" || e.altKey || e.ctrlKey || e.metaKey) return;
+      if (
+        tag === "input" ||
+        tag === "textarea" ||
+        tag === "select" ||
+        e.altKey ||
+        e.ctrlKey ||
+        e.metaKey
+      )
+        return;
 
       if (e.key === "ArrowLeft") {
         e.preventDefault();
@@ -147,7 +167,8 @@ const QuestionsScreen = ({
 
       if (/^[1-6]$/.test(e.key)) {
         const idx = Number(e.key) - 1;
-        const optionsCount = currentQuestion?.options?.length ?? answerOptions.length ?? 0;
+        const optionsCount =
+          currentQuestion?.options?.length ?? answerOptions.length ?? 0;
         if (idx >= 0 && idx < optionsCount) {
           e.preventDefault();
           handleSelect(idx);
@@ -157,7 +178,13 @@ const QuestionsScreen = ({
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [goPrev, goNext, handleSelect, currentQuestion, answerOptions.length]);
+  }, [
+    goPrev,
+    goNext,
+    handleSelect,
+    currentQuestion,
+    answerOptions.length,
+  ]);
 
   const handleReload = () => {
     loadQuestions();
@@ -168,11 +195,15 @@ const QuestionsScreen = ({
 
     const totalQuestions = prelimCount + mbiCount;
     const optionsCount = answerOptions.length || 6;
-    const autoIndices = Array.from({ length: totalQuestions }, (_, i) => i % optionsCount);
+    const autoIndices = Array.from(
+      { length: totalQuestions },
+      (_, i) => i % optionsCount
+    );
 
     const preliminaryAnswers = {};
     preliminaryList.forEach((q, idx) => {
-      preliminaryAnswers[q.id] = q.options?.[autoIndices[idx] % q.options.length] ?? "";
+      preliminaryAnswers[q.id] =
+        q.options?.[autoIndices[idx] % q.options.length] ?? "";
     });
 
     const mbiAnswerIndices = autoIndices.slice(prelimCount);
@@ -208,7 +239,11 @@ const QuestionsScreen = ({
             <div className="question-test__error" role="alert">
               {error}
             </div>
-            <button className="question-test__button" onClick={handleReload} type="button">
+            <button
+              className="question-test__button"
+              onClick={handleReload}
+              type="button"
+            >
               Повторить попытку
             </button>
           </div>
@@ -217,7 +252,8 @@ const QuestionsScreen = ({
     );
   }
 
-  if (!testData || effectiveQuestions.length === 0 || !currentQuestion) return null;
+  if (!testData || effectiveQuestions.length === 0 || !currentQuestion)
+    return null;
 
   return (
     <section className="question-test" aria-labelledby="question-test-title">
@@ -234,12 +270,17 @@ const QuestionsScreen = ({
 
           <div className="question-test__progress">
             <div className="question-test__progress-top">
-              <div className="question-test__progress-text" id="question-test-title">
+              <div
+                className="question-test__progress-text"
+                id="question-test-title"
+              >
                 {isPreliminary
                   ? `Предварительный вопрос ${currentQuestionIndex + 1} из ${prelimCount}`
                   : `Вопрос ${currentQuestionIndex - prelimCount + 1} из ${mbiCount} (всего ${total})`}
               </div>
-              <div className="question-test__progress-percent">{progressPercent}%</div>
+              <div className="question-test__progress-percent">
+                {progressPercent}%
+              </div>
             </div>
 
             <div
@@ -250,15 +291,24 @@ const QuestionsScreen = ({
               aria-valuemax={100}
               aria-valuenow={progressPercent}
             >
-              <div className="question-test__progress-fill" style={{ width: `${progressPercent}%` }} />
+              <div
+                className="question-test__progress-fill"
+                style={{ width: `${progressPercent}%` }}
+              />
             </div>
           </div>
 
           <div className="question-test__block">
             <fieldset className="question-test__question-group">
-              <legend className="question-test__question-text">{currentQuestion.text}</legend>
+              <legend className="question-test__question-text">
+                {currentQuestion.text}
+              </legend>
 
-              <div className="question-test__options" role="radiogroup" aria-label="Варианты ответа">
+              <div
+                className="question-test__options"
+                role="radiogroup"
+                aria-label="Варианты ответа"
+              >
                 {(currentQuestion.options || answerOptions).map((option, i) => (
                   <label className="question-test__option" key={i}>
                     <input
@@ -275,7 +325,12 @@ const QuestionsScreen = ({
             </fieldset>
 
             <div className="question-test__navigation">
-              <button className="question-test__button" type="button" onClick={goPrev} disabled={isFirst}>
+              <button
+                className="question-test__button"
+                type="button"
+                onClick={goPrev}
+                disabled={isFirst}
+              >
                 🠐 Назад
               </button>
 
