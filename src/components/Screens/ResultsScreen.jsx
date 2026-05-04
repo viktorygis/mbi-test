@@ -117,7 +117,7 @@ const ResultsScreen = ({
       )} */}
 
       <div className="result-main">
-        <MbiScalesSection mbiResults={mbiResults} />
+        <MbiScalesSection mbiResults={mbiResults} scalesData={scalesData} />
         {/* <MbiRecommendationsSection mbiResults={mbiResults} scales={mbiResults?.scales} /> */}
 
         <MbiInformationSection results={mbiResults} />
