@@ -4,24 +4,8 @@ import { resultsBlock } from "./blocks/resultsBlock";
 import { informationBlock } from "./blocks/informationBlock";
 import { contactsBlock } from "./blocks/contactsBlock";
 import { docStyles } from "./pdfStyles";
+import {formatDateFile, getLastName } from "./pdfHelpers";
 
-// Функция для форматирования даты: если dateString уже в формате dd-mm-yyyy, то оставляем как есть
-function formatDate(dateString) {
-  if (!dateString) return "";
-  if (/^\d{2}-\d{2}-\d{4}$/.test(dateString)) return dateString;
-  const dateObj = new Date(dateString);
-  if (isNaN(dateObj)) return dateString;
-  const dd = String(dateObj.getDate()).padStart(2, "0");
-  const mm = String(dateObj.getMonth() + 1).padStart(2, "0");
-  const yyyy = dateObj.getFullYear();
-  return `${dd}-${mm}-${yyyy}`;
-}
-
-function getLastName(fullName) {
-  if (!fullName) return "";
-  const names = fullName.trim().split(" ");
-  return names[0];
-}
 
 export async function downloadMbiPDF(mbiResults, userData, timeDisplay, extra = {}) {
   if (!mbiResults) {
@@ -47,7 +31,7 @@ export async function downloadMbiPDF(mbiResults, userData, timeDisplay, extra = 
       ...headerBlock(userData, timeDisplay),
       ...resultsBlock(mbiResultsWithScales),
       //...recommendationsBlock(mbiResults),
-      ...informationBlock(mbiResults),
+      ...informationBlock(),
       ...contactsBlock(),
     ],
     styles: docStyles,
@@ -67,7 +51,7 @@ export async function downloadMbiPDF(mbiResults, userData, timeDisplay, extra = 
   // Дату теперь всегда из timeDisplay (как в шапке ResultsHeader)
   const testDate = timeDisplay || "";
   const lastName = getLastName(userFullName) || "Results";
-  const formattedDate = formatDate(testDate) || "";
+  const formattedDate = formatDateFile(testDate) || "";
   const fileName = `${lastName}_${formattedDate}_MBI.pdf`;
 
   pdfMake.createPdf(docDefinition).download(fileName);

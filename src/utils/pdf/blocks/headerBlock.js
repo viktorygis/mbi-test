@@ -1,19 +1,11 @@
 // src/utils/pdf/blocks/headerBlock.js
 import logoBase64 from "../image/logo";
 import { PINK, GRAY, BLUE } from "../pdfStyles";
-
-function formatDate(raw) {
-  if (!raw) return "";
-  const d = new Date(raw);
-  if (isNaN(d)) return raw;
-  const dd = String(d.getDate()).padStart(2, "0");
-  const mm = String(d.getMonth() + 1).padStart(2, "0");
-  return `${dd}.${mm}.${d.getFullYear()}`;
-}
+import { formatDateDisplay } from "../pdfHelpers";
 
 export function headerBlock(userData, timeDisplay) {
   const fullName = userData?.fullName || "";
-  const date = formatDate(userData?.date) || timeDisplay || "";
+  const date = formatDateDisplay(userData?.date) || timeDisplay || "";
   return [
     // Верхний колонтитул
     {
