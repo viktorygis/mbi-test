@@ -2,28 +2,13 @@
 import React from 'react';
 import { getLevelColor } from '../../../utils/mbi/mbiHelpers';
 import { getLevelForScore, getRecommendation, getLevelKey, combinedInterpretation } from '../../../utils/mbi/mbiNorms';
+import { SEG_COLORS, LEVEL_PRIORITY } from '../../../utils/mbi/mbiConstants';
 
 const ICONS = {
   exhaustion: "img/mbi-test/emotional-exhaustion.svg",
   depersonalization: "img/mbi-test/depersonalization.svg",
   reduction: "img/mbi-test/reduced-achievement.svg",
   burnoutIndex: "img/mbi-test/burnout-index.svg",
-};
-
-const LEVEL_PRIORITY = {
-  veryHigh: 5,
-  high: 4,
-  mid: 3,
-  low: 2,
-  veryLow: 1,
-};
-
-const SEG_COLORS = {
-  veryLow:  "#4ade80",
-  low:      "#a3e635",
-  mid:      "#fbbf24",
-  high:     "#fb923c",
-  veryHigh: "#f87171",
 };
 
 // Сегментированная цветная полоса
