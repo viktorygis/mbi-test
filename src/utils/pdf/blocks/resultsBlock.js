@@ -22,13 +22,11 @@ const LEVEL_PRIORITY = {
   veryLow: 1,
 };
 
-//recoToPdf - преобразует рекомендации в формат pdfmake, поддерживает как строку, так и объект с полями short и details
 function recoToPdf(reco) {
   if (!reco) return [];
   if (typeof reco === "string") {
     return [{ text: reco, style: "recoTitle", margin: [0, 0, 0, 8] }];
   }
-
   const out = [];
   if (reco.short) out.push({ text: reco.short, style: "recoTitle" });
   if (Array.isArray(reco.details) && reco.details.length) {
@@ -37,37 +35,23 @@ function recoToPdf(reco) {
   return out;
 }
 
-// barRow - создает строку с цветной полосой, отображающей процент от максимального балла
 function barRow(score, maxScore, color) {
   const barWidth = 515;
   const barHeight = 5;
   const radius = 3;
   const filled = maxScore > 0 ? Math.max(0, Math.round((score / maxScore) * barWidth)) : 0;
 
-  const elements = [
-    { type: "rect", x: 0, y: 0, w: barWidth, h: barHeight, r: radius, color: "#e5e7eb" },
-  ];
-
+  const elements = [{ type: "rect", x: 0, y: 0, w: barWidth, h: barHeight, r: radius, color: "#e5e7eb" }];
   if (filled > 0) {
     elements.push({ type: "rect", x: 0, y: 0, w: filled, h: barHeight, r: radius, color });
   }
-
-  return {
-    canvas: elements,
-    margin: [0, 4, 0, 8],
-  };
+  return { canvas: elements, margin: [0, 4, 0, 8] };
 }
 
-//scaleHeader - создает заголовок для шкалы с иконкой
 function scaleHeader(title, iconBase64) {
   return {
     columns: [
-      {
-        image: iconBase64,
-        width: 16,
-        height: 16,
-        margin: [0, 0, 8, 0],
-      },
+      { image: iconBase64, width: 16, height: 16, margin: [0, 0, 8, 0] },
       { text: title, style: "scaleTitle" },
     ],
     columnGap: 8,
@@ -75,10 +59,8 @@ function scaleHeader(title, iconBase64) {
   };
 }
 
-//scoreRow - создает строку с результатом, уровнем и процентом от максимального балла
 function scoreRow(value, maxScore, level, color) {
   const percent = maxScore > 0 ? Math.round((value / maxScore) * 100) : 0;
-
   return [
     {
       columns: [
@@ -91,10 +73,7 @@ function scoreRow(value, maxScore, level, color) {
     {
       columns: [
         { text: "0%", style: "scalePercentLine", width: 35 },
-        {
-          stack: [{ text: `${percent}%`, alignment: "center", style: "scalePercentLine" }],
-          width: "*",
-        },
+        { stack: [{ text: `${percent}%`, alignment: "center", style: "scalePercentLine" }], width: "*" },
         { text: "100%", style: "scalePercentLine", alignment: "right", color: GRAY, width: 35 },
       ],
       margin: [0, -5, 0, 8],
@@ -103,10 +82,8 @@ function scoreRow(value, maxScore, level, color) {
   ];
 }
 
-//scaleBlock - создает блок для каждой шкалы с заголовком, результатом и рекомендациями
 function scaleBlock(title, value, maxScore, level, recommendation, iconBase64) {
   const color = getLevelColor(level);
-
   return [
     scaleHeader(title, iconBase64),
     ...scoreRow(value, maxScore, level, color),
@@ -115,71 +92,96 @@ function scaleBlock(title, value, maxScore, level, recommendation, iconBase64) {
   ];
 }
 
-//burnoutBlock - создает блок для общего индекса выгорания, который отображается отдельно от остальных шкал
-function burnoutBlock(title, value, maxScore, level, recommendation, iconBase64) {
-  const color = getLevelColor(level);
-
-  return [
-    scaleHeader(title, iconBase64),
-    ...scoreRow(value, maxScore, level, color),
-    ...recoToPdf(recommendation),
-  ];
-}
-
-//getProblemPriority - определяет приоритет проблемы для сортировки шкал, учитывая уровень и тип шкалы (редукция или нет)
 function getProblemPriority(level, isReduction = false) {
   const key = typeof level === "string" ? getLevelKey(level) : "mid";
   const base = LEVEL_PRIORITY[key] || 3;
   return isReduction ? 6 - base : base;
 }
 
-//buildSummaryTitle - создает заголовок для раздела с результатами, который может включать главную зону внимания и общий уровень выгорания
-function buildSummaryTitle(levelBurnout, mainScale) {
-  if (mainScale && levelBurnout) {
-    return [
-      {
-        text: `Главная зона внимания — ${mainScale.title.toLowerCase()}`,
-        style: "summaryTitle",
-        margin: [0, 0, 0, 2],
-      },
-      {
-        text: `Общий уровень выгорания — ${levelBurnout.toLowerCase()}`,
-        style: "summaryText",
-        margin: [0, 0, 0, 14],
-      },
-    ];
+// Блок с вертикальной полосой слева — цвет полоски = color
+function highlightedBlock(headerRows, blockContent, color) {
+  const leftCell = { text: "", fillColor: color, border: [false, false, false, false] };
+
+  const rows = [];
+  for (const row of headerRows) {
+    rows.push([leftCell, { stack: [row], border: [false, false, false, false] }]);
+  }
+  for (const c of blockContent) {
+    if (Array.isArray(c)) {
+      for (const sub of c) rows.push([leftCell, { stack: [sub], border: [false, false, false, false] }]);
+    } else {
+      rows.push([leftCell, { stack: [c], border: [false, false, false, false] }]);
+    }
   }
 
-  if (mainScale) {
-    return [
-      {
-        text: `Главная зона внимания — ${mainScale.title.toLowerCase()}`,
-        style: "summaryTitle",
-        margin: [0, 0, 0, 14],
-      },
-    ];
-  }
-
-  if (levelBurnout) {
-    return [
-      {
-        text: `Общий уровень выгорания — ${levelBurnout.toLowerCase()}`,
-        style: "summaryTitle",
-        margin: [0, 0, 0, 14],
-      },
-    ];
-  }
-
-  return [
-    {
-      text: "Результаты вашего тестирования",
-      style: "summaryTitle",
-      margin: [0, 0, 0, 14],
+  return {
+    table: { widths: [3, "*"], body: rows },
+    layout: {
+      defaultBorder: false,
+      hLineWidth: () => 0,
+      vLineWidth: () => 0,
+      paddingLeft: (i) => (i === 1 ? 12 : 0),
+      paddingRight: () => 0,
+      paddingTop: () => 2,
+      paddingBottom: () => 2,
     },
-  ];
+    margin: [0, 0, 0, 14],
+  };
 }
 
-//resultsBlock - создает основной блок с результатами, который включает в себя общий индекс выгорания и отдельные шкалы, отсортированные по приоритету проблемы
+function mainScaleBadge(color) {
+  return {
+    table: {
+      widths: ["auto"],
+      body: [[
+        {
+          text: "★  Главная зона внимания",
+          fontSize: 9,
+          bold: true,
+          color: "#ffffff",
+          fillColor: color,
+          border: [false, false, false, false],
+          margin: [6, 3, 6, 3],
+        },
+      ]],
+    },
+    layout: { defaultBorder: false },
+    margin: [0, 2, 0, 6],
+  };
+}
+
+// Блок главной шкалы: рамка цвета уровня со всех четырёх сторон
+function highlightedMainScaleBlock(title, value, maxScore, level, recommendation, iconBase64) {
+  const color = getLevelColor(level);
+
+  const content = [
+    mainScaleBadge(color),
+    scaleHeader(title, iconBase64),
+    ...scoreRow(value, maxScore, level, color),
+    ...recoToPdf(recommendation),
+  ];
+
+  return {
+    table: {
+      widths: ["*"],
+      // ← исправлено: одинарный массив [{ stack }], не двойной [[{ stack }]]
+      body: content.map((item) => [{ stack: [item], border: [false, false, false, false] }]),
+    },
+    layout: {
+      defaultBorder: false,
+      hLineWidth: (i, node) => (i === 0 || i === node.table.body.length ? 1 : 0),
+      vLineWidth: (i) => (i === 0 || i === 1 ? 1 : 0),
+      hLineColor: () => color,
+      vLineColor: () => color,
+      paddingLeft: () => 12,
+      paddingRight: () => 12,
+      paddingTop: () => 3,
+      paddingBottom: () => 3,
+    },
+    margin: [0, 0, 0, 14],
+  };
+}
+
 export function resultsBlock(mbiResults) {
   const { scores, burnoutIndex, scales, burnoutConfig } = mbiResults;
 
@@ -216,28 +218,32 @@ export function resultsBlock(mbiResults) {
     },
   ];
 
-  blocksConfig.sort(
-    (a, b) => getProblemPriority(b.level, b.isReduction) - getProblemPriority(a.level, a.isReduction)
-  );
+  blocksConfig.sort((a, b) => getProblemPriority(b.level, b.isReduction) - getProblemPriority(a.level, a.isReduction));
 
-  const mainScale = blocksConfig[0];
   const levelBurnout = getLevelForScore({ burnoutIndex: burnoutConfig }, "burnoutIndex", burnoutIndex);
   const recBurnout = getRecommendation({ burnoutIndex: burnoutConfig }, "burnoutIndex", burnoutIndex);
+  // ← полоска burnout теперь тоже цвета его уровня, а не фиксированный PINK
+  const burnoutColor = getLevelColor(levelBurnout);
+
+  const burnoutBlockHeader = [
+    scaleHeader(scales.burnoutIndex?.title || "Общий индекс психического выгорания", ICONS.burnoutIndex),
+  ];
+  const burnoutBlockBody = [
+    ...scoreRow(burnoutIndex, burnoutConfig.maxScore, levelBurnout, burnoutColor),
+    ...recoToPdf(recBurnout),
+  ];
+
+  const [first, ...rest] = blocksConfig;
 
   return [
-    ...buildSummaryTitle(levelBurnout, mainScale),
-    ...burnoutBlock(
-      scales.burnoutIndex?.title || "Общий индекс психического выгорания",
-      burnoutIndex,
-      burnoutConfig.maxScore,
-      levelBurnout,
-      recBurnout,
-      ICONS.burnoutIndex
-    ),
-    { text: "", margin: [0, 0, 0, 14] },
-    ...blocksConfig.flatMap(({ title, score, maxScore, level, rec, icon }) =>
+    highlightedBlock(burnoutBlockHeader, burnoutBlockBody, burnoutColor),
+
+    highlightedMainScaleBlock(first.title, first.score, first.maxScore, first.level, first.rec, first.icon),
+
+    ...rest.flatMap(({ title, score, maxScore, level, rec, icon }) =>
       scaleBlock(title, score, maxScore, level, rec, icon)
     ),
+
     { text: "", pageBreak: "after" },
   ];
 }

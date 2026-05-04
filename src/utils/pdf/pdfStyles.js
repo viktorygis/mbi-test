@@ -33,12 +33,6 @@ export const docStyles = {
     alignment: "center",
     margin: [0, 0, 0, 2],
   },
-  summaryText: {
-    fontSize: 11,
-    color: GRAY,
-    alignment: "center",
-    margin: [0, 0, 0, 14],
-  },
 
   scaleTitle: {
     fontSize: 12,
