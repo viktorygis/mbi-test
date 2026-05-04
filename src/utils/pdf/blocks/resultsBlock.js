@@ -1,5 +1,6 @@
 import { getLevelForScore, getRecommendation, getLevelKey, combinedInterpretation } from "../../mbi/mbiNorms";
 import { getLevelColor } from "../../mbi/mbiHelpers";
+import { SEG_COLORS, LEVEL_PRIORITY } from "../../mbi/mbiConstants";
 
 import emotionalBase64 from "../image/emotional";
 import depersonalizationBase64 from "../image/depersonalization";
@@ -15,28 +16,10 @@ const ICONS = {
   burnoutIndex: burnoutBase64,
 };
 
-const LEVEL_PRIORITY = {
-  veryHigh: 5,
-  high: 4,
-  mid: 3,
-  low: 2,
-  veryLow: 1,
-};
-
 const REDUCTION_KEYS = new Set(["reduction"]);
 
 const BAR = { width: 515, height: 5, radius: 3 };
 const BLOCK_GAP = 16;
-
-// ─── Цвета сегментов ──────────────────────────────────────────────────────────
-
-const SEG_COLORS = {
-  veryLow:  "#4ade80",
-  low:      "#a3e635",
-  mid:      "#fbbf24",
-  high:     "#fb923c",
-  veryHigh: "#f87171",
-};
 
 // ─── Извлечь сегменты из scale.norms ─────────────────────────────────────────
 
