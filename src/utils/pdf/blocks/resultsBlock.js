@@ -113,34 +113,6 @@ function leveledBar(value, maxScore, segments) {
   };
 }
 
-// ─── Блок интерпретации ──────────────────────────��────────────────────────────
-
-function interpretationBox(text) {
-  if (!text) return null;
-  return {
-    table: {
-      widths: ["*"],
-      body: [[{
-        fillColor: "#f3f4f6",
-        border: [false, false, false, false],
-        text,
-        style: "interpretationText",
-        alignment: "center",
-      }]],
-    },
-    layout: {
-      defaultBorder: false,
-      hLineWidth: () => 0,
-      vLineWidth: () => 0,
-      paddingLeft:   () => 12,
-      paddingRight:  () => 12,
-      paddingTop:    () => 10,
-      paddingBottom: () => 10,
-    },
-    margin: [0, 8, 0, 0],
-  };
-}
-
 // ─── Вспомогательные функции ──────────────────────────────────────────────────
 
 function recoToPdf(reco) {
@@ -149,9 +121,9 @@ function recoToPdf(reco) {
     return [{ text: reco, style: "recoTitle", margin: [0, 4, 0, 8] }];
   }
   const out = [];
-  if (reco.short) out.push({ text: reco.short, style: "recoTitle", margin: [0, 4, 0, 4] });
+  if (reco.short) out.push({ text: reco.short, style: "recoTitle" });
   if (Array.isArray(reco.details) && reco.details.length) {
-    out.push({ ul: reco.details, style: "recoText", margin: [0, 0, 0, 4] });
+    out.push({ ul: reco.details, style: "recoText" });
   }
   return out;
 }
@@ -324,7 +296,6 @@ export function resultsBlock(mbiResults) {
   const burnoutColor    = getLevelColor(burnoutLevel);
   const burnoutTitle    = scales.burnoutIndex?.title ?? "Общий индекс психического выгорания";
   const burnoutSegments = extractSegments(burnoutConfig);
-  const meaning         = burnoutRec?.short ?? "";
 
   return [
     // ── Страница 1 ────────────────────────────────────────────────────────────
@@ -352,13 +323,13 @@ export function resultsBlock(mbiResults) {
       : [barRow(burnoutIndex, burnoutConfig.maxScore, burnoutColor)]
     ),
 
-    // Интерпретация уровня
-    ...(meaning ? [interpretationBox(meaning)] : []),
+    // Интерпретация уровня + рекомендации (short + details)
+    ...recoToPdf(burnoutRec),
 
     // Профиль выгорания
     profileSummaryBlock(scores, scalesData ?? null),
 
-    // ── Страница 2: Расшифровка ───────────────────────────────────────────────
+    // ── Страница 2: Расшифровка ───────────────────────────────���───────────────
     { text: "", pageBreak: "after" },
 
     { text: "Расшифровка результата", style: "pageTitle", margin: [0, 0, 0, 16] },
@@ -374,7 +345,7 @@ export function resultsBlock(mbiResults) {
             columns: [
               { image: icon, width: 14, height: 14, margin: [0, 1, 0, 0] },
               { text: title, style: "scaleTitle", width: "*" },
-              { text: level, style: "scaleLabel", color, alignment: "right", width: "auto" },
+              { text: level, style: "scaleLabel", color, width: "auto" },  // alignment уже в стиле
             ],
             columnGap: 8,
             margin: [0, 0, 0, 4],
@@ -385,7 +356,7 @@ export function resultsBlock(mbiResults) {
             : [barRow(score, maxScore, color), barPercent(score, maxScore)]
           ),
           ...(REDUCTION_KEYS.has(key)
-            ? [{ text: "Чем выше балл — тем сильнее выражено снижение ощущения эффективности.", style: "scaleHint", color: "#9ca3af", margin: [0, 6, 0, 0] }]
+            ? [{ text: "Чем выше балл — тем сильнее выражено снижение ощущения эффективности.", style: "scaleHint" }]  // color и margin в стиле
             : []
           ),
           ...recoToPdf(rec),

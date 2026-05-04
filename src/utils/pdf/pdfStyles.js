@@ -27,35 +27,7 @@ export const docStyles = {
 
   //--- resultsBlock ----------------------------
 
-  // Сводный блок (summaryBlock)
-  summaryTitleGeneral: {
-    fontSize: 14,
-    bold: true,
-    color: GRAY,
-    margin: [0, 0, 0, 2],
-  },
-  summaryTitle: {
-    fontSize: 14,
-    bold: true,
-    color: GRAY,
-    margin: [0, 0, 0, 2],
-  },
-  summaryLevel: {
-    fontSize: 11,
-    bold: true,
-    alignment: "right",
-  },
-  summaryNote: {
-    fontSize: 8,
-    italics: true,
-  },
-  summaryAttentionLabel: {
-    fontSize: 7,
-    bold: true,
-    characterSpacing: 0.8,
-  },
-
-  // Заголовок страницы 2
+  // Заголовок страницы
   pageTitle: {
     fontSize: 13,
     bold: true,
@@ -66,7 +38,7 @@ export const docStyles = {
     color: GRAY,
   },
 
-  // Шкалы (coloredBlock / plainBlock)
+  // Шкалы
   scaleTitle: {
     fontSize: 12,
     bold: true,
@@ -85,25 +57,27 @@ export const docStyles = {
     fontSize: 8,
     color: GRAY,
   },
+  scaleHint: {
+    fontSize: 8,
+    italics: true,
+    color: "#9ca3af",
+    margin: [0, 6, 0, 0],
+  },
 
   // Рекомендации
   recoTitle: {
     fontSize: 11,
-    margin: [0, 0, 0, 2],
-    color: GRAY,
     bold: true,
+    color: GRAY,
+    margin: [0, 4, 0, 4],
   },
   recoText: {
     fontSize: 10,
-    margin: [0, 0, 0, 8],
     color: GRAY,
+    margin: [0, 0, 0, 4],
   },
 
-  // Разделитель секций
-  sectionDivider: {
-    fontSize: 9,
-    italics: true,
-  }, // Профильное резюме
+  // Профильное резюме
   profileSummaryTitle: {
     fontSize: 11,
     bold: true,
@@ -113,19 +87,6 @@ export const docStyles = {
     fontSize: 10,
     color: GRAY,
     lineHeight: 1.4,
-  },
-  profileAdviceText: {
-    fontSize: 10,
-    color: GRAY,
-    italics: true,
-    lineHeight: 1.4,
-  },
-
-  // Пояснение под общим индексом
-  summaryHint: {
-    fontSize: 8,
-    color: "#9ca3af",
-    italics: true,
   },
 
   // Блок "когда обратиться"
@@ -139,35 +100,8 @@ export const docStyles = {
     color: "#6b7280",
     lineHeight: 1.4,
   },
-  summaryMeaning: {
-    fontSize: 9,
-    color: "#374151",
-    lineHeight: 1.3,
-  },
-  summaryHintSmall: {
-    fontSize: 8,
-    italics: true,
-  },
-  profileIntro: {
-    fontSize: 9,
-    color: "#9ca3af",
-    italics: true,
-  },
-  profileAdviceTitle: {
-    fontSize: 10,
-    bold: true,
-    color: GRAY,
-  },
-  quickTitle: {
-    fontSize: 11,
-    bold: true,
-    color: "#166534",
-  },
-  quickList: {
-    fontSize: 10,
-    color: "#15803d",
-    lineHeight: 1.4,
-  }, // Сегментированная линейка
+
+  // Сегментированная линейка
   segmentLabel: {
     fontSize: 7,
     color: "#6b7280",
@@ -183,35 +117,27 @@ export const docStyles = {
     italics: true,
     lineHeight: 1.4,
   },
-  scaleHint: {
-    fontSize: 8,
-    italics: true,
-  },
+
   //--- informationBlock ---------------------------
-  //Справочная информация по шкалам и результатам
   sectionTitle: {
     fontSize: 14,
     bold: true,
     alignment: "center",
     margin: [0, 0, 0, 10],
   },
-  //заголовок для метрики
   infoIconTitle: {
     fontSize: 13,
     bold: true,
     margin: [0, 4, 0, 0],
   },
-  //ряд с иконкой для метрики
   infoIconRow: {
     margin: [0, 2, 0, 4],
   },
-  //введение к информации по шкалам, которое идет после иконки
   infoIntro: {
     fontSize: 11,
     color: GRAY,
     margin: [0, 0, 0, 6],
   },
-  //заголовок для секции внутри информации по шкалам
   infoSectionTitle: {
     fontSize: 12,
     bold: true,

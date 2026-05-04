@@ -57,24 +57,20 @@ export function combinedInterpretation(scores, scalesData) {
 
   let exhaustion, depersonalization, reduction;
   if (scores && typeof scores === "object" && !Array.isArray(scores)) {
-    exhaustion        = scores.exhaustion;
+    exhaustion = scores.exhaustion;
     depersonalization = scores.depersonalization;
-    reduction         = scores.reduction;
+    reduction = scores.reduction;
   } else if (Array.isArray(scores)) {
     [exhaustion, depersonalization, reduction] = scores;
   }
 
-  if (
-    typeof exhaustion        !== "number" ||
-    typeof depersonalization !== "number" ||
-    typeof reduction         !== "number"
-  ) return [];
+  if (typeof exhaustion !== "number" || typeof depersonalization !== "number" || typeof reduction !== "number") return [];
 
   const scalesObj = scalesData?.scales ?? {};
   const levelKeys = {
-    exhaustion:        getLevelKey(getLevelForScore(scalesObj, "exhaustion",        exhaustion)),
+    exhaustion: getLevelKey(getLevelForScore(scalesObj, "exhaustion", exhaustion)),
     depersonalization: getLevelKey(getLevelForScore(scalesObj, "depersonalization", depersonalization)),
-    reduction:         getLevelKey(getLevelForScore(scalesObj, "reduction",         reduction)),
+    reduction: getLevelKey(getLevelForScore(scalesObj, "reduction", reduction)),
   };
 
   const NO_RISK_ID = "no_risk";
@@ -88,9 +84,7 @@ export function combinedInterpretation(scores, scalesData) {
     const keys = Object.keys(when);
     if (keys.length === 0) continue;
 
-    const matches = keys.every((scaleKey) =>
-      Array.isArray(when[scaleKey]) && when[scaleKey].includes(levelKeys[scaleKey])
-    );
+    const matches = keys.every((scaleKey) => Array.isArray(when[scaleKey]) && when[scaleKey].includes(levelKeys[scaleKey]));
 
     if (matches) {
       messages.push(profile.message);
