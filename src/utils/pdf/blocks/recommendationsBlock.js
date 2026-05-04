@@ -1,5 +1,5 @@
-import { getLevelForScore, getRecommendation, combinedInterpretation } from "../../mbiNorms";
-import { getLevelColor, centerLine } from "../../mbiHelpers";
+import { getLevelForScore, getRecommendation, combinedInterpretation } from "../../mbi/mbiNorms";
+import { getLevelColor, centerLine } from "../../mbi/mbiHelpers";
 import { GRAY } from "../pdfStyles";
 
 function levelIcon(level) {

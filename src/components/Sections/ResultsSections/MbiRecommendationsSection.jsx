@@ -1,6 +1,6 @@
 // MbiRecommendationsSection.jsx - отображение рекомендаций по результатам теста MBI
 
-import { getLevelForScore, getRecommendation, combinedInterpretation } from '../../../utils/mbiNorms';
+import { getLevelForScore, getRecommendation, combinedInterpretation } from '../../../utils/mbi/mbiNorms';
 import RecommendationCard from './RecommendationCard';
 
 const ICONS = {

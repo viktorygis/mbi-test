@@ -1,5 +1,5 @@
 import React from "react";
-import { getLevelColor } from "../../../utils/mbiHelpers";
+import { getLevelColor } from "../../../utils/mbi/mbiHelpers";
 
 const RecommendationCard = ({ icon, title, level, recommendation }) => {
   let content = null;

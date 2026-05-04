@@ -1,5 +1,5 @@
-import { getLevelForScore, getRecommendation, getLevelKey } from "../../mbiNorms";
-import { getLevelColor } from "../../mbiHelpers";
+import { getLevelForScore, getRecommendation, getLevelKey } from "../../mbi/mbiNorms";
+import { getLevelColor } from "../../mbi/mbiHelpers";
 import { GRAY } from "../pdfStyles";
 
 import emotionalBase64 from "../image/emotional";

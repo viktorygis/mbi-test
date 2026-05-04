@@ -1,7 +1,7 @@
 // src/components/Sections/ResultsSections/MbiScalesSection.jsx
 import React from 'react';
-import { getLevelColor } from '../../../utils/mbiHelpers';
-import { getRecommendation } from '../../../utils/mbiNorms';
+import { getLevelColor } from '../../../utils/mbi/mbiHelpers';
+import { getRecommendation } from '../../../utils/mbi/mbiNorms';
 
 const ICONS = {
   exhaustion: "img/mbi-test/emotional-exhaustion.svg",

@@ -1,5 +1,5 @@
 // src/utils/mbiHelpers.js
-import { PINK, GRAY, BLUE } from "./pdf/pdfStyles";
+import { PINK, GRAY, BLUE } from "../pdf/pdfStyles";
 
 // Цвета для уровней шкал
 const LEVEL_COLORS = {
