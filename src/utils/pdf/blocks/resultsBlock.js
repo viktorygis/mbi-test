@@ -1,4 +1,4 @@
-import { getLevelForScore, getRecommendation, getLevelKey } from "../../mbi/mbiNorms";
+import { getLevelForScore, getRecommendation, getLevelKey, combinedInterpretation } from "../../mbi/mbiNorms";
 import { getLevelColor } from "../../mbi/mbiHelpers";
 
 import emotionalBase64 from "../image/emotional";
@@ -23,8 +23,136 @@ const LEVEL_PRIORITY = {
   veryLow: 1,
 };
 
+const REDUCTION_KEYS = new Set(["reduction"]);
+
 const BAR = { width: 515, height: 5, radius: 3 };
-const BLOCK_GAP = 14;
+const BLOCK_GAP = 16;
+
+// ─── Цвета сегментов ──────────────────────────────────────────────────────────
+
+const SEG_COLORS = {
+  veryLow:  "#4ade80",
+  low:      "#a3e635",
+  mid:      "#fbbf24",
+  high:     "#fb923c",
+  veryHigh: "#f87171",
+};
+
+// ─── Извлечь сегменты из scale.norms ─────────────────────────────────────────
+
+function extractSegments(scaleConfig) {
+  if (!scaleConfig?.norms || !Array.isArray(scaleConfig.norms)) return null;
+  return scaleConfig.norms.map((norm) => ({
+    label: norm.label,
+    color: SEG_COLORS[getLevelKey(norm.label)] ?? "#94a3b8",
+    from: norm.min,
+    to: norm.max,
+    key: getLevelKey(norm.label),
+  }));
+}
+
+// ─── Сегментированная линейка — метки СНИЗУ ──────────────────────────────────
+
+function leveledBar(value, maxScore, segments) {
+  const W     = BAR.width;
+  const BAR_H = 10;
+
+  const tickX = maxScore > 0
+    ? Math.max(0, Math.min(Math.round((value / maxScore) * W), W))
+    : 0;
+
+  const PIN_W    = 24;
+  const pinLeft  = Math.max(0, tickX - PIN_W / 2);
+  const pinRight = W - pinLeft - PIN_W;
+
+  const labelColumns = segments.map((seg, i) => {
+    const segW = Math.max(1, Math.round(((seg.to - seg.from + 1) / maxScore) * W));
+    const isLast = i === segments.length - 1;
+    return {
+      text: seg.label,
+      style: "segmentLabel",
+      width: isLast ? "*" : segW,
+      alignment: "center",
+    };
+  });
+
+  const canvasItems = [];
+
+  canvasItems.push({
+    type: "rect", x: 0, y: 0, w: W, h: BAR_H, r: BAR_H / 2, color: "#e5e7eb",
+  });
+
+  segments.forEach((seg) => {
+    const x   = Math.max(0, Math.round((seg.from / maxScore) * W));
+    const toX = Math.min(W, Math.round(((seg.to + 1) / maxScore) * W));
+    const w   = Math.max(1, toX - x);
+    canvasItems.push({ type: "rect", x, y: 0, w, h: BAR_H, r: 0, color: seg.color });
+  });
+
+  canvasItems.push({
+    type: "line",
+    x1: tickX, y1: -4,
+    x2: tickX, y2: BAR_H,
+    lineWidth: 2,
+    lineColor: "#1f2937",
+  });
+
+  return {
+    stack: [
+      {
+        columns: [
+          { text: "", width: pinLeft },
+          { text: String(value), style: "segmentedScorePin", width: PIN_W, alignment: "center" },
+          { text: "", width: pinRight > 0 ? pinRight : "*" },
+        ],
+        margin: [0, 0, 0, 1],
+      },
+      { canvas: canvasItems, margin: [0, 0, 0, 4] },
+      { columns: labelColumns, columnGap: 0, margin: [0, 0, 0, 0] },
+    ],
+  };
+}
+
+// ─── Блок интерпретации ──────────────────────────��────────────────────────────
+
+function interpretationBox(text) {
+  if (!text) return null;
+  return {
+    table: {
+      widths: ["*"],
+      body: [[{
+        fillColor: "#f3f4f6",
+        border: [false, false, false, false],
+        text,
+        style: "interpretationText",
+        alignment: "center",
+      }]],
+    },
+    layout: {
+      defaultBorder: false,
+      hLineWidth: () => 0,
+      vLineWidth: () => 0,
+      paddingLeft:   () => 12,
+      paddingRight:  () => 12,
+      paddingTop:    () => 10,
+      paddingBottom: () => 10,
+    },
+    margin: [0, 8, 0, 0],
+  };
+}
+
+// ─── Интерпретация общего уровня ──────────────────────────────────────────────
+
+function interpretBurnoutLevel(level) {
+  switch (getLevelKey(level)) {
+    case "veryHigh": return "Состояние сейчас тяжёлое — важно как можно скорее снизить темп и восстановиться.";
+    case "high":     return "Есть заметные признаки выгорания. Сейчас хорошее время пересмотреть нагрузку.";
+    case "mid":      return "Сейчас есть заметное напряжение, но ситуация ещё управляемая.";
+    case "low":      return "Серьёзных признаков выгорания нет. Продолжайте поддерживать текущий баланс.";
+    case "veryLow":  return "Всё в порядке. Уделяйте внимание профилактике и восстановлению.";
+    default:         return "";
+  }
+}
 
 // ─── Вспомогательные функции ──────────────────────────────────────────────────
 
@@ -43,34 +171,25 @@ function recoToPdf(reco) {
 
 function barRow(score, maxScore, color) {
   const filled = maxScore > 0 ? Math.max(0, Math.round((score / maxScore) * BAR.width)) : 0;
-  const elements = [{ type: "rect", x: 0, y: 0, w: BAR.width, h: BAR.height, r: BAR.radius, color: "#e5e7eb" }];
+  const elements = [
+    { type: "rect", x: 0, y: 0, w: BAR.width, h: BAR.height, r: BAR.radius, color: "#e5e7eb" },
+  ];
   if (filled > 0) {
     elements.push({ type: "rect", x: 0, y: 0, w: filled, h: BAR.height, r: BAR.radius, color });
   }
   return { canvas: elements, margin: [0, 2, 0, 2] };
 }
 
-function scaleHeader(title, iconBase64) {
-  return {
-    columns: [
-      { image: iconBase64, width: 16, height: 16 },
-      { text: title, style: "scaleTitle" },
-    ],
-    columnGap: 8,
-    margin: [0, 0, 0, 4],
-  };
-}
-
 function barPercent(value, maxScore) {
   const percent = maxScore > 0 ? Math.round((value / maxScore) * 100) : 0;
-  const tickX = maxScore > 0 ? Math.max(0, Math.round((value / maxScore) * BAR.width)) : 0;
+  const tickX   = maxScore > 0 ? Math.max(0, Math.round((value / maxScore) * BAR.width)) : 0;
 
-  const leftW = 20;
+  const leftW  = 20;
   const rightW = 30;
   const labelW = 30;
-  const inner = BAR.width - leftW - rightW;
+  const inner  = BAR.width - leftW - rightW;
 
-  const labelLeft = Math.max(0, Math.min(tickX - leftW - labelW / 2, inner - labelW));
+  const labelLeft  = Math.max(0, Math.min(tickX - leftW - labelW / 2, inner - labelW));
   const labelRight = Math.max(0, inner - labelW - labelLeft);
 
   return {
@@ -81,11 +200,11 @@ function barPercent(value, maxScore) {
       },
       {
         columns: [
-          { text: "0%", style: "scalePercentLine", width: leftW },
-          { text: "", width: labelLeft },
+          { text: "0%",          style: "scalePercentLine", width: leftW },
+          { text: "",            width: labelLeft },
           { text: `${percent}%`, style: "scalePercentLine", bold: true, width: labelW, alignment: "center" },
-          { text: "", width: labelRight },
-          { text: "100%", style: "scalePercentLine", width: rightW, alignment: "right" },
+          { text: "",            width: labelRight },
+          { text: "100%",        style: "scalePercentLine", width: rightW, alignment: "right" },
         ],
         columnGap: 0,
       },
@@ -94,211 +213,82 @@ function barPercent(value, maxScore) {
   };
 }
 
-function scoreRow(value, maxScore, level, color) {
-  const percent = maxScore > 0 ? Math.round((value / maxScore) * 100) : 0;
-  return [
-    {
-      columns: [
-        { text: `${value} баллов из ${maxScore} (${percent}%)`, style: "scalePercent" },
-        { text: level, style: "scaleLabel", color, alignment: "right" },
-      ],
-      margin: [0, 0, 0, 1],
-    },
-    barRow(value, maxScore, color),
-    barPercent(value, maxScore),
-  ];
-}
-
-function coloredBlock(header, body, color) {
-  const left = { text: "", fillColor: color, border: [false, false, false, false] };
-  const cell = (content) => ({ stack: [content], border: [false, false, false, false] });
-
-  const rows = [...header.map((row) => [left, cell(row)]), ...body.flat().map((row) => [left, cell(row)])];
-
-  return {
-    table: { widths: [3, "*"], body: rows },
-    layout: {
-      defaultBorder: false,
-      hLineWidth: () => 0,
-      vLineWidth: () => 0,
-      paddingLeft: (i) => (i === 1 ? 12 : 0),
-      paddingRight: () => 0,
-      paddingTop: () => 2,
-      paddingBottom: () => 2,
-    },
-    margin: [0, 0, 0, BLOCK_GAP],
-  };
-}
-
-
-
 function getProblemPriority(level) {
   const key = typeof level === "string" ? getLevelKey(level) : "mid";
   return LEVEL_PRIORITY[key] ?? 3;
 }
 
-// ─── Сводный блок ─────────────────────────────────────────────────────────────
+// ─── Профиль выгорания ────────────────────────────────────────────────────────
 
-function summaryBlock(burnoutTitle, burnoutLevel, burnoutColor, firstTitle, firstIcon, firstLevel, firstColor) {
-  const badge = (text, color) => ({
-    text,
-    style: "summaryLevel",
-    color: "#ffffff",
-    background: color,
-    borderRadius: 4,
-    padding: [6, 2, 6, 2],
-  });
+function profileSummaryBlock(scores) {
+  const messages = combinedInterpretation(scores);
+  const hasMessages = Array.isArray(messages) && messages.length > 0;
 
-  return {
-    stack: [
-      // ── Карточка 1: Общий индекс ──
-      {
-        table: {
-          widths: ["*"],
-          body: [[{
-            fillColor: "#f9fafb",
-            border: [true, true, true, true],
-            borderColor: ["#e5e7eb", "#e5e7eb", "#e5e7eb", "#e5e7eb"],
-            stack: [{
-              columns: [
-                { text: burnoutTitle, style: "summaryTitleGeneral", width: "*" },
-                badge(burnoutLevel, burnoutColor),
-              ],
-              columnGap: 10,
-            }],
-            margin: [12, 12, 12, 12],
-          }]],
-        },
-        layout: {
-          defaultBorder: false,
-          hLineWidth: () => 1,
-          vLineWidth: () => 1,
-          hLineColor: () => "#e5e7eb",
-          vLineColor: () => "#e5e7eb",
-        },
-        margin: [0, 0, 0, 12],
-      },
-
-      // ── Карточка 2: Требует внимания ──
-      {
-        table: {
-          widths: ["*"],
-          body: [[{
-            border: [true, true, true, true],
-            borderColor: [firstColor, firstColor, firstColor, firstColor],
-            fillColor: "#ffffff",
-            stack: [
-              {
-                text: "ТРЕБУЕТ ВНИМАНИЯ",
-                style: "summaryAttentionLabel",
-                color: firstColor,
-                margin: [0, 0, 0, 6],
-              },
-              {
-                columns: [
-                  { text: firstTitle, style: "summaryTitle", width: "*" },
-                  badge(firstLevel, firstColor),
-                ],
-                columnGap: 8,
-              },
-            ],
-            margin: [12, 12, 12, 12],
-          }]],
-        },
-        layout: {
-          defaultBorder: false,
-          hLineWidth: () => 1,
-          vLineWidth: () => 1,
-          hLineColor: () => firstColor,
-          vLineColor: () => firstColor,
-        },
-        margin: [0, 0, 0, 20],
-      },
-    ],
-  };
-}
-// ─── Заголовок второй страницы ────────────────────────────────────────────────
-/**
- * Блок с тонкой цветной полосой слева — для второй страницы.
- * Без заливки фона, полоса тоньше чем в coloredBlock.
- */
-function accentBlock(header, body, color) {
-  const left = {
-    text: "",
-    fillColor: color,
-    border: [false, false, false, false],
-  };
-  const cell = (content) => ({
-    stack: [content],
-    border: [false, false, false, false],
-  });
-
-  const rows = [...header.map((row) => [left, cell(row)]), ...body.flat().map((row) => [left, cell(row)])];
+  const items = hasMessages
+    ? messages.map((msg, i) => ({
+        columns: [
+          { canvas: [{ type: "ellipse", x: 3, y: 5, r1: 2, r2: 2, color: "#6b7280" }], width: 10 },
+          { text: msg, style: "profileSummaryText", width: "*" },
+        ],
+        columnGap: 6,
+        margin: [0, 0, 0, i < messages.length - 1 ? 5 : 0],
+      }))
+    : [{ text: "Тревожные сочетания по шкалам не выражены.", style: "profileSummaryText", color: "#6b7280" }];
 
   return {
-    table: { widths: [2, "*"], body: rows }, // ← 2px вместо 3px — тоньше чем coloredBlock
+    table: {
+      widths: ["*"],
+      body: [[{
+        fillColor: "#f8fafc",
+        border: [false, false, false, false],
+        stack: [
+          { text: "Профиль выгорания", style: "profileSummaryTitle", margin: [0, 0, 0, 6] },
+          ...items,
+        ],
+      }]],
+    },
     layout: {
       defaultBorder: false,
       hLineWidth: () => 0,
       vLineWidth: () => 0,
-      paddingLeft: (i) => (i === 1 ? 10 : 0),
-      paddingRight: () => 0,
-      paddingTop: () => 2,
-      paddingBottom: () => 2,
+      paddingLeft:   () => 14,
+      paddingRight:  () => 14,
+      paddingTop:    () => 12,
+      paddingBottom: () => 12,
     },
-    margin: [0, 0, 0, BLOCK_GAP],
+    margin: [0, 12, 0, 20],
   };
 }
-function secondPageHeader() {
+
+// ─── Блок поддержки ───────────────────────────────────────────────────────────
+
+function seekHelpBlock() {
   return {
     table: {
       widths: ["*"],
-      body: [
-        [
+      body: [[{
+        border: [false, false, false, false],
+        fillColor: "#fafafa",
+        stack: [
+          { text: "Когда стоит обратиться за поддержкой", style: "seekHelpTitle", margin: [0, 0, 0, 6] },
           {
-            fillColor: "#f3f4f6",
-            border: [false, false, false, true], // только нижняя граница
-            borderColor: ["#d1d5db", "#d1d5db", "#d1d5db", "#d1d5db"],
-            stack: [
-              {
-                columns: [
-                  {
-                    canvas: [
-                      {
-                        type: "polyline",
-                        points: [
-                          { x: 0, y: 0 },
-                          { x: 8, y: 4 },
-                          { x: 0, y: 8 },
-                          { x: 3, y: 4 },
-                          { x: 0, y: 0 },
-                        ],
-                        color: "#6b7280",
-                        lineWidth: 1.5,
-                        closePath: true,
-                      },
-                    ],
-                    width: 12,
-                    height: 10,
-                    margin: [0, 4, 0, 0],
-                  },
-                  {
-                    stack: [
-                      { text: "Дополнительные показатели", style: "pageTitle", margin: [0, 0, 0, 2] },
-                      { text: "Шкалы с менее выраженными значениями на момент прохождения теста.", style: "pageSubtitle" },
-                    ],
-                  },
-                ],
-                columnGap: 8,
-              },
-            ],
-            margin: [12, 10, 12, 8],
+            text: "Если усталость, раздражительность, проблемы со сном или ощущение беспомощности не проходят несколько недель и начинают мешать жизни — имеет смысл обсудить это со специалистом. Это обычный и рабочий способ поддержки.",
+            style: "seekHelpText",
           },
         ],
-      ],
+      }]],
     },
-    layout: "noBorders",
-    margin: [0, 0, 0, 20],
+    layout: {
+      defaultBorder: false,
+      hLineWidth: (i) => (i === 0 || i === 1 ? 0.5 : 0),
+      vLineWidth: () => 0,
+      hLineColor: () => "#e5e7eb",
+      paddingLeft:   () => 14,
+      paddingRight:  () => 14,
+      paddingTop:    () => 12,
+      paddingBottom: () => 12,
+    },
+    margin: [0, 16, 0, 0],
   };
 }
 
@@ -316,6 +306,7 @@ export function resultsBlock(mbiResults) {
       level: getLevelForScore(scales, "exhaustion", scores.exhaustion),
       rec: getRecommendation(scales, "exhaustion", scores.exhaustion),
       icon: ICONS.exhaustion,
+      config: scales.exhaustion,
     },
     {
       key: "depersonalization",
@@ -325,6 +316,7 @@ export function resultsBlock(mbiResults) {
       level: getLevelForScore(scales, "depersonalization", scores.depersonalization),
       rec: getRecommendation(scales, "depersonalization", scores.depersonalization),
       icon: ICONS.depersonalization,
+      config: scales.depersonalization,
     },
     {
       key: "reduction",
@@ -334,41 +326,87 @@ export function resultsBlock(mbiResults) {
       level: getLevelForScore(scales, "reduction", scores.reduction),
       rec: getRecommendation(scales, "reduction", scores.reduction),
       icon: ICONS.reduction,
+      config: scales.reduction,
     },
   ];
 
   scalesConfig.sort((a, b) => getProblemPriority(b.level) - getProblemPriority(a.level));
 
-  const burnoutLevel = getLevelForScore({ burnoutIndex: burnoutConfig }, "burnoutIndex", burnoutIndex);
-  const burnoutRec = getRecommendation({ burnoutIndex: burnoutConfig }, "burnoutIndex", burnoutIndex);
-  const burnoutColor = getLevelColor(burnoutLevel);
-  const burnoutTitle = scales.burnoutIndex?.title ?? "Общий индекс психического выгорания";
-
-  const [first, ...rest] = scalesConfig;
-  const firstColor = getLevelColor(first.level);
+  const burnoutLevel    = getLevelForScore({ burnoutIndex: burnoutConfig }, "burnoutIndex", burnoutIndex);
+  const burnoutColor    = getLevelColor(burnoutLevel);
+  const burnoutTitle    = scales.burnoutIndex?.title ?? "Общий индекс психического выгорания";
+  const burnoutSegments = extractSegments(burnoutConfig);
+  const meaning         = interpretBurnoutLevel(burnoutLevel);
 
   return [
     // ── Страница 1 ────────────────────────────────────────────────────────────
 
-    summaryBlock(burnoutTitle, burnoutLevel, burnoutColor, first.title, first.icon, first.level, firstColor),
+    { text: "Итоговый результат", style: "pageTitle", margin: [0, 0, 0, 4] },
+    {
+      text: "Чем выше балл, тем выше ваш уровень профессионального выгорания.",
+      style: "pageSubtitle",
+      margin: [0, 0, 0, 16],
+    },
 
-    coloredBlock([scaleHeader(burnoutTitle, ICONS.burnoutIndex)], [...scoreRow(burnoutIndex, burnoutConfig.maxScore, burnoutLevel, burnoutColor), ...recoToPdf(burnoutRec)], burnoutColor),
+    // Общий индекс с иконкой
+    {
+      columns: [
+        { image: ICONS.burnoutIndex, width: 18, height: 18, margin: [0, 1, 0, 0] },
+        { text: burnoutTitle, style: "scaleTitle", width: "*" },
+      ],
+      columnGap: 8,
+      margin: [0, 0, 0, 12],
+    },
 
-    coloredBlock([scaleHeader(first.title, first.icon)], [...scoreRow(first.score, first.maxScore, first.level, firstColor), ...recoToPdf(first.rec)], firstColor),
+    // Цветная линейка с метками снизу
+    ...(burnoutSegments
+      ? [leveledBar(burnoutIndex, burnoutConfig.maxScore, burnoutSegments)]
+      : [barRow(burnoutIndex, burnoutConfig.maxScore, burnoutColor)]
+    ),
 
-    // ── Страница 2 ────────────────────────────────────────────────────────────
+    // Интерпретация уровня
+    ...(meaning ? [interpretationBox(meaning)] : []),
+
+    // Профиль выгорания
+    profileSummaryBlock(scores),
+
+    // ── Страница 2: Расшифровка ───────────────────────────────────────────────
     { text: "", pageBreak: "after" },
 
-    ...(rest.length > 0 ? [secondPageHeader()] : []),
+    { text: "Расшифровка результата", style: "pageTitle", margin: [0, 0, 0, 16] },
 
-    ...rest.map(({ title, score, maxScore, level, rec, icon }) => {
-  const color = getLevelColor(level);
-  return accentBlock(
-    [scaleHeader(title, icon)],
-    [...scoreRow(score, maxScore, level, color), ...recoToPdf(rec)],
-    color,
-  );
-}),
+    // Шкалы с линейками + рекомендациями
+    ...scalesConfig.map(({ key, title, icon, score, maxScore, level, rec, config }) => {
+      const color    = getLevelColor(level);
+      const segments = extractSegments(config);
+
+      return {
+        stack: [
+          {
+            columns: [
+              { image: icon, width: 14, height: 14, margin: [0, 1, 0, 0] },
+              { text: title, style: "scaleTitle", width: "*" },
+              { text: level, style: "scaleLabel", color, alignment: "right", width: "auto" },
+            ],
+            columnGap: 8,
+            margin: [0, 0, 0, 4],
+          },
+          { text: `${score} баллов из ${maxScore}`, style: "scalePercent", margin: [0, 0, 0, 8] },
+          ...(segments
+            ? [leveledBar(score, maxScore, segments)]
+            : [barRow(score, maxScore, color), barPercent(score, maxScore)]
+          ),
+          ...(REDUCTION_KEYS.has(key)
+            ? [{ text: "Чем выше балл — тем сильнее выражено снижение ощущения эффективности.", style: "scaleHint", color: "#9ca3af", margin: [0, 6, 0, 0] }]
+            : []
+          ),
+          ...recoToPdf(rec),
+        ],
+        margin: [0, 0, 0, BLOCK_GAP + 4],
+      };
+    }),
+
+    seekHelpBlock(),
 
     { text: "", pageBreak: "after" },
   ];

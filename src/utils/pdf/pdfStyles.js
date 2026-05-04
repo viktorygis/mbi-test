@@ -103,6 +103,89 @@ export const docStyles = {
   sectionDivider: {
     fontSize: 9,
     italics: true,
+  }, // Профильное резюме
+  profileSummaryTitle: {
+    fontSize: 11,
+    bold: true,
+    color: GRAY,
+  },
+  profileSummaryText: {
+    fontSize: 10,
+    color: GRAY,
+    lineHeight: 1.4,
+  },
+  profileAdviceText: {
+    fontSize: 10,
+    color: GRAY,
+    italics: true,
+    lineHeight: 1.4,
+  },
+
+  // Пояснение под общим индексом
+  summaryHint: {
+    fontSize: 8,
+    color: "#9ca3af",
+    italics: true,
+  },
+
+  // Блок "когда обратиться"
+  seekHelpTitle: {
+    fontSize: 10,
+    bold: true,
+    color: GRAY,
+  },
+  seekHelpText: {
+    fontSize: 9,
+    color: "#6b7280",
+    lineHeight: 1.4,
+  },
+  summaryMeaning: {
+    fontSize: 9,
+    color: "#374151",
+    lineHeight: 1.3,
+  },
+  summaryHintSmall: {
+    fontSize: 8,
+    italics: true,
+  },
+  profileIntro: {
+    fontSize: 9,
+    color: "#9ca3af",
+    italics: true,
+  },
+  profileAdviceTitle: {
+    fontSize: 10,
+    bold: true,
+    color: GRAY,
+  },
+  quickTitle: {
+    fontSize: 11,
+    bold: true,
+    color: "#166534",
+  },
+  quickList: {
+    fontSize: 10,
+    color: "#15803d",
+    lineHeight: 1.4,
+  }, // Сегментированная линейка
+  segmentLabel: {
+    fontSize: 7,
+    color: "#6b7280",
+  },
+  segmentedScorePin: {
+    fontSize: 10,
+    bold: true,
+    color: "#1f2937",
+  },
+  interpretationText: {
+    fontSize: 10,
+    color: "#374151",
+    italics: true,
+    lineHeight: 1.4,
+  },
+  scaleHint: {
+    fontSize: 8,
+    italics: true,
   },
   //--- informationBlock ---------------------------
   //Справочная информация по шкалам и результатам
