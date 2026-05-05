@@ -29,13 +29,16 @@ export const docStyles = {
 
   // Заголовок страницы
   pageTitle: {
-    fontSize: 13,
+    fontSize: 14,
     bold: true,
+    alignment: "center",
+    margin: [0, 0, 0, 4],
   },
   pageSubtitle: {
     fontSize: 9,
     italics: true,
     color: GRAY,
+    alignment: "center",
   },
 
   // Шкалы
@@ -119,12 +122,7 @@ export const docStyles = {
   },
 
   //--- informationBlock ---------------------------
-  sectionTitle: {
-    fontSize: 14,
-    bold: true,
-    alignment: "center",
-    margin: [0, 0, 0, 10],
-  },
+
   infoIconTitle: {
     fontSize: 13,
     bold: true,
