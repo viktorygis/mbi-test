@@ -8,18 +8,14 @@
 
 ## Маршруты и страницы
 
-| Маршрут | Компонент | Назначение |
-| ------- | --------- | ---------- |
-| `/mbi-test/` | `MbiEntryPage` | Прохождение теста (интро → форма → вопросы → завершение) |
-| `/mbi-result/:id` | `MbiResultPage` | Страница результатов по ID |
+| Маршрут           | Компонент       | Назначение                                               |
+| ----------------- | --------------- | -------------------------------------------------------- |
+| `/mbi-test/`      | `MbiEntryPage`  | Прохождение теста (интро → форма → вопросы → завершение) |
+| `/mbi-result/:id` | `MbiResultPage` | Страница результатов по ID                               |
 
 ---
 
 ## Поток шагов `MbiEntryPage`
-
-```
-intro → form → questions → loading → resultLink
-```
 
 | Шаг | Экран | Триггер перехода |
 | --- | ----- | ---------------- |
@@ -361,28 +357,6 @@ intro → form → questions → loading → resultLink
 ---
 
 ## Визуальная последовательность приложения
-
-```
-[1. IntroScreen]
-  ├─ OfferIntroSection      — Hero, буллеты шкал, кнопка
-  ├─ MbiIntroSection        — О тесте, карточки шкал
-  ├─ InstructionIntroSection — Инструкция, варианты ответов
-  ├─ ContactsIntroSection   — Контакты автора, соцсети
-  └─ StartTestIntroSection  — Финальная кнопка «Пройти тест»
-         ↓
-[2. FormScreen]             — Форма с данными пользователя
-         ↓
-[3. QuestionsScreen]        — Предварительные вопросы + 22 вопроса MBI
-         ↓
-[4. resultLink]             — Ссылка на результаты
-         ↓
-[5. ResultsScreen]
-  ├─ ResultsHeader          — Шапка, кнопка PDF
-  ├─ MbiScalesSection       — Индекс, шкалы, профиль, поддержка
-  ├─ MbiInformationSection  — Справка по шкалам
-  ├─ ExtrasSection          — Консультация, контакты, повтор, материалы, автор
-  └─ LiteratureSection      — Источники методики
-```
 
 ---
 
