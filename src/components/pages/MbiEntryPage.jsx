@@ -108,7 +108,7 @@ const MbiEntryPage = () => {
   if (step === "questions") {
     return (
       <QuestionsScreen
-        showTestFillButton = {true}  // Скрываем кнопку заполнения теста
+        showTestFillButton = {false}  // Скрываем кнопку заполнения теста
         userData={userData}
         timeDisplay={timeDisplay}
         answerOptions={answerOptions}
