@@ -254,6 +254,7 @@ export function resultsBlock(mbiResults) {
       score: scores.exhaustion,
       maxScore: scales.exhaustion.maxScore,
       level: getLevelForScore(scales, "exhaustion", scores.exhaustion),
+      levelKey: getLevelKey(scales, "exhaustion", scores.exhaustion),
       rec: getRecommendation(scales, "exhaustion", scores.exhaustion),
       icon: ICONS.exhaustion,
       config: scales.exhaustion,
@@ -264,6 +265,7 @@ export function resultsBlock(mbiResults) {
       score: scores.depersonalization,
       maxScore: scales.depersonalization.maxScore,
       level: getLevelForScore(scales, "depersonalization", scores.depersonalization),
+      levelKey: getLevelKey(scales, "depersonalization", scores.depersonalization),
       rec: getRecommendation(scales, "depersonalization", scores.depersonalization),
       icon: ICONS.depersonalization,
       config: scales.depersonalization,
@@ -274,17 +276,19 @@ export function resultsBlock(mbiResults) {
       score: scores.reduction,
       maxScore: scales.reduction.maxScore,
       level: getLevelForScore(scales, "reduction", scores.reduction),
+      levelKey: getLevelKey(scales, "reduction", scores.reduction),
       rec: getRecommendation(scales, "reduction", scores.reduction),
       icon: ICONS.reduction,
       config: scales.reduction,
     },
   ];
 
-  scalesConfig.sort((a, b) => getProblemPriority(b.level) - getProblemPriority(a.level));
+  scalesConfig.sort((a, b) => getProblemPriority(b.levelKey) - getProblemPriority(a.levelKey));
 
   const burnoutLevel = getLevelForScore({ burnoutIndex: burnoutConfig }, "burnoutIndex", burnoutIndex);
+  const burnoutLevelKey = getLevelKey({ burnoutIndex: burnoutConfig }, "burnoutIndex", burnoutIndex);
   const burnoutRec = getRecommendation({ burnoutIndex: burnoutConfig }, "burnoutIndex", burnoutIndex);
-  const burnoutColor = getLevelColor(burnoutLevel);
+  const burnoutColor = getLevelColor(burnoutLevelKey);
   const burnoutTitle = scales.burnoutIndex?.title ?? "Общий индекс психического выгорания";
   const burnoutSegments = extractSegments(burnoutConfig);
 
@@ -323,8 +327,8 @@ export function resultsBlock(mbiResults) {
     { text: "Расшифровка результата", style: "pageTitle", margin: [0, 0, 0, 16] },
 
     // Шкалы с линейками + рекомендациями
-    ...scalesConfig.map(({ key, title, icon, score, maxScore, level, rec, config }) => {
-      const color = getLevelColor(level);
+    ...scalesConfig.map(({ key, title, icon, score, maxScore, level, levelKey, rec, config }) => {
+      const color = getLevelColor(levelKey);
       const segments = extractSegments(config);
 
       return {
