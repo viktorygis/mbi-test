@@ -1,11 +1,11 @@
 // src/utils/pdf/blocks/contactsBlock.js
-import { PINK, GRAY, BLUE } from '../pdfStyles';
-import { centerLine} from "../../mbi/mbiHelpers";
+import { PINK, GRAY, BLUE } from "../pdfStyles";
+import { centerLine } from "../../mbi/mbiHelpers";
 
 export function contactsBlock() {
   return [
-    { text: "Контакты", fontSize: 18, bold: true, alignment: "center", margin: [0, 0, 0, 4] },
-    centerLine(300),
+    { text: "Контакты", style: "pageTitle" },
+    centerLine(200),
     { text: "По любым вопросам вы можете обратиться к автору проекта Елене Семеновой:", fontSize: 12, margin: [0, 16, 0, 8] },
     {
       text: [

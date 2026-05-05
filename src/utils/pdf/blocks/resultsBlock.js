@@ -6,7 +6,7 @@ import emotionalBase64 from "../image/emotional";
 import depersonalizationBase64 from "../image/depersonalization";
 import reductionBase64 from "../image/reduction";
 import burnoutBase64 from "../image/burnout";
-
+import { centerLine } from "../../mbi/mbiHelpers";
 // ─── Константы ────────────────────────────────────────────────────────────────
 
 const ICONS = {
@@ -295,7 +295,8 @@ export function resultsBlock(mbiResults) {
   return [
     // ── Страница 1 ────────────────────────────────────────────────────────────
 
-    { text: "Итоговый результат", style: "pageTitle", margin: [0, 0, 0, 4] },
+    { text: "Итоговый результат", style: "pageTitle" },
+    centerLine(200),
     {
       text: "Чем выше балл, тем выше ваш уровень профессионального выгорания.",
       style: "pageSubtitle",
@@ -324,8 +325,8 @@ export function resultsBlock(mbiResults) {
     // ── Страница 2: Расшифровка ─────────────────────────────────────────────
     { text: "", pageBreak: "after" },
 
-    { text: "Расшифровка результата", style: "pageTitle", margin: [0, 0, 0, 16] },
-
+    { text: "Расшифровка результата", style: "pageTitle" },
+    centerLine(200),
     // Шкалы с линейками + рекомендациями
     ...scalesConfig.map(({ key, title, icon, score, maxScore, level, levelKey, rec, config }) => {
       const color = getLevelColor(levelKey);

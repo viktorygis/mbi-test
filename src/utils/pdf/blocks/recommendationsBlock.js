@@ -67,7 +67,7 @@ export function recommendationsBlock(mbiResults) {
 
   return [
     { text: "Рекомендации по результатам", fontSize: 18, bold: true, alignment: "center", margin: [0, 0, 0, 4] },
-    centerLine(300),
+    centerLine(200),
     ...recos
       .map((r) => [
         { text: r.label, fontSize: 13, bold: true, margin: [0, 6, 0, 2] },

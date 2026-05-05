@@ -33,10 +33,9 @@ export function informationBlock() {
   return [
     {
       text: "Справочная информация",
-      style: "sectionTitle",
-      margin: [0, 0, 0, 4],
+      style: "pageTitle",
     },
-    centerLine(300),
+    centerLine(200),
 
     iconRow(mindBase64, "MBI — тест на выгорание Маслач"),
 

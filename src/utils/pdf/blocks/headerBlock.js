@@ -45,7 +45,7 @@ export function headerBlock(userData, timeDisplay) {
         { text: "Тест на выгорание Маслач", style: "mainTitle" },
       ],
       alignment: "center",
-      margin: [0, 10, 0, 10],
+      margin: [0, 10, 0, 20],
     },
   ];
 }
