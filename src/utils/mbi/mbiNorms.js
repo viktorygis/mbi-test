@@ -1,6 +1,19 @@
 // src/utils/mbi/mbiNorms.js
 
 /**
+ * Найти полную норму по шкале и баллу.
+ * @param {object} scales - объект шкал (scales)
+ * @param {string} scaleKey
+ * @param {number} score
+ * @returns {{ key?: string, label?: string, min: number, max: number } | null}
+ */
+export function getNormForScore(scales, scaleKey, score) {
+  const scale = scales?.[scaleKey];
+  if (!scale || !Array.isArray(scale.norms)) return null;
+  return scale.norms.find((r) => score >= r.min && score <= r.max) || null;
+}
+
+/**
  * Найти название уровня по шкале и баллу.
  * @param {object} scales - объект шкал (scales)
  * @param {string} scaleKey
@@ -8,24 +21,18 @@
  * @returns {string}
  */
 export function getLevelForScore(scales, scaleKey, score) {
-  const scale = scales?.[scaleKey];
-  if (!scale || !Array.isArray(scale.norms)) return "Нет данных";
-  return scale.norms.find((r) => score >= r.min && score <= r.max)?.label || "Нет данных";
+  return getNormForScore(scales, scaleKey, score)?.label || "Нет данных";
 }
 
 /**
- * Преобразовать русcкий текст уровня в внутренний ключ.
- * @param {string} label
+ * Получить стабильный внутренний ключ уровня.
+ * @param {object} scales - объект шкал (scales)
+ * @param {string} scaleKey
+ * @param {number} score
  * @returns {string}
  */
-export function getLevelKey(label) {
-  const s = String(label || "").toLowerCase();
-  if (s.includes("крайне низк")) return "veryLow";
-  if (s.includes("низк")) return "low";
-  if (s.includes("средн")) return "mid";
-  if (s.includes("крайне высок")) return "veryHigh";
-  if (s.includes("высок")) return "high";
-  return "mid";
+export function getLevelKey(scales, scaleKey, score) {
+  return getNormForScore(scales, scaleKey, score)?.key || "mid";
 }
 
 /**
@@ -38,8 +45,7 @@ export function getLevelKey(label) {
 export function getRecommendation(scales, scaleKey, score) {
   const scale = scales?.[scaleKey];
   if (!scale) return "";
-  const label = getLevelForScore(scales, scaleKey, score);
-  const key = getLevelKey(label);
+  const key = getLevelKey(scales, scaleKey, score);
   return scale?.interpretations?.[key] || "";
 }
 
@@ -68,9 +74,9 @@ export function combinedInterpretation(scores, scalesData) {
 
   const scalesObj = scalesData?.scales ?? {};
   const levelKeys = {
-    exhaustion: getLevelKey(getLevelForScore(scalesObj, "exhaustion", exhaustion)),
-    depersonalization: getLevelKey(getLevelForScore(scalesObj, "depersonalization", depersonalization)),
-    reduction: getLevelKey(getLevelForScore(scalesObj, "reduction", reduction)),
+    exhaustion: getLevelKey(scalesObj, "exhaustion", exhaustion),
+    depersonalization: getLevelKey(scalesObj, "depersonalization", depersonalization),
+    reduction: getLevelKey(scalesObj, "reduction", reduction),
   };
 
   const NO_RISK_ID = "no_risk";
@@ -84,12 +90,12 @@ export function combinedInterpretation(scores, scalesData) {
     const keys = Object.keys(when);
     if (keys.length === 0) continue;
 
-    const matches = keys.every((scaleKey) => Array.isArray(when[scaleKey]) && when[scaleKey].includes(levelKeys[scaleKey]));
+    const matches = keys.every(
+      (scaleKey) => Array.isArray(when[scaleKey]) && when[scaleKey].includes(levelKeys[scaleKey])
+    );
 
     if (matches) {
       messages.push(profile.message);
-      // "all_high" is the most comprehensive pattern; stop here to avoid
-      // showing redundant sub-pattern messages alongside it.
       if (profile.id === ALL_HIGH_ID) break;
     }
   }

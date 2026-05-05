@@ -312,7 +312,7 @@ export function resultsBlock(mbiResults) {
     // Профиль выгорания
     profileSummaryBlock(scores, scalesData ?? null),
 
-    // ── Страница 2: Расшифровка ───────────────────────────────���───────────────
+    // ── Страница 2: Расшифровка ─────────────────────────────────────────────
     { text: "", pageBreak: "after" },
 
     { text: "Расшифровка результата", style: "pageTitle", margin: [0, 0, 0, 16] },

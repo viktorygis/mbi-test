@@ -1,20 +1,21 @@
-// src/utils/mbiHelpers.js
 import { PINK, GRAY, BLUE } from "../pdf/pdfStyles";
-import {SEG_COLORS} from "../../utils/mbi/mbiConstants";
+import { SEG_COLORS } from "../../utils/mbi/mbiConstants";
 
+// Приводит ключ уровня к нормализованному машинному ключу
+function normalizeLevelKey(level) {
+  if (!level) return "mid";
+  if (typeof levelKey !== "string") return "mid";
 
-// Приводит строку уровня к ключу
-function normalizeLevelKey(label) {
-  if (!label) return "mid";
-  const lower = label.toLowerCase();
-  if (lower === "нет данных" || lower === "—") return "mid";
-  if (lower.includes("крайне низк")) return "veryLow";
-  if (lower.startsWith("низк")) return "low";
-  if (lower.startsWith("средн")) return "mid";
-  if (lower.includes("крайне высок")) return "veryHigh";
-  if (lower.includes("высок")) return "high";
+  const normalized = level.trim();
+  if (normalized === "veryLow") return "veryLow";
+  if (normalized === "low") return "low";
+  if (normalized === "mid") return "mid";
+  if (normalized === "high") return "high";
+  if (normalized === "veryHigh") return "veryHigh";
+
   return "mid";
 }
+
 
 // Получить цвет для уровня по его текстовому обозначению
 function getLevelColor(label) {
