@@ -1,11 +1,10 @@
-import { getLevelForScore, getRecommendation, combinedInterpretation } from "../../mbi/mbiNorms";
+import { getLevelForScore, getRecommendation, getLevelKey, combinedInterpretation } from "../../mbi/mbiNorms";
 import { getLevelColor, centerLine } from "../../mbi/mbiHelpers";
 import { GRAY } from "../pdfStyles";
 
-function levelIcon(level) {
-  // Для fontSize 13 — идеально height: 13, центр y: 6.5
+function levelIcon(levelKey) {
   return {
-    canvas: [{ type: "ellipse", x: 6.5, y: 6.5, color: getLevelColor(level), r1: 6.5, r2: 6.5 }],
+    canvas: [{ type: "ellipse", x: 6.5, y: 6.5, color: getLevelColor(levelKey), r1: 6.5, r2: 6.5 }],
     width: 13,
     height: 13,
     margin: [0, 0, 4, 0],
@@ -27,10 +26,9 @@ function recoTextObj(reco) {
   if (typeof reco === "object") {
     const arr = [];
     if (reco.short) {
-      arr.push({ text: reco.short, fontSize: 11, margin: [0, 0, 0, 2], color: GRAY, bold: true }); // <-- bold!
+      arr.push({ text: reco.short, fontSize: 11, margin: [0, 0, 0, 2], color: GRAY, bold: true });
     }
     if (Array.isArray(reco.details) && reco.details.length) {
-      // Лучше делать список, а не просто массив строк
       arr.push({ ul: reco.details, fontSize: 10, margin: [0, 0, 0, 4], color: GRAY });
     }
     return arr;
@@ -46,23 +44,26 @@ export function recommendationsBlock(mbiResults) {
       key: "exhaustion",
       label: "Эмоциональное истощение",
       level: getLevelForScore(mbiResults.scales, "exhaustion", scores.exhaustion),
+      levelKey: getLevelKey(mbiResults.scales, "exhaustion", scores.exhaustion),
       reco: getRecommendation(mbiResults.scales, "exhaustion", scores.exhaustion),
     },
     {
       key: "depersonalization",
       label: "Деперсонализация",
       level: getLevelForScore(mbiResults.scales, "depersonalization", scores.depersonalization),
+      levelKey: getLevelKey(mbiResults.scales, "depersonalization", scores.depersonalization),
       reco: getRecommendation(mbiResults.scales, "depersonalization", scores.depersonalization),
     },
     {
       key: "reduction",
       label: "Редукция личных достижений",
       level: getLevelForScore(mbiResults.scales, "reduction", scores.reduction),
+      levelKey: getLevelKey(mbiResults.scales, "reduction", scores.reduction),
       reco: getRecommendation(mbiResults.scales, "reduction", scores.reduction),
     },
   ].filter((r) => isRecoValid(r.reco));
 
-  const combinedReco = combinedInterpretation(scores);
+  const combinedReco = combinedInterpretation(scores, mbiResults.scalesData);
 
   return [
     { text: "Рекомендации по результатам", fontSize: 18, bold: true, alignment: "center", margin: [0, 0, 0, 4] },
@@ -72,10 +73,10 @@ export function recommendationsBlock(mbiResults) {
         { text: r.label, fontSize: 13, bold: true, margin: [0, 6, 0, 2] },
         {
           columns: [
-            levelIcon(r.level),
+            levelIcon(r.levelKey),
             {
               text: r.level,
-              color: getLevelColor(r.level),
+              color: getLevelColor(r.levelKey),
               fontSize: 11,
               bold: true,
               margin: [0, 0, 8, 0],
@@ -96,5 +97,4 @@ export function recommendationsBlock(mbiResults) {
     { text: "", margin: [0, 0, 0, 6] },
     { text: "", pageBreak: "after" },
   ];
-
 }

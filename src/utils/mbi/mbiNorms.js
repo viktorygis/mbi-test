@@ -2,7 +2,7 @@
 
 /**
  * Найти полную норму по шкале и баллу.
- * @param {object} scales - объект шкал (scales)
+ * @param {object} scales
  * @param {string} scaleKey
  * @param {number} score
  * @returns {{ key?: string, label?: string, min: number, max: number } | null}
@@ -14,33 +14,21 @@ export function getNormForScore(scales, scaleKey, score) {
 }
 
 /**
- * Найти название уровня по шкале и баллу.
- * @param {object} scales - объект шкал (scales)
- * @param {string} scaleKey
- * @param {number} score
- * @returns {string}
+ * Получить label уровня по шкале и баллу.
  */
 export function getLevelForScore(scales, scaleKey, score) {
   return getNormForScore(scales, scaleKey, score)?.label || "Нет данных";
 }
 
 /**
- * Получить стабильный внутренний ключ уровня.
- * @param {object} scales - объект шкал (scales)
- * @param {string} scaleKey
- * @param {number} score
- * @returns {string}
+ * Получить machine key уровня по шкале и баллу.
  */
 export function getLevelKey(scales, scaleKey, score) {
   return getNormForScore(scales, scaleKey, score)?.key || "mid";
 }
 
 /**
- * Получить рекомендацию/интерпретацию уровня
- * @param {object} scales - scales или { burnoutIndex: ... }
- * @param {string} scaleKey
- * @param {number} score
- * @returns {object|string}
+ * Получить рекомендацию/интерпретацию уровня.
  */
 export function getRecommendation(scales, scaleKey, score) {
   const scale = scales?.[scaleKey];
@@ -51,17 +39,13 @@ export function getRecommendation(scales, scaleKey, score) {
 
 /**
  * Общий итог по результату для профиля выгорания.
- * Profiles are evaluated in JSON order. "all_high" is treated as the most
- * severe combined pattern — when it matches, iteration stops immediately
- * so that only one (the most specific) message is shown.
- * The "no_risk" profile acts as a fallback shown when no other profile matched.
  */
 export function combinedInterpretation(scores, scalesData) {
   const profiles = scalesData?.combinedProfiles;
-
   if (!Array.isArray(profiles) || profiles.length === 0) return [];
 
   let exhaustion, depersonalization, reduction;
+
   if (scores && typeof scores === "object" && !Array.isArray(scores)) {
     exhaustion = scores.exhaustion;
     depersonalization = scores.depersonalization;
@@ -70,7 +54,13 @@ export function combinedInterpretation(scores, scalesData) {
     [exhaustion, depersonalization, reduction] = scores;
   }
 
-  if (typeof exhaustion !== "number" || typeof depersonalization !== "number" || typeof reduction !== "number") return [];
+  if (
+    typeof exhaustion !== "number" ||
+    typeof depersonalization !== "number" ||
+    typeof reduction !== "number"
+  ) {
+    return [];
+  }
 
   const scalesObj = scalesData?.scales ?? {};
   const levelKeys = {
@@ -91,7 +81,9 @@ export function combinedInterpretation(scores, scalesData) {
     if (keys.length === 0) continue;
 
     const matches = keys.every(
-      (scaleKey) => Array.isArray(when[scaleKey]) && when[scaleKey].includes(levelKeys[scaleKey])
+      (scaleKey) =>
+        Array.isArray(when[scaleKey]) &&
+        when[scaleKey].includes(levelKeys[scaleKey])
     );
 
     if (matches) {

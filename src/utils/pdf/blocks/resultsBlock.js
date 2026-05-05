@@ -27,25 +27,23 @@ function extractSegments(scaleConfig) {
   if (!scaleConfig?.norms || !Array.isArray(scaleConfig.norms)) return null;
   return scaleConfig.norms.map((norm) => ({
     label: norm.label,
-    color: SEG_COLORS[getLevelKey(norm.label)] ?? "#94a3b8",
+    color: SEG_COLORS[norm.key ?? "mid"] ?? "#94a3b8",
     from: norm.min,
     to: norm.max,
-    key: getLevelKey(norm.label),
+    key: norm.key ?? "mid",
   }));
 }
 
 // ─── Сегментированная линейка — метки СНИЗУ ──────────────────────────────────
 
 function leveledBar(value, maxScore, segments) {
-  const W     = BAR.width;
+  const W = BAR.width;
   const BAR_H = 10;
 
-  const tickX = maxScore > 0
-    ? Math.max(0, Math.min(Math.round((value / maxScore) * W), W))
-    : 0;
+  const tickX = maxScore > 0 ? Math.max(0, Math.min(Math.round((value / maxScore) * W), W)) : 0;
 
-  const PIN_W    = 24;
-  const pinLeft  = Math.max(0, tickX - PIN_W / 2);
+  const PIN_W = 24;
+  const pinLeft = Math.max(0, tickX - PIN_W / 2);
   const pinRight = W - pinLeft - PIN_W;
 
   const labelColumns = segments.map((seg, i) => {
@@ -62,20 +60,28 @@ function leveledBar(value, maxScore, segments) {
   const canvasItems = [];
 
   canvasItems.push({
-    type: "rect", x: 0, y: 0, w: W, h: BAR_H, r: BAR_H / 2, color: "#e5e7eb",
+    type: "rect",
+    x: 0,
+    y: 0,
+    w: W,
+    h: BAR_H,
+    r: BAR_H / 2,
+    color: "#e5e7eb",
   });
 
   segments.forEach((seg) => {
-    const x   = Math.max(0, Math.round((seg.from / maxScore) * W));
+    const x = Math.max(0, Math.round((seg.from / maxScore) * W));
     const toX = Math.min(W, Math.round(((seg.to + 1) / maxScore) * W));
-    const w   = Math.max(1, toX - x);
+    const w = Math.max(1, toX - x);
     canvasItems.push({ type: "rect", x, y: 0, w, h: BAR_H, r: 0, color: seg.color });
   });
 
   canvasItems.push({
     type: "line",
-    x1: tickX, y1: -4,
-    x2: tickX, y2: BAR_H,
+    x1: tickX,
+    y1: -4,
+    x2: tickX,
+    y2: BAR_H,
     lineWidth: 2,
     lineColor: "#1f2937",
   });
@@ -113,9 +119,7 @@ function recoToPdf(reco) {
 
 function barRow(score, maxScore, color) {
   const filled = maxScore > 0 ? Math.max(0, Math.round((score / maxScore) * BAR.width)) : 0;
-  const elements = [
-    { type: "rect", x: 0, y: 0, w: BAR.width, h: BAR.height, r: BAR.radius, color: "#e5e7eb" },
-  ];
+  const elements = [{ type: "rect", x: 0, y: 0, w: BAR.width, h: BAR.height, r: BAR.radius, color: "#e5e7eb" }];
   if (filled > 0) {
     elements.push({ type: "rect", x: 0, y: 0, w: filled, h: BAR.height, r: BAR.radius, color });
   }
@@ -124,14 +128,14 @@ function barRow(score, maxScore, color) {
 
 function barPercent(value, maxScore) {
   const percent = maxScore > 0 ? Math.round((value / maxScore) * 100) : 0;
-  const tickX   = maxScore > 0 ? Math.max(0, Math.round((value / maxScore) * BAR.width)) : 0;
+  const tickX = maxScore > 0 ? Math.max(0, Math.round((value / maxScore) * BAR.width)) : 0;
 
-  const leftW  = 20;
+  const leftW = 20;
   const rightW = 30;
   const labelW = 30;
-  const inner  = BAR.width - leftW - rightW;
+  const inner = BAR.width - leftW - rightW;
 
-  const labelLeft  = Math.max(0, Math.min(tickX - leftW - labelW / 2, inner - labelW));
+  const labelLeft = Math.max(0, Math.min(tickX - leftW - labelW / 2, inner - labelW));
   const labelRight = Math.max(0, inner - labelW - labelLeft);
 
   return {
@@ -142,11 +146,11 @@ function barPercent(value, maxScore) {
       },
       {
         columns: [
-          { text: "0%",          style: "scalePercentLine", width: leftW },
-          { text: "",            width: labelLeft },
+          { text: "0%", style: "scalePercentLine", width: leftW },
+          { text: "", width: labelLeft },
           { text: `${percent}%`, style: "scalePercentLine", bold: true, width: labelW, alignment: "center" },
-          { text: "",            width: labelRight },
-          { text: "100%",        style: "scalePercentLine", width: rightW, alignment: "right" },
+          { text: "", width: labelRight },
+          { text: "100%", style: "scalePercentLine", width: rightW, alignment: "right" },
         ],
         columnGap: 0,
       },
@@ -155,9 +159,8 @@ function barPercent(value, maxScore) {
   };
 }
 
-function getProblemPriority(level) {
-  const key = typeof level === "string" ? getLevelKey(level) : "mid";
-  return LEVEL_PRIORITY[key] ?? 3;
+function getProblemPriority(levelKey) {
+  return LEVEL_PRIORITY[levelKey] ?? 3;
 }
 
 // ─── Профиль выгорания ────────────────────────────────────────────────────────
@@ -180,22 +183,23 @@ function profileSummaryBlock(scores, scalesData) {
   return {
     table: {
       widths: ["*"],
-      body: [[{
-        fillColor: "#f8fafc",
-        border: [false, false, false, false],
-        stack: [
-          { text: "Профиль выгорания", style: "profileSummaryTitle", margin: [0, 0, 0, 6] },
-          ...items,
+      body: [
+        [
+          {
+            fillColor: "#f8fafc",
+            border: [false, false, false, false],
+            stack: [{ text: "Профиль выгорания", style: "profileSummaryTitle", margin: [0, 0, 0, 6] }, ...items],
+          },
         ],
-      }]],
+      ],
     },
     layout: {
       defaultBorder: false,
       hLineWidth: () => 0,
       vLineWidth: () => 0,
-      paddingLeft:   () => 14,
-      paddingRight:  () => 14,
-      paddingTop:    () => 12,
+      paddingLeft: () => 14,
+      paddingRight: () => 14,
+      paddingTop: () => 12,
       paddingBottom: () => 12,
     },
     margin: [0, 12, 0, 20],
@@ -208,26 +212,30 @@ function seekHelpBlock() {
   return {
     table: {
       widths: ["*"],
-      body: [[{
-        border: [false, false, false, false],
-        fillColor: "#fafafa",
-        stack: [
-          { text: "Когда стоит обратиться за поддержкой", style: "seekHelpTitle", margin: [0, 0, 0, 6] },
+      body: [
+        [
           {
-            text: "Если усталость, раздражительность, проблемы со сном или ощущение беспомощности не проходят несколько недель и начинают мешать жизни — имеет смысл обсудить это со специалистом. Это обычный и рабочий способ поддержки.",
-            style: "seekHelpText",
+            border: [false, false, false, false],
+            fillColor: "#fafafa",
+            stack: [
+              { text: "Когда стоит обратиться за поддержкой", style: "seekHelpTitle", margin: [0, 0, 0, 6] },
+              {
+                text: "Если усталость, раздражительность, проблемы со сном или ощущение беспомощности не проходят несколько недель и начинают мешать жизни — имеет смысл обсудить это со специалистом. Это обычный и рабочий способ поддержки.",
+                style: "seekHelpText",
+              },
+            ],
           },
         ],
-      }]],
+      ],
     },
     layout: {
       defaultBorder: false,
       hLineWidth: (i) => (i === 0 || i === 1 ? 0.5 : 0),
       vLineWidth: () => 0,
       hLineColor: () => "#e5e7eb",
-      paddingLeft:   () => 14,
-      paddingRight:  () => 14,
-      paddingTop:    () => 12,
+      paddingLeft: () => 14,
+      paddingRight: () => 14,
+      paddingTop: () => 12,
       paddingBottom: () => 12,
     },
     margin: [0, 16, 0, 0],
@@ -274,10 +282,10 @@ export function resultsBlock(mbiResults) {
 
   scalesConfig.sort((a, b) => getProblemPriority(b.level) - getProblemPriority(a.level));
 
-  const burnoutLevel    = getLevelForScore({ burnoutIndex: burnoutConfig }, "burnoutIndex", burnoutIndex);
-  const burnoutRec      = getRecommendation({ burnoutIndex: burnoutConfig }, "burnoutIndex", burnoutIndex);
-  const burnoutColor    = getLevelColor(burnoutLevel);
-  const burnoutTitle    = scales.burnoutIndex?.title ?? "Общий индекс психического выгорания";
+  const burnoutLevel = getLevelForScore({ burnoutIndex: burnoutConfig }, "burnoutIndex", burnoutIndex);
+  const burnoutRec = getRecommendation({ burnoutIndex: burnoutConfig }, "burnoutIndex", burnoutIndex);
+  const burnoutColor = getLevelColor(burnoutLevel);
+  const burnoutTitle = scales.burnoutIndex?.title ?? "Общий индекс психического выгорания";
   const burnoutSegments = extractSegments(burnoutConfig);
 
   return [
@@ -301,10 +309,7 @@ export function resultsBlock(mbiResults) {
     },
 
     // Цветная линейка с метками снизу
-    ...(burnoutSegments
-      ? [leveledBar(burnoutIndex, burnoutConfig.maxScore, burnoutSegments)]
-      : [barRow(burnoutIndex, burnoutConfig.maxScore, burnoutColor)]
-    ),
+    ...(burnoutSegments ? [leveledBar(burnoutIndex, burnoutConfig.maxScore, burnoutSegments)] : [barRow(burnoutIndex, burnoutConfig.maxScore, burnoutColor)]),
 
     // Интерпретация уровня + рекомендации (short + details)
     ...recoToPdf(burnoutRec),
@@ -319,7 +324,7 @@ export function resultsBlock(mbiResults) {
 
     // Шкалы с линейками + рекомендациями
     ...scalesConfig.map(({ key, title, icon, score, maxScore, level, rec, config }) => {
-      const color    = getLevelColor(level);
+      const color = getLevelColor(level);
       const segments = extractSegments(config);
 
       return {
@@ -328,20 +333,16 @@ export function resultsBlock(mbiResults) {
             columns: [
               { image: icon, width: 14, height: 14, margin: [0, 1, 0, 0] },
               { text: title, style: "scaleTitle", width: "*" },
-              { text: level, style: "scaleLabel", color, width: "auto" },  // alignment уже в стиле
+              { text: level, style: "scaleLabel", color, width: "auto" }, // alignment уже в стиле
             ],
             columnGap: 8,
             margin: [0, 0, 0, 4],
           },
           { text: `${score} баллов из ${maxScore}`, style: "scalePercent", margin: [0, 0, 0, 8] },
-          ...(segments
-            ? [leveledBar(score, maxScore, segments)]
-            : [barRow(score, maxScore, color), barPercent(score, maxScore)]
-          ),
+          ...(segments ? [leveledBar(score, maxScore, segments)] : [barRow(score, maxScore, color), barPercent(score, maxScore)]),
           ...(REDUCTION_KEYS.has(key)
-            ? [{ text: "Чем выше балл — тем сильнее выражено снижение ощущения эффективности.", style: "scaleHint" }]  // color и margin в стиле
-            : []
-          ),
+            ? [{ text: "Чем выше балл — тем сильнее выражено снижение ощущения эффективности.", style: "scaleHint" }] // color и margin в стиле
+            : []),
           ...recoToPdf(rec),
         ],
         margin: [0, 0, 0, BLOCK_GAP + 4],

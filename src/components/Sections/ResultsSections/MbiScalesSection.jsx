@@ -1,4 +1,5 @@
 // src/components/Sections/ResultsSections/MbiScalesSection.jsx
+
 import React from 'react';
 import { getLevelColor } from '../../../utils/mbi/mbiHelpers';
 import { getLevelForScore, getRecommendation, getLevelKey, combinedInterpretation } from '../../../utils/mbi/mbiNorms';
@@ -10,7 +11,6 @@ const ICONS = {
   reduction: "img/mbi-test/reduced-achievement.svg",
   burnoutIndex: "img/mbi-test/burnout-index.svg",
 };
-
 // Сегментированная цветная полоса
 const SegmentedBar = ({ score, maxScore, norms }) => {
   if (!norms || !Array.isArray(norms) || maxScore <= 0) return null;
@@ -20,17 +20,16 @@ const SegmentedBar = ({ score, maxScore, norms }) => {
   return (
     <div className="segmented-bar">
       <div className="segmented-bar__pin-row">
-        <span
-          className="segmented-bar__score-pin"
-          style={{ left: `${pinPercent}%` }}
-        >
+        <span className="segmented-bar__score-pin" style={{ left: `${pinPercent}%` }}>
           {score}
         </span>
       </div>
+
       <div className="segmented-bar__track">
         {norms.map((norm, i) => {
-          const levelKey = getLevelKey(norm.label);
+          const levelKey = norm.key ?? "mid";
           const segWidth = ((norm.max - norm.min + 1) / maxScore) * 100;
+
           return (
             <div
               key={i}
@@ -42,11 +41,9 @@ const SegmentedBar = ({ score, maxScore, norms }) => {
             />
           );
         })}
-        <div
-          className="segmented-bar__marker"
-          style={{ left: `${pinPercent}%` }}
-        />
+        <div className="segmented-bar__marker" style={{ left: `${pinPercent}%` }} />
       </div>
+
       <div className="segmented-bar__labels">
         {norms.map((norm, i) => {
           const segWidth = ((norm.max - norm.min + 1) / maxScore) * 100;
@@ -64,11 +61,11 @@ const SegmentedBar = ({ score, maxScore, norms }) => {
     </div>
   );
 };
-
 // Одна строка для выводимой шкалы
 const ScaleRow = ({ scaleKey, title, icon, score, maxScore, scaleConfig }) => {
   const level = getLevelForScore({ [scaleKey]: scaleConfig }, scaleKey, score);
-  const levelColor = getLevelColor(level);
+  const levelKey = getLevelKey({ [scaleKey]: scaleConfig }, scaleKey, score);
+  const levelColor = getLevelColor(levelKey);
   const percent = maxScore > 0 ? Math.round((score / maxScore) * 100) : 0;
   const rec = getRecommendation({ [scaleKey]: scaleConfig }, scaleKey, score);
   const hasNorms = scaleConfig?.norms && Array.isArray(scaleConfig.norms);
@@ -88,10 +85,12 @@ const ScaleRow = ({ scaleKey, title, icon, score, maxScore, scaleConfig }) => {
           </div>
         )}
       </div>
+
       <div className="mbi-scale__score-line">
         <span className="mbi-scale__score">{score}</span>
         <span className="mbi-scale__max"> баллов из {maxScore}</span>
       </div>
+
       {hasNorms ? (
         <SegmentedBar score={score} maxScore={maxScore} norms={scaleConfig.norms} />
       ) : (
@@ -108,14 +107,15 @@ const ScaleRow = ({ scaleKey, title, icon, score, maxScore, scaleConfig }) => {
           </div>
         </>
       )}
+
       {scaleKey === 'reduction' && (
         <p className="mbi-scale__hint">
           Чем выше балл — тем сильнее выражено снижение ощущения эффективности.
         </p>
       )}
-      {rec?.short && (
-        <div className="mbi-scale__recommendation">{rec.short}</div>
-      )}
+
+      {rec?.short && <div className="mbi-scale__recommendation">{rec.short}</div>}
+
       {rec?.details && Array.isArray(rec.details) && rec.details.length > 0 && (
         <ul className="mbi-scale__list">
           {rec.details.map((item, i) => (
@@ -127,10 +127,10 @@ const ScaleRow = ({ scaleKey, title, icon, score, maxScore, scaleConfig }) => {
   );
 };
 
-// Блок с общим индексом выгорания
 const BurnoutIndexBlock = ({ burnoutIndex, maxScore, burnoutConfig, icon }) => {
   const burnoutLevel = getLevelForScore({ burnoutIndex: burnoutConfig }, 'burnoutIndex', burnoutIndex);
-  const levelColor = getLevelColor(burnoutLevel);
+  const burnoutLevelKey = getLevelKey({ burnoutIndex: burnoutConfig }, 'burnoutIndex', burnoutIndex);
+  const levelColor = getLevelColor(burnoutLevelKey);
   const percent = maxScore > 0 ? Math.round((burnoutIndex / maxScore) * 100) : 0;
   const rec = getRecommendation({ burnoutIndex: burnoutConfig }, 'burnoutIndex', burnoutIndex);
   const hasNorms = burnoutConfig?.norms && Array.isArray(burnoutConfig.norms);
@@ -146,6 +146,7 @@ const BurnoutIndexBlock = ({ burnoutIndex, maxScore, burnoutConfig, icon }) => {
         )}
         <h3 className="mbi-burnout-index__title">{title}</h3>
       </div>
+
       <div className="mbi-burnout-index__score-row">
         {burnoutLevel && (
           <div className="mbi-burnout-index__level-label" style={{ color: levelColor }}>
@@ -157,6 +158,7 @@ const BurnoutIndexBlock = ({ burnoutIndex, maxScore, burnoutConfig, icon }) => {
           <span className="mbi-burnout-index__max"> / {maxScore}</span>
         </div>
       </div>
+
       {hasNorms ? (
         <SegmentedBar score={burnoutIndex} maxScore={maxScore} norms={burnoutConfig.norms} />
       ) : (
@@ -173,9 +175,9 @@ const BurnoutIndexBlock = ({ burnoutIndex, maxScore, burnoutConfig, icon }) => {
           </div>
         </>
       )}
-      {rec?.short && (
-        <div className="mbi-burnout-index__recommendation">{rec.short}</div>
-      )}
+
+      {rec?.short && <div className="mbi-burnout-index__recommendation">{rec.short}</div>}
+
       {rec?.details && Array.isArray(rec.details) && rec.details.length > 0 && (
         <ul className="mbi-burnout-index__list">
           {rec.details.map((item, i) => (
@@ -187,7 +189,6 @@ const BurnoutIndexBlock = ({ burnoutIndex, maxScore, burnoutConfig, icon }) => {
   );
 };
 
-// Профиль выгорания
 const ProfileSummaryBlock = ({ scores, scalesData }) => {
   const messages = combinedInterpretation(scores, scalesData);
   const hasMessages = Array.isArray(messages) && messages.length > 0;
@@ -210,52 +211,50 @@ const ProfileSummaryBlock = ({ scores, scalesData }) => {
   );
 };
 
-// Блок обращения за поддержкой
 const SeekHelpBlock = () => (
   <div className="mbi-seek-help">
     <p className="mbi-seek-help__title">Когда стоит обратиться за поддержкой</p>
     <p className="mbi-seek-help__text">
-      Если усталость, раздражительность, проблемы со сном или ощущение беспомощности не проходят несколько недель и начинают мешать жизни — имеет смысл обсудить это со специалистом. Это обычный и рабочий способ поддержки.
+      Если усталость, раздражительность, проблемы со сном или ощущение беспомощности не проходят несколько недель и мешают работе, отношениям или повседневной жизни, стоит обратиться за поддержкой к специалисту.
     </p>
   </div>
 );
 
 function getProblemPriority(scaleKey, scaleConfig, score) {
-  const level = getLevelForScore({ [scaleKey]: scaleConfig }, scaleKey, score);
-  const key = getLevelKey(level);
+  const key = getLevelKey({ [scaleKey]: scaleConfig }, scaleKey, score);
   return LEVEL_PRIORITY[key] ?? 3;
 }
 
-// Основной компонент секции
 const MbiScalesSection = ({ mbiResults, scalesData }) => {
   if (!mbiResults) return null;
 
   const { scores, burnoutIndex, scales, burnoutConfig } = mbiResults;
 
   const scalesConfig = [
-    { key: 'exhaustion',       title: scales.exhaustion.title,       icon: ICONS.exhaustion,       score: scores.exhaustion,       maxScore: scales.exhaustion.maxScore,       config: scales.exhaustion },
+    { key: 'exhaustion', title: scales.exhaustion.title, icon: ICONS.exhaustion, score: scores.exhaustion, maxScore: scales.exhaustion.maxScore, config: scales.exhaustion },
     { key: 'depersonalization', title: scales.depersonalization.title, icon: ICONS.depersonalization, score: scores.depersonalization, maxScore: scales.depersonalization.maxScore, config: scales.depersonalization },
-    { key: 'reduction',        title: scales.reduction.title,        icon: ICONS.reduction,        score: scores.reduction,        maxScore: scales.reduction.maxScore,        config: scales.reduction },
+    { key: 'reduction', title: scales.reduction.title, icon: ICONS.reduction, score: scores.reduction, maxScore: scales.reduction.maxScore, config: scales.reduction },
   ].sort((a, b) => getProblemPriority(b.key, b.config, b.score) - getProblemPriority(a.key, a.config, a.score));
 
   return (
     <div className="mbi-scales-section">
       <div className="mbi-scales-section__container">
-        {/* Блок 1: Итоговый результат */}
         <h2 className="mbi-scales-section__title">Итоговый результат</h2>
         <p className="mbi-scales-section__subtitle">
           Чем выше балл, тем выше ваш уровень профессионального выгорания.
         </p>
+
         <BurnoutIndexBlock
           burnoutIndex={burnoutIndex}
           icon={ICONS.burnoutIndex}
           maxScore={burnoutConfig.maxScore}
           burnoutConfig={burnoutConfig}
         />
+
         <ProfileSummaryBlock scores={scores} scalesData={scalesData} />
 
-        {/* Блок 2: Расшифровка результата */}
         <h2 className="mbi-scales-section__breakdown-title">Расшифровка результата</h2>
+
         <div className="mbi-scales-section__scales">
           {scalesConfig.map(({ key, title, icon, score, maxScore, config }) => (
             <ScaleRow
@@ -269,6 +268,7 @@ const MbiScalesSection = ({ mbiResults, scalesData }) => {
             />
           ))}
         </div>
+
         <SeekHelpBlock />
       </div>
     </div>
