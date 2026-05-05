@@ -66,7 +66,11 @@ export const docStyles = {
     color: "#9ca3af",
     margin: [0, 6, 0, 0],
   },
-
+  topRiskBadge: {
+    fontSize: 10,
+    bold: true,
+    alignment: "right",
+  },
   // Рекомендации
   recoTitle: {
     fontSize: 11,

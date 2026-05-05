@@ -245,7 +245,7 @@ function seekHelpBlock() {
 // ─── Главная функция ──────────────────────────────────────────────────────────
 
 export function resultsBlock(mbiResults) {
-  const { scores, burnoutIndex, scales, burnoutConfig, scalesData, burnoutLevel } = mbiResults;
+  const { scores, burnoutIndex, scales, burnoutConfig, scalesData } = mbiResults;
 
   const scalesConfig = [
     {
@@ -286,6 +286,8 @@ export function resultsBlock(mbiResults) {
   scalesConfig.sort((a, b) => getProblemPriority(b.levelKey) - getProblemPriority(a.levelKey));
 
   const burnoutLevelKey = getLevelKey({ burnoutIndex: burnoutConfig }, "burnoutIndex", burnoutIndex);
+  const burnoutLevel = getLevelForScore({ burnoutIndex: burnoutConfig }, "burnoutIndex", burnoutIndex);
+
   const burnoutRec = getRecommendation({ burnoutIndex: burnoutConfig }, "burnoutIndex", burnoutIndex);
   const burnoutColor = getLevelColor(burnoutLevelKey);
   const burnoutTitle = scales.burnoutIndex?.title ?? "Общий индекс психического выгорания";
@@ -309,7 +311,15 @@ export function resultsBlock(mbiResults) {
         { text: burnoutTitle, style: "scaleTitle", width: "*" },
       ],
       columnGap: 8,
-      margin: [0, 0, 0, 12],
+      margin: [0, 0, 0, 8],
+    }, // Баллы слева — статус справа (одна строка)
+    {
+      columns: [
+        { text: `${burnoutIndex} баллов из ${burnoutConfig.maxScore}`, style: "scalePercent", width: "*" },
+        { text: burnoutLevel, style: "scaleLabel", color: burnoutColor, width: "auto" },
+      ],
+      columnGap: 8,
+      margin: [0, 0, 0, 0],
     },
 
     // Цветная линейка с метками снизу
@@ -327,28 +337,89 @@ export function resultsBlock(mbiResults) {
     { text: "Расшифровка результата", style: "pageTitle" },
     centerLine(200),
     // Шкалы с линейками + рекомендациями
-    ...scalesConfig.map(({ key, title, icon, score, maxScore, level, levelKey, rec, config }) => {
+    ...scalesConfig.map(({ key, title, icon, score, maxScore, level, levelKey, rec, config }, i) => {
       const color = getLevelColor(levelKey);
       const segments = extractSegments(config);
+      const isTop = i === 0;
+
+      const stackContent = [
+        // Заголовок — только иконка + название
+        {
+          columns: [
+            { image: icon, width: 14, height: 14, margin: [0, 1, 0, 0] },
+            { text: title, style: "scaleTitle", width: "*" },
+            ...(isTop
+              ? [
+                  {
+                    table: {
+                      body: [
+                        [
+                          {
+                            text: "основная зона риска",
+                            color: "#ffffff",
+                            fillColor: color,
+                            fontSize: 8,
+                            bold: true,
+                            border: [false, false, false, false],
+                            margin: [6, 3, 6, 3],
+                          },
+                        ],
+                      ],
+                    },
+                    layout: {
+                      defaultBorder: false,
+                      hLineWidth: () => 0,
+                      vLineWidth: () => 0,
+                      paddingLeft: () => 0,
+                      paddingRight: () => 0,
+                      paddingTop: () => 0,
+                      paddingBottom: () => 0,
+                    },
+                    width: "auto",
+                  },
+                ]
+              : []),
+          ],
+          columnGap: 8,
+          margin: [0, 0, 0, 8],
+        },
+        // Баллы слева — статус справа
+        {
+          columns: [
+            { text: `${score} баллов из ${maxScore}`, style: "scalePercent", width: "*" },
+            { text: level, style: "scaleLabel", color, width: "auto" },
+          ],
+          columnGap: 8,
+          margin: [0, 0, 0, 0],
+        },
+        ...(segments ? [leveledBar(score, maxScore, segments)] : [barRow(score, maxScore, color), barPercent(score, maxScore)]),
+        ...(REDUCTION_KEYS.has(key) ? [{ text: "Чем выше балл — тем сильнее выражено снижение ощущения эффективности.", style: "scaleHint" }] : []),
+        ...recoToPdf(rec),
+      ];
+
+      if (isTop) {
+        return {
+          table: {
+            widths: ["*"],
+            body: [[{ stack: stackContent, border: [true, true, true, true] }]],
+          },
+          layout: {
+            defaultBorder: true,
+            hLineWidth: () => 1.5,
+            vLineWidth: () => 1.5,
+            hLineColor: () => color,
+            vLineColor: () => color,
+            paddingLeft: () => 12,
+            paddingRight: () => 12,
+            paddingTop: () => 12,
+            paddingBottom: () => 12,
+          },
+          margin: [0, 0, 0, BLOCK_GAP + 4],
+        };
+      }
 
       return {
-        stack: [
-          {
-            columns: [
-              { image: icon, width: 14, height: 14, margin: [0, 1, 0, 0] },
-              { text: title, style: "scaleTitle", width: "*" },
-              { text: level, style: "scaleLabel", color, width: "auto" }, // alignment уже в стиле
-            ],
-            columnGap: 8,
-            margin: [0, 0, 0, 4],
-          },
-          { text: `${score} баллов из ${maxScore}`, style: "scalePercent", margin: [0, 0, 0, 8] },
-          ...(segments ? [leveledBar(score, maxScore, segments)] : [barRow(score, maxScore, color), barPercent(score, maxScore)]),
-          ...(REDUCTION_KEYS.has(key)
-            ? [{ text: "Чем выше балл — тем сильнее выражено снижение ощущения эффективности.", style: "scaleHint" }] // color и margin в стиле
-            : []),
-          ...recoToPdf(rec),
-        ],
+        stack: stackContent,
         margin: [0, 0, 0, BLOCK_GAP + 4],
       };
     }),
