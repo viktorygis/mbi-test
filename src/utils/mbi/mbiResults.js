@@ -28,6 +28,7 @@ export function createMbiResults(answerIndices, { scales, burnoutIndex, scores }
       exhaustion: exhaustionLevel,
       depersonalization: depersonalizationLevel,
       reduction: reductionLevel,
+      burnoutIndex: burnoutLevel,
     },
     burnoutIndex: burnoutIndexValue,
     burnoutLevel,

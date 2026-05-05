@@ -245,7 +245,7 @@ function seekHelpBlock() {
 // ─── Главная функция ──────────────────────────────────────────────────────────
 
 export function resultsBlock(mbiResults) {
-  const { scores, burnoutIndex, scales, burnoutConfig, scalesData } = mbiResults;
+  const { scores, burnoutIndex, scales, burnoutConfig, scalesData, burnoutLevel } = mbiResults;
 
   const scalesConfig = [
     {
@@ -285,7 +285,6 @@ export function resultsBlock(mbiResults) {
 
   scalesConfig.sort((a, b) => getProblemPriority(b.levelKey) - getProblemPriority(a.levelKey));
 
-  const burnoutLevel = getLevelForScore({ burnoutIndex: burnoutConfig }, "burnoutIndex", burnoutIndex);
   const burnoutLevelKey = getLevelKey({ burnoutIndex: burnoutConfig }, "burnoutIndex", burnoutIndex);
   const burnoutRec = getRecommendation({ burnoutIndex: burnoutConfig }, "burnoutIndex", burnoutIndex);
   const burnoutColor = getLevelColor(burnoutLevelKey);
