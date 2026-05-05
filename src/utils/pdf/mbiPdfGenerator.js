@@ -1,6 +1,5 @@
 import { headerBlock } from "./blocks/headerBlock";
 import { resultsBlock } from "./blocks/resultsBlock";
-//import { recommendationsBlock } from "./blocks/recommendationsBlock";
 import { informationBlock } from "./blocks/informationBlock";
 import { contactsBlock } from "./blocks/contactsBlock";
 import { docStyles } from "./pdfStyles";
@@ -30,7 +29,6 @@ export async function downloadMbiPDF(mbiResults, userData, timeDisplay, extra = 
     content: [
       ...headerBlock(userData, timeDisplay),
       ...resultsBlock(mbiResultsWithScales),
-      //...recommendationsBlock(mbiResults),
       ...informationBlock(),
       ...contactsBlock(),
     ],

@@ -6,7 +6,6 @@ import LiteratureSection from './../Sections/ResultsSections/LiteratureSection';
 import ExtrasSection from './../Sections/ResultsSections/ExtrasSection';
 import { downloadMbiPDF } from '../../utils/pdf/mbiPdfGenerator';
 import MbiInformationSection from './../Sections/ResultsSections/MbiInformationSection';
-//import MbiRecommendationsSection from './../Sections/ResultsSections/MbiRecommendationsSection';
 
 // Один флаг — и вся отладка отключена.
 // Если хочешь убрать полностью — просто удали импорт и блок ниже.
@@ -118,8 +117,6 @@ const ResultsScreen = ({
 
       <div className="result-main">
         <MbiScalesSection mbiResults={mbiResults} scalesData={scalesData} />
-        {/* <MbiRecommendationsSection mbiResults={mbiResults} scales={mbiResults?.scales} /> */}
-
         <MbiInformationSection results={mbiResults} />
       </div>
 
